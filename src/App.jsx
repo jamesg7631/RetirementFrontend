@@ -20,7 +20,9 @@ const theme = createTheme({
 });
 
 function App() {
-  return (
+    console.log('Theme common colors:', theme.palette.common);
+
+    return (
     <ThemeProvider theme={theme}>
       <CssBaseline /> {/* Resets CSS, provides consistent baseline */}
       <Box
