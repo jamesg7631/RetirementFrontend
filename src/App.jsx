@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Header from "./components/Header";
 import NavigationTabs from "./components/NavigationTabs.jsx";
+import Sidebar from "./components/Sidebar.jsx";
 import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 const theme = createTheme({
   palette: {
@@ -52,9 +53,9 @@ function App() {
               mt: 1.5, // Margin top from tabs
             }}
           >
-            {/* <Sidebar />
-            <MainContentArea />
-            <RightSidebar /> */}
+            <Sidebar />
+            {/*// <MainContentArea />*/}
+            {/*// <RightSidebar /> *!/*/}
           </Box>
         </Box>
         {/* <Footer /> */}
