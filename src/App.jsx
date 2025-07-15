@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Header from "./components/Header";
+import NavigationTabs from "./components/NavigationTabs.jsx";
 import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 const theme = createTheme({
   palette: {
@@ -42,7 +43,7 @@ function App() {
             p: 1.5, // Padding around the main content (1 unit = 8px by default)
           }}
         >
-          {/* <NavigationTabs /> */}
+           <NavigationTabs />
           <Box
             sx={{
               display: "flex",
