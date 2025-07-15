@@ -2,6 +2,9 @@ import { useState } from "react";
 import Header from "./components/Header";
 import NavigationTabs from "./components/NavigationTabs.jsx";
 import Sidebar from "./components/Sidebar.jsx";
+import MainContentArea from "./components/MainContentArea.jsx";
+import RightSidebar from "./components/RightSidebar.jsx";
+import Footer from "./components/Footer.jsx";
 import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 const theme = createTheme({
   palette: {
@@ -54,11 +57,11 @@ function App() {
             }}
           >
             <Sidebar />
-            {/*// <MainContentArea />*/}
-            {/*// <RightSidebar /> *!/*/}
+            <MainContentArea />
+            <RightSidebar />
           </Box>
         </Box>
-        {/* <Footer /> */}
+         <Footer />
       </Box>
     </ThemeProvider>
   );
