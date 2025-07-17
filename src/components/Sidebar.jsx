@@ -21,6 +21,7 @@ function Sidebar() {
     const [investments, setInvestments] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError]=useState(null);
+    const [statePension, setStatePension]= useState({age:55, income:50000});
 
     // My Savings State
     const [savingsItems, setSavingsItems] = useState([
@@ -124,6 +125,42 @@ function Sidebar() {
                                 </Typography>
                             </Box>
                         ))}
+                        <Stack>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    pb: 1,
+                                    // borderBottom: '1px solid',
+                                    borderColor: 'grey.300',
+                                }}
+                            >
+                                <Typography variant="body1" fontWeight="bold" color="text.secondary">
+                                    State pension income is
+                                </Typography>
+                                <Typography variant="body1">
+                                    £ {statePension.income}
+                                </Typography>
+                            </Box>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    pb: 1,
+                                    borderBottom: '1px solid',
+                                    borderColor: 'grey.300',
+                                }}
+                            >
+                                <Typography variant="body1" fontWeight="bold" color="text.secondary">
+                                    from age
+                                </Typography>
+                                <Typography variant="body1">
+                                    {statePension.age}
+                                </Typography>
+                            </Box>
+                        </Stack>
                     </Stack>
                 )}
                 {activeTab === 1 && (
