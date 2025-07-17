@@ -5,44 +5,6 @@ import {
 } from 'recharts';
 import {getInvestmentChartIncomeData} from "../api/apiService.js";
 
-const generateMockData = (graphType, valueType) => {
-    const dataD = as
-    const startAge = 25;
-    // const endAge = 95;
-    //
-    // for (let age = startAge; age <= endAge; age++) {
-    //     let item = { age: age };
-    //
-    //     // Simulate different cash flow sources
-    //     if (graphType === 'income') {
-    //         // Example income cash flows
-    //         item.pensionIncome = age >= 67 ? Math.max(0, (age - 67) * 500 + 10000 + Math.random() * 2000) : 0;
-    //         item.investmentIncome = age >= 60 ? Math.max(0, (age - 60) * 300 + 5000 + Math.random() * 1000) : 0;
-    //         item.otherIncome = age >= 65 && age <= 75 ? Math.max(0, (75 - age) * 200 + 1000 + Math.random() * 500) : 0;
-    //     } else { // savings
-    //         // Example savings cash flows (accumulating)
-    //         item.pensionSavings = 100000 + (age - startAge) * 2000 + Math.random() * 5000;
-    //         item.investmentSavings = 50000 + (age - startAge) * 1500 + Math.random() * 3000;
-    //         item.cashSavings = 10000 + (age - startAge) * 500 + Math.random() * 1000;
-    //     }
-    //
-    //     // Apply a simple "value type" transformation for demonstration
-    //     // In a real scenario, present/future value calculations are complex
-    //     // and would involve discount rates, inflation, etc., typically done on the backend.
-        if (valueType === 'future') {
-            const futureFactor = Math.pow(1.02, (age - startAge)); // Simple growth factor
-            for (const key in item) {
-                if (key !== 'age') {
-                    item[key] = item[key] * futureFactor;
-                }
-            }
-    //     }
-    //
-    //     dataD.push(item);
-    }
-    return dataD;
-};
-
 const CASHFLOW_COLORS = {
     pensionIncome: '#8884d8', // Purple
     investmentIncome: '#82ca9d', // Green
@@ -52,10 +14,18 @@ const CASHFLOW_COLORS = {
     cashSavings: '#FFBB28', // Orange
 };
 
-export default function MainContentArea() {
-    const [graphType, setGraphType] = useState('income');
+export default function MainContentArea({outcomeValue, retirementAge, percentageLumpsum}) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [chartData, setChartData] = useState([]);
+    const [graphType, setGraphType] = useState('income');
+    const [valueType, setValueType] = useState('present'); // Default to 'present'
+    const [spousePercentage, setSpousePercentage] = useState('50');
+    // Determine which cash flow keys to display in the chart based on graphType
+    const cashflowKeys = graphType === 'income'
+        ? ['pensionIncome', 'investmentIncome', 'otherIncome']
+        : ['pensionSavings', 'investmentSavings', 'cashSavings'];
+
 
     const handleGraphTypeChange = (event, newGraphType) => {
         if (newGraphType !== null) {
@@ -63,13 +33,9 @@ export default function MainContentArea() {
         }
     };
 
-    const [valueType, setValueType] = useState('present'); // Default to 'present'
-
     const handleValueTypeChange = (event) => {
         setValueType(event.target.value);
     };
-
-    const [spousePercentage, setSpousePercentage] = useState('50'); // Default value
 
     const handleSpousePercentageChange = (event) => {
         // Basic validation: ensure it's a number and within a reasonable range (0-100)
@@ -79,9 +45,6 @@ export default function MainContentArea() {
         }
     };
 
-    // State to hold the data for the chart
-    const [chartData, setChartData] = useState([]);
-
     // useEffect to update chart data whenever graphType or valueType changes
     useEffect(() => {
         // const mockData = generateMockData(graphType, valueType);
@@ -90,7 +53,8 @@ export default function MainContentArea() {
             console.log("Graph type or value type has changed!")
             try {
                 setLoading(true);
-                const response = await getInvestmentChartIncomeData();
+                const response = await getInvestmentChartIncomeData(graphType, valueType, spousePercentage,
+                    outcomeValue, retirementAge, percentageLumpsum);
                 console.log("Graph Data in dashboard", response);
                 setChartData(response);
             } catch (err) {
@@ -101,12 +65,7 @@ export default function MainContentArea() {
         }
         console.log("Chart data", mockData);
         mockData();
-    }, [graphType, valueType]); // Re-run when these dependencies change
-
-    // Determine which cash flow keys to display in the chart based on graphType
-    const cashflowKeys = graphType === 'income'
-        ? ['pensionIncome', 'investmentIncome', 'otherIncome']
-        : ['pensionSavings', 'investmentSavings', 'cashSavings'];
+    }, [graphType, valueType, spousePercentage, outcomeValue, retirementAge, percentageLumpsum]); // Re-run when these dependencies change
 
     return (
         <Paper
@@ -223,7 +182,7 @@ export default function MainContentArea() {
                 }}
             >
                 <Typography variant="body1" sx={{ mb: 2 }}>
-                    According to forecasts, there is a 50% chance of achieving less than this outcome
+                    According to forecasts, there is a {outcomeValue} % chance of achieving less than this outcome
                 </Typography>
                 <Box
                     sx={{

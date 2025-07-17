@@ -15,7 +15,7 @@ import {
 import { Stack } from '@mui/system'; // For vertical stacking
 import { getMyInvestmentHeaders} from "../api/apiService.js";
 
-function Sidebar() {
+function Sidebar({retirementAge, percentageLumpsum}) {
     // Default active tab
     const [activeTab, setActiveTab] = useState(0); // 0 for My savings, 1 for My options
     const [investments, setInvestments] = useState([]);
@@ -24,16 +24,16 @@ function Sidebar() {
     const [statePension, setStatePension]= useState({age:55, income:50000});
 
     // My Savings State
-    const [savingsItems, setSavingsItems] = useState([
-        { id: 1, name: 'Aon Pension Account', value: '£100 000' },
-        { id: 2, name: 'DB Pension 1', value: '£5 000' },
-        { id: 3, name: 'DC Pension 2', value: '£75 000' },
-        { id: 4, name: 'State Pension Age', value: '67' },
-    ]);
+    // const [savingsItems, setSavingsItems] = useState([
+    //     { id: 1, name: 'Aon Pension Account', value: '£100 000' },
+    //     { id: 2, name: 'DB Pension 1', value: '£5 000' },
+    //     { id: 3, name: 'DC Pension 2', value: '£75 000' },
+    //     { id: 4, name: 'State Pension Age', value: '67' },
+    // ]);
     // My Options State
-    const [retirementAge, setRetirementAge] = useState('67');
+    // const [retirementAge, setRetirementAge] = useState('67');
     const [incomeStrategy, setIncomeStrategy] = useState('Annuity');
-    const [lumpSum, setLumpSum] = useState('25 %');
+    // const [percentageLumpsum.percenttageLumpsum, setPercentageLumpSum] = useState(25);
     const [desiredIncome, setDesiredIncome] = useState('£ 30000');
 
     const handleTabChange = (event, newValue) => {
@@ -186,8 +186,8 @@ function Sidebar() {
                         </FormControl>
                         <TextField
                             label="Lump sum at retirement"
-                            value={lumpSum}
-                            onChange={(e) => setLumpSum(e.target.value)}
+                            value={percentageLumpsum}
+                            onChange={(e) => setPercentageLumpSum(e.target.value)}
                             fullWidth
                             variant="outlined"
                             size="small"

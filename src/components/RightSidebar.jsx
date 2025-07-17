@@ -2,14 +2,9 @@ import React, { useState } from 'react';
 import { Box, Paper, Typography, Slider, IconButton } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info'; // Import the Info icon
 
-function RightSidebar() {
+function RightSidebar({outcomeValue, setOutcomeValue, handleOutcomeChange}) {
     // State for the Outcome slider, you might want this to be driven by actual data later
-    const [outcomeValue, setOutcomeValue] = useState(50);
-
-    const handleOutcomeChange = (event, newValue) => {
-        setOutcomeValue(newValue);
-    };
-
+    console.log(`Received props: outcomeValue:${outcomeValue}, setOutcomeValue:${setOutcomeValue}, handleOutcomeChange:${setOutcomeValue}`)
     return (
         <Paper
             sx={{
@@ -68,11 +63,13 @@ function RightSidebar() {
                 </Box>
                 <Slider
                     value={outcomeValue}
-                    onChange={handleOutcomeChange}
+                    onChange={(event, value) => {setOutcomeValue(value)
+                    console.log("Slider changed value to ", value)}}
                     aria-labelledby="outcome-slider"
                     valueLabelDisplay="auto" // Shows value on hover/drag
                     min={0}
                     max={100}
+                    step={10}
                     sx={{
                         width: '90%', // Adjust width of the slider
                         color: 'primary.main', // Uses the orange primary color from your theme
