@@ -3,31 +3,32 @@ import { Box, Paper, Typography, ToggleButton, ToggleButtonGroup, FormControl, I
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
+import {getInvestmentChartIncomeData} from "../api/apiService.js";
 
 const generateMockData = (graphType, valueType) => {
-    const data = [];
+    const dataD = as
     const startAge = 25;
-    const endAge = 95;
-
-    for (let age = startAge; age <= endAge; age++) {
-        let item = { age: age };
-
-        // Simulate different cash flow sources
-        if (graphType === 'income') {
-            // Example income cash flows
-            item.pensionIncome = age >= 67 ? Math.max(0, (age - 67) * 500 + 10000 + Math.random() * 2000) : 0;
-            item.investmentIncome = age >= 60 ? Math.max(0, (age - 60) * 300 + 5000 + Math.random() * 1000) : 0;
-            item.otherIncome = age >= 65 && age <= 75 ? Math.max(0, (75 - age) * 200 + 1000 + Math.random() * 500) : 0;
-        } else { // savings
-            // Example savings cash flows (accumulating)
-            item.pensionSavings = 100000 + (age - startAge) * 2000 + Math.random() * 5000;
-            item.investmentSavings = 50000 + (age - startAge) * 1500 + Math.random() * 3000;
-            item.cashSavings = 10000 + (age - startAge) * 500 + Math.random() * 1000;
-        }
-
-        // Apply a simple "value type" transformation for demonstration
-        // In a real scenario, present/future value calculations are complex
-        // and would involve discount rates, inflation, etc., typically done on the backend.
+    // const endAge = 95;
+    //
+    // for (let age = startAge; age <= endAge; age++) {
+    //     let item = { age: age };
+    //
+    //     // Simulate different cash flow sources
+    //     if (graphType === 'income') {
+    //         // Example income cash flows
+    //         item.pensionIncome = age >= 67 ? Math.max(0, (age - 67) * 500 + 10000 + Math.random() * 2000) : 0;
+    //         item.investmentIncome = age >= 60 ? Math.max(0, (age - 60) * 300 + 5000 + Math.random() * 1000) : 0;
+    //         item.otherIncome = age >= 65 && age <= 75 ? Math.max(0, (75 - age) * 200 + 1000 + Math.random() * 500) : 0;
+    //     } else { // savings
+    //         // Example savings cash flows (accumulating)
+    //         item.pensionSavings = 100000 + (age - startAge) * 2000 + Math.random() * 5000;
+    //         item.investmentSavings = 50000 + (age - startAge) * 1500 + Math.random() * 3000;
+    //         item.cashSavings = 10000 + (age - startAge) * 500 + Math.random() * 1000;
+    //     }
+    //
+    //     // Apply a simple "value type" transformation for demonstration
+    //     // In a real scenario, present/future value calculations are complex
+    //     // and would involve discount rates, inflation, etc., typically done on the backend.
         if (valueType === 'future') {
             const futureFactor = Math.pow(1.02, (age - startAge)); // Simple growth factor
             for (const key in item) {
@@ -35,11 +36,11 @@ const generateMockData = (graphType, valueType) => {
                     item[key] = item[key] * futureFactor;
                 }
             }
-        }
-
-        data.push(item);
+    //     }
+    //
+    //     dataD.push(item);
     }
-    return data;
+    return dataD;
 };
 
 const CASHFLOW_COLORS = {
@@ -53,6 +54,8 @@ const CASHFLOW_COLORS = {
 
 export default function MainContentArea() {
     const [graphType, setGraphType] = useState('income');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const handleGraphTypeChange = (event, newGraphType) => {
         if (newGraphType !== null) {
@@ -81,7 +84,23 @@ export default function MainContentArea() {
 
     // useEffect to update chart data whenever graphType or valueType changes
     useEffect(() => {
-        setChartData(generateMockData(graphType, valueType));
+        // const mockData = generateMockData(graphType, valueType);
+        // data below is real but kept variable name as mock to make it easier to change to other mode which I only have mock data for
+        const mockData = async () => {
+            console.log("Graph type or value type has changed!")
+            try {
+                setLoading(true);
+                const response = await getInvestmentChartIncomeData();
+                console.log("Graph Data in dashboard", response);
+                setChartData(response);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+        console.log("Chart data", mockData);
+        mockData();
     }, [graphType, valueType]); // Re-run when these dependencies change
 
     // Determine which cash flow keys to display in the chart based on graphType

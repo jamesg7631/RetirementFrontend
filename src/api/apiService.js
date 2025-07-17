@@ -32,12 +32,24 @@ export const createAccount = async (content) => {
 
 export const getMyInvestmentHeaders = async () => {
     try {
-        console.log("Investment Header API is called!")
+        // console.log("Investment Header API is called!")
         const response = await api.get('/investments/headers/')
         return response.data;
     } catch (error) {
         console.error("Error: Failed to retrieve Investment header data!");
         throw error;
+    }
+}
+
+export const getInvestmentChartIncomeData = async () => {
+    try {
+        console.log("Investment Chart data!")
+        const response = await api.get('/investments/chartIncome')
+        console.log("Investment data", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error: Failed to retrieve Income graph data!");
+        return error;
     }
 }
 

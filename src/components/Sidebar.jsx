@@ -42,11 +42,11 @@ function Sidebar() {
 
     useEffect( () => {
         const getInvestmentHeaders = async () => {
-            console.log("Investment Headers is called!")
+            // console.log("Investment Headers is called!")
             try {
                 setLoading(true);
                 const response = await getMyInvestmentHeaders();
-                console.log(response);
+                // console.log(response);
                 setInvestments(response);
             } catch (err) {
                 setError(err.message);
