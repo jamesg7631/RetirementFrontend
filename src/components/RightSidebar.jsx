@@ -67,8 +67,8 @@ function RightSidebar({outcomeValue, setOutcomeValue, handleOutcomeChange}) {
                     console.log("Slider changed value to ", value)}}
                     aria-labelledby="outcome-slider"
                     valueLabelDisplay="auto" // Shows value on hover/drag
-                    min={0}
-                    max={100}
+                    min={10}
+                    max={90}
                     step={10}
                     sx={{
                         width: '90%', // Adjust width of the slider

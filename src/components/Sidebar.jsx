@@ -22,16 +22,6 @@ function Sidebar({retirementAge, percentageLumpsum}) {
     const [loading, setLoading] = useState(false);
     const [error, setError]=useState(null);
     const [statePension, setStatePension]= useState({age:55, income:50000});
-
-    // My Savings State
-    // const [savingsItems, setSavingsItems] = useState([
-    //     { id: 1, name: 'Aon Pension Account', value: '£100 000' },
-    //     { id: 2, name: 'DB Pension 1', value: '£5 000' },
-    //     { id: 3, name: 'DC Pension 2', value: '£75 000' },
-    //     { id: 4, name: 'State Pension Age', value: '67' },
-    // ]);
-    // My Options State
-    // const [retirementAge, setRetirementAge] = useState('67');
     const [incomeStrategy, setIncomeStrategy] = useState('Annuity');
     // const [percentageLumpsum.percenttageLumpsum, setPercentageLumpSum] = useState(25);
     const [desiredIncome, setDesiredIncome] = useState('£ 30000');
