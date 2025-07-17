@@ -1,7 +1,8 @@
-import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
+import { Box, CssBaseline, ThemeProvider, createTheme} from "@mui/material";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import Login from "./pages/Login.jsx"
 import Dashboard from "./pages/Dashboard.jsx"
+import {ResetPassword} from "./pages/ResetPassword.jsx";
 
 const theme = createTheme({
   palette: {
@@ -31,6 +32,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Login/>} />
                     <Route path="/dashboard" element={<Dashboard/>} />
+                    <Route path="/reset-password" element={<ResetPassword/>}/>
                 </Routes>
             </BrowserRouter>
         </ThemeProvider>
