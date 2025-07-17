@@ -1,10 +1,26 @@
-import React, { useState } from 'react';
-import { Paper, Tabs, Tab, Box, Typography, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import React, {useEffect, useState} from 'react';
+import {
+    Paper,
+    Tabs,
+    Tab,
+    Box,
+    Typography,
+    TextField,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Container, CircularProgress
+} from '@mui/material';
 import { Stack } from '@mui/system'; // For vertical stacking
+import { getMyInvestmentHeaders} from "../api/apiService.js";
 
 function Sidebar() {
     // Default active tab
     const [activeTab, setActiveTab] = useState(0); // 0 for My savings, 1 for My options
+    const [investments, setInvestments] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError]=useState(null);
 
     // My Savings State
     const [savingsItems, setSavingsItems] = useState([
@@ -22,6 +38,40 @@ function Sidebar() {
     const handleTabChange = (event, newValue) => {
         setActiveTab(newValue);
     };
+
+    useEffect( () => {
+        const getInvestmentHeaders = async () => {
+            console.log("Investment Headers is called!")
+            try {
+                setLoading(true);
+                const response = await getMyInvestmentHeaders();
+                console.log(response);
+                setInvestments(response);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+            getInvestmentHeaders();
+    },[]);
+
+    if (loading) {
+        return (
+            <Container sx={{display:'flex', justifyContent: 'center', mt: 4}}>
+                <CircularProgress/>
+            </Container>
+        );
+    }
+
+    if (error) {
+        return (
+            <Container>
+                {/*I might just instead remove this and have an error page when things go wrong. While developping that would be annoying so change that later.*/}
+                <Typography color="error">Error: {error}</Typography>
+            </Container>
+        );
+    }
 
     return (
         <Paper sx={{ width: 280, p: 2, display: 'flex', flexDirection: 'column' }}>
@@ -54,7 +104,7 @@ function Sidebar() {
             <Box sx={{ flexGrow: 1 }}>
                 {activeTab === 0 && (
                     <Stack spacing={2}>
-                        {savingsItems.map((item) => (
+                        {investments.map((item) => (
                             <Box
                                 key={item.id}
                                 sx={{
@@ -70,7 +120,7 @@ function Sidebar() {
                                     {item.name}
                                 </Typography>
                                 <Typography variant="body1">
-                                    {item.value}
+                                    £ {item.value}
                                 </Typography>
                             </Box>
                         ))}

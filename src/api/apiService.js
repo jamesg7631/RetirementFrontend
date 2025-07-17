@@ -30,6 +30,19 @@ export const createAccount = async (content) => {
     }
 }
 
+export const getMyInvestmentHeaders = async () => {
+    try {
+        console.log("Investment Header API is called!")
+        const response = await api.get('/investments/headers/')
+        return response.data;
+    } catch (error) {
+        console.error("Error: Failed to retrieve Investment header data!");
+        throw error;
+    }
+}
+
+
+
 export const loginUser = async (credentials) => {
     try {
         console.log(`Credentials ${JSON.stringify(credentials, null, 2)}`);
