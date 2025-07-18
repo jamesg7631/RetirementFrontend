@@ -5,14 +5,14 @@ import {
 } from 'recharts';
 import {getInvestmentChartIncomeData} from "../api/apiService.js";
 
-const CASHFLOW_COLORS = {
-    pensionIncome: '#8884d8', // Purple
-    investmentIncome: '#82ca9d', // Green
-    otherIncome: '#ffc658', // Yellow
-    pensionSavings: '#0088FE', // Blue
-    investmentSavings: '#00C49F', // Teal
-    cashSavings: '#FFBB28', // Orange
-};
+const CASHFLOW_COLORS = [
+    '#8884d8', // Purple
+    '#82ca9d', // Green
+    '#ffc658', // Yellow
+    '#0088FE', // Blue
+    '#00C49F', // Teal
+    '#FFBB28', // Orange
+];
 
 export default function MainContentArea({outcomeValue, retirementAge, percentageLumpsum, incomeStrategy}) {
     const [loading, setLoading] = useState(false);
@@ -163,12 +163,12 @@ export default function MainContentArea({outcomeValue, retirementAge, percentage
                         <Legend /> {/* Displays the key for different colored bars */}
 
                         {/* Render a Bar for each cash flow type */}
-                        {cashflowKeys.map((key) => (
+                        {cashflowKeys.map((key, i) => (
                             <Bar
                                 key={key}
                                 dataKey={key}
                                 stackId="a" // 'a' makes all bars stack on top of each other
-                                fill={CASHFLOW_COLORS[key]} // Use predefined colors
+                                fill={CASHFLOW_COLORS[i % (CASHFLOW_COLORS.length)]} // Use predefined colors
                                 name={key.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ').trim().replace(/^\w/, c => c.toUpperCase())} // Nicer name for legend
                             />
                         ))}
