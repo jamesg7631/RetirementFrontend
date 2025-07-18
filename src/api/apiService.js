@@ -43,7 +43,13 @@ export const getMyInvestmentHeaders = async () => {
 
 export const getInvestmentChartIncomeData = async (graphType, valueType, spousePercentage, outcomeValue, retirementAge, percentageLumpsum,
                                                    incomeStrategy) => {
-    console.log(graphType, valueType)
+    console.log(`GraphType: ${graphType}\n
+                ValueType: ${valueType}\n
+                SpousePercentage:${spousePercentage}\n
+                outcomeValue:${outcomeValue}\n
+                retirementAge: ${retirementAge}\n
+                percentageLumpsum: ${percentageLumpsum}\n
+                incomeStrategy: ${incomeStrategy.incomeStrategy}`)
     try {
         console.log("Investment Chart data!")
         const response = await api.get('/investments/chartIncome')
