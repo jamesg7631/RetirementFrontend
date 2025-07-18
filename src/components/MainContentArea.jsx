@@ -22,11 +22,6 @@ export default function MainContentArea({outcomeValue, retirementAge, percentage
     const [valueType, setValueType] = useState('present'); // Default to 'present'
     const [spousePercentage, setSpousePercentage] = useState(50);
     const [cashflowKeys, setCashflowKeys] = useState([]);
-    // Determine which cash flow keys to display in the chart based on graphType
-    // const cashflowKeys = graphType === 'income'
-    //     ? ['pensionIncome', 'investmentIncome', 'otherIncome']
-    //     : ['pensionSavings', 'investmentSavings', 'cashSavings'];
-
 
     const handleGraphTypeChange = (event, newGraphType) => {
         if (newGraphType !== null) {
