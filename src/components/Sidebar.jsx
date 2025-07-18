@@ -157,10 +157,12 @@ function Sidebar({retirementAge, percentageLumpsum, setPercentageLumpsum, setRet
                         <TextField
                             label="Retirement Age"
                             value={retirementAge}
-                            onChange={(e) => setRetirementAge(e.target.value)}
+                            onChange={(e) => setRetirementAge(Number(e.target.value))}
                             fullWidth
                             variant="outlined"
                             size="small"
+                            error={retirementAge < 57 || retirementAge > 120}
+                            helperText={retirementAge < 57 || retirementAge > 120 ? "Normal pension retirement age is at least 57": ""}
                         />
                         <FormControl fullWidth variant="outlined" size="small">
                             <InputLabel>Income strategy</InputLabel>
@@ -176,7 +178,7 @@ function Sidebar({retirementAge, percentageLumpsum, setPercentageLumpsum, setRet
                         <TextField
                             label="Lump sum at retirement"
                             value={percentageLumpsum}
-                            onChange={(e) => setPercentageLumpsum(e.target.value)}
+                            onChange={(e) => setPercentageLumpsum(Number(e.target.value))}
                             fullWidth
                             variant="outlined"
                             size="small"
@@ -184,7 +186,7 @@ function Sidebar({retirementAge, percentageLumpsum, setPercentageLumpsum, setRet
                         <TextField
                             label="Desired Annual Income"
                             value={desiredIncome}
-                            onChange={(e) => setDesiredIncome(e.target.value)}
+                            onChange={(e) => setDesiredIncome(Number(e.target.value))}
                             fullWidth
                             variant="outlined"
                             size="small"

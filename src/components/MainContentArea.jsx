@@ -37,7 +37,7 @@ export default function MainContentArea({outcomeValue, retirementAge, percentage
         // Basic validation: ensure it's a number and within a reasonable range (0-100)
         const value = event.target.value;
         if (value === '' || (/^\d+$/.test(value) && parseInt(value, 10) >= 0 && parseInt(value, 10) <= 100)) {
-            setSpousePercentage(value);
+            setSpousePercentage(Number(value));
         }
     };
 
