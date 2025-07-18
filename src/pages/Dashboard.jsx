@@ -13,6 +13,8 @@ export default function Dashboard() {
     const [outcomeValue, setOutcomeValue] = useState(50);
     const [retirementAge, setRetirementAge] = useState(53);
     const [percentageLumpsum, setPercentageLumpsum] = useState(25);
+    const [incomeStrategy, setIncomeStrategy] = useState('Annuity');
+
 
     const handleOutcomeChange = (event, newValue) => {
         setOutcomeValue(newValue);
@@ -45,9 +47,11 @@ export default function Dashboard() {
                     }}
                 >
                     <Sidebar retirementAge={retirementAge} setRetirementAge={setRetirementAge}
-                             percentageLumpsum={percentageLumpsum} setPercentageLumpsum={setPercentageLumpsum}/>
+                             percentageLumpsum={percentageLumpsum} setPercentageLumpsum={setPercentageLumpsum}
+                            incomeStrategy={incomeStrategy} setIncomeStrategy={setIncomeStrategy}/>
                     <MainContentArea outcomeValue={outcomeValue} retirementAge={retirementAge}
-                                     percentageLumpsum={percentageLumpsum}/>
+                                     percentageLumpsum={percentageLumpsum}
+                                    incomeStrategy={{incomeStrategy}}/>
                     <RightSidebar
                         outcomeValue={outcomeValue}
                         setOutcomeValue={setOutcomeValue}

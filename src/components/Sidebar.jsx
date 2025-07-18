@@ -15,14 +15,13 @@ import {
 import { Stack } from '@mui/system'; // For vertical stacking
 import { getMyInvestmentHeaders} from "../api/apiService.js";
 
-function Sidebar({retirementAge, percentageLumpsum}) {
+function Sidebar({retirementAge, percentageLumpsum, setRetirementAge, incomeStrategy, setIncomeStrategy}) {
     // Default active tab
     const [activeTab, setActiveTab] = useState(0); // 0 for My savings, 1 for My options
     const [investments, setInvestments] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError]=useState(null);
     const [statePension, setStatePension]= useState({age:55, income:50000});
-    const [incomeStrategy, setIncomeStrategy] = useState('Annuity');
     // const [percentageLumpsum.percenttageLumpsum, setPercentageLumpSum] = useState(25);
     const [desiredIncome, setDesiredIncome] = useState('£ 30000');
 

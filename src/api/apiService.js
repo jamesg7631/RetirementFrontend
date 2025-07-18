@@ -41,7 +41,8 @@ export const getMyInvestmentHeaders = async () => {
     }
 }
 
-export const getInvestmentChartIncomeData = async (graphType, valueType, spousePercentage, outcomeNumber, retirementAge, percentageLumpsum) => {
+export const getInvestmentChartIncomeData = async (graphType, valueType, spousePercentage, outcomeValue, retirementAge, percentageLumpsum,
+                                                   incomeStrategy) => {
     console.log(graphType, valueType)
     try {
         console.log("Investment Chart data!")

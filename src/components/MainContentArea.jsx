@@ -14,7 +14,7 @@ const CASHFLOW_COLORS = {
     cashSavings: '#FFBB28', // Orange
 };
 
-export default function MainContentArea({outcomeValue, retirementAge, percentageLumpsum}) {
+export default function MainContentArea({outcomeValue, retirementAge, percentageLumpsum, incomeStrategy}) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [chartData, setChartData] = useState([]);
@@ -54,7 +54,7 @@ export default function MainContentArea({outcomeValue, retirementAge, percentage
             try {
                 setLoading(true);
                 const response = await getInvestmentChartIncomeData(graphType, valueType, spousePercentage,
-                    outcomeValue, retirementAge, percentageLumpsum);
+                    outcomeValue, retirementAge, percentageLumpsum, incomeStrategy);
                 console.log("Graph Data in dashboard", response);
                 setChartData(response);
             } catch (err) {
@@ -65,7 +65,7 @@ export default function MainContentArea({outcomeValue, retirementAge, percentage
         }
         console.log("Chart data", mockData);
         mockData();
-    }, [graphType, valueType, spousePercentage, outcomeValue, retirementAge, percentageLumpsum]); // Re-run when these dependencies change
+    }, [graphType, valueType, spousePercentage, outcomeValue, retirementAge, percentageLumpsum, incomeStrategy]); // Re-run when these dependencies change
 
     return (
         <Paper
