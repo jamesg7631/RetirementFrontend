@@ -20,7 +20,7 @@ export default function MainContentArea({outcomeValue, retirementAge, percentage
     const [chartData, setChartData] = useState([]);
     const [graphType, setGraphType] = useState('income');
     const [valueType, setValueType] = useState('present'); // Default to 'present'
-    const [spousePercentage, setSpousePercentage] = useState('50');
+    const [spousePercentage, setSpousePercentage] = useState(50);
     // Determine which cash flow keys to display in the chart based on graphType
     const cashflowKeys = graphType === 'income'
         ? ['pensionIncome', 'investmentIncome', 'otherIncome']

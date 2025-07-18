@@ -33,7 +33,7 @@ export const createAccount = async (content) => {
 export const getMyInvestmentHeaders = async () => {
     try {
         // console.log("Investment Header API is called!")
-        const response = await api.get('/investments/headers/')
+        const response = await api.get(`${API_URL}/investments/headers/`)
         return response.data;
     } catch (error) {
         console.error("Error: Failed to retrieve Investment header data!");
@@ -51,9 +51,19 @@ export const getInvestmentChartIncomeData = async (graphType, valueType, spouseP
                 percentageLumpsum: ${percentageLumpsum}\n
                 incomeStrategy: ${incomeStrategy.incomeStrategy}`)
     try {
-        console.log("Investment Chart data!")
-        const response = await api.get('/investments/chartIncome')
-        console.log("Investment data", response.data);
+        // console.log("Investment Chart data!")
+        const investmentCalcParameters = {graphType, valueType, spousePercentage, outcomeValue, retirementAge,
+        percentageLumpsum, incomeStrategy};
+        const jsonRequest = JSON.stringify(investmentCalcParameters, null, 2);
+        console.log("Investment Chart parameters ",jsonRequest);
+        const response = await api.post(`${API_URL}/investments/chartIncome`, investmentCalcParameters, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        console.log("Investment Calc request sent");
+        // console.log("Investment data", response.data);
         return response.data;
     } catch (error) {
         console.error("Error: Failed to retrieve Income graph data!");
