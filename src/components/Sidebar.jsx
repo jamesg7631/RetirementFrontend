@@ -15,7 +15,7 @@ import {
 import { Stack } from '@mui/system'; // For vertical stacking
 import { getMyInvestmentHeaders} from "../api/apiService.js";
 
-function Sidebar({retirementAge, percentageLumpsum, setRetirementAge, incomeStrategy, setIncomeStrategy}) {
+function Sidebar({retirementAge, percentageLumpsum, setPercentageLumpsum, setRetirementAge, incomeStrategy, setIncomeStrategy}) {
     // Default active tab
     const [activeTab, setActiveTab] = useState(0); // 0 for My savings, 1 for My options
     const [investments, setInvestments] = useState([]);
@@ -23,7 +23,7 @@ function Sidebar({retirementAge, percentageLumpsum, setRetirementAge, incomeStra
     const [error, setError]=useState(null);
     const [statePension, setStatePension]= useState({age:55, income:50000});
     // const [percentageLumpsum.percenttageLumpsum, setPercentageLumpSum] = useState(25);
-    const [desiredIncome, setDesiredIncome] = useState('£ 30000');
+    const [desiredIncome, setDesiredIncome] = useState(30000);
 
     const handleTabChange = (event, newValue) => {
         setActiveTab(newValue);
@@ -176,7 +176,7 @@ function Sidebar({retirementAge, percentageLumpsum, setRetirementAge, incomeStra
                         <TextField
                             label="Lump sum at retirement"
                             value={percentageLumpsum}
-                            onChange={(e) => setPercentageLumpSum(e.target.value)}
+                            onChange={(e) => setPercentageLumpsum(e.target.value)}
                             fullWidth
                             variant="outlined"
                             size="small"
