@@ -21,10 +21,11 @@ export default function MainContentArea({outcomeValue, retirementAge, percentage
     const [graphType, setGraphType] = useState('income');
     const [valueType, setValueType] = useState('present'); // Default to 'present'
     const [spousePercentage, setSpousePercentage] = useState(50);
+    const [cashflowKeys, setCashflowKeys] = useState([]);
     // Determine which cash flow keys to display in the chart based on graphType
-    const cashflowKeys = graphType === 'income'
-        ? ['pensionIncome', 'investmentIncome', 'otherIncome']
-        : ['pensionSavings', 'investmentSavings', 'cashSavings'];
+    // const cashflowKeys = graphType === 'income'
+    //     ? ['pensionIncome', 'investmentIncome', 'otherIncome']
+    //     : ['pensionSavings', 'investmentSavings', 'cashSavings'];
 
 
     const handleGraphTypeChange = (event, newGraphType) => {
@@ -57,6 +58,10 @@ export default function MainContentArea({outcomeValue, retirementAge, percentage
                     outcomeValue, retirementAge, percentageLumpsum, incomeStrategy);
                 console.log("Graph Data in dashboard", response);
                 setChartData(response);
+                const unfilteredCashflowKeys = Object.keys(response[0]);
+                const filteredCashflowKeys = unfilteredCashflowKeys.filter(key => key!== "age");
+                console.log("Filtered cashflow keys", filteredCashflowKeys);
+                setCashflowKeys(filteredCashflowKeys)
             } catch (err) {
                 setError(err.message);
             } finally {
