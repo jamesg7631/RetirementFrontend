@@ -5,10 +5,20 @@ import MainContentArea from "../components/MainContentArea.jsx";
 import RightSidebar from "../components/RightSidebar.jsx";
 import {Box} from "@mui/material";
 import Footer from "../components/Footer.jsx";
+import {useState} from "react";
 
 
 export default function Dashboard() {
-    console.log("Dashboard page")
+    console.log("Dashboard page 3");
+    const [outcomeValue, setOutcomeValue] = useState(50);
+    const [retirementAge, setRetirementAge] = useState(53);
+    const [percentageLumpsum, setPercentageLumpsum] = useState(25);
+    const [incomeStrategy, setIncomeStrategy] = useState('Annuity');
+
+
+    const handleOutcomeChange = (event, newValue) => {
+        setOutcomeValue(newValue);
+    };
     return (
         <Box
             sx={{
@@ -36,9 +46,17 @@ export default function Dashboard() {
                         mt: 1.5, // Margin top from tabs
                     }}
                 >
-                    <Sidebar />
-                    <MainContentArea />
-                    <RightSidebar />
+                    <Sidebar retirementAge={retirementAge} setRetirementAge={setRetirementAge}
+                             percentageLumpsum={percentageLumpsum} setPercentageLumpsum={setPercentageLumpsum}
+                            incomeStrategy={incomeStrategy} setIncomeStrategy={setIncomeStrategy}/>
+                    <MainContentArea outcomeValue={outcomeValue} retirementAge={retirementAge}
+                                     percentageLumpsum={percentageLumpsum}
+                                    incomeStrategy={{incomeStrategy}}/>
+                    <RightSidebar
+                        outcomeValue={outcomeValue}
+                        setOutcomeValue={setOutcomeValue}
+                        handleOutcomeChange={handleOutcomeChange}
+                    />
                 </Box>
             </Box>
             <Footer />

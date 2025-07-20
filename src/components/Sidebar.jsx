@@ -15,26 +15,15 @@ import {
 import { Stack } from '@mui/system'; // For vertical stacking
 import { getMyInvestmentHeaders} from "../api/apiService.js";
 
-function Sidebar() {
+function Sidebar({retirementAge, percentageLumpsum, setPercentageLumpsum, setRetirementAge, incomeStrategy, setIncomeStrategy}) {
     // Default active tab
     const [activeTab, setActiveTab] = useState(0); // 0 for My savings, 1 for My options
     const [investments, setInvestments] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError]=useState(null);
     const [statePension, setStatePension]= useState({age:55, income:50000});
-
-    // My Savings State
-    const [savingsItems, setSavingsItems] = useState([
-        { id: 1, name: 'Aon Pension Account', value: '£100 000' },
-        { id: 2, name: 'DB Pension 1', value: '£5 000' },
-        { id: 3, name: 'DC Pension 2', value: '£75 000' },
-        { id: 4, name: 'State Pension Age', value: '67' },
-    ]);
-    // My Options State
-    const [retirementAge, setRetirementAge] = useState('67');
-    const [incomeStrategy, setIncomeStrategy] = useState('Annuity');
-    const [lumpSum, setLumpSum] = useState('25 %');
-    const [desiredIncome, setDesiredIncome] = useState('£ 30000');
+    // const [percentageLumpsum.percenttageLumpsum, setPercentageLumpSum] = useState(25);
+    const [desiredIncome, setDesiredIncome] = useState(30000);
 
     const handleTabChange = (event, newValue) => {
         setActiveTab(newValue);
@@ -168,10 +157,12 @@ function Sidebar() {
                         <TextField
                             label="Retirement Age"
                             value={retirementAge}
-                            onChange={(e) => setRetirementAge(e.target.value)}
+                            onChange={(e) => setRetirementAge(Number(e.target.value))}
                             fullWidth
                             variant="outlined"
                             size="small"
+                            error={retirementAge < 57 || retirementAge > 120}
+                            helperText={retirementAge < 57 || retirementAge > 120 ? "Normal pension retirement age is at least 57": ""}
                         />
                         <FormControl fullWidth variant="outlined" size="small">
                             <InputLabel>Income strategy</InputLabel>
@@ -186,8 +177,8 @@ function Sidebar() {
                         </FormControl>
                         <TextField
                             label="Lump sum at retirement"
-                            value={lumpSum}
-                            onChange={(e) => setLumpSum(e.target.value)}
+                            value={percentageLumpsum}
+                            onChange={(e) => setPercentageLumpsum(Number(e.target.value))}
                             fullWidth
                             variant="outlined"
                             size="small"
@@ -195,7 +186,7 @@ function Sidebar() {
                         <TextField
                             label="Desired Annual Income"
                             value={desiredIncome}
-                            onChange={(e) => setDesiredIncome(e.target.value)}
+                            onChange={(e) => setDesiredIncome(Number(e.target.value))}
                             fullWidth
                             variant="outlined"
                             size="small"
