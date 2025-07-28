@@ -15,8 +15,27 @@ import {
 import { Stack } from '@mui/system'; // For vertical stacking
 import { getMyInvestmentHeaders} from "../api/apiService.js";
 import WithdrawalStrategy from "./WithdrawalStrategy.jsx";
+import AnnuityStrategy from "./AnnuityStrategy.jsx";
 
-function Sidebar({retirementAge, percentageLumpsum, setPercentageLumpsum, setRetirementAge, incomeStrategy, setIncomeStrategy}) {
+function Sidebar({
+                     retirementAge,
+                     setRetirementAge,
+                     percentageLumpsum,
+                     setPercentageLumpsum,
+                     incomeStrategy,
+                     setIncomeStrategy,
+                     withdrawalType,
+                     setWithdrawalType,
+                     initialAmount,
+                     setInitialAmount,
+                     increaseRate,
+                     setIncreaseRate,
+                     annuityType,
+                     setAnnuityType,
+                     annuityIncreaseRate,
+                     setAnnuityIncreaseRate
+                 })
+{
     // Default active tab
     const [activeTab, setActiveTab] = useState(0); // 0 for My savings, 1 for My options
     const [investments, setInvestments] = useState([]);
@@ -165,10 +184,36 @@ function Sidebar({retirementAge, percentageLumpsum, setPercentageLumpsum, setRet
                             error={retirementAge < 57 || retirementAge > 120}
                             helperText={retirementAge < 57 || retirementAge > 120 ? "Normal pension retirement age is at least 57" : ""}
                         />
-                        <WithdrawalStrategy
-                            incomeStrategy={incomeStrategy}
-                            setIncomeStrategy={setIncomeStrategy}
-                        />
+                        <FormControl fullWidth variant="outlined" size="small">
+                            <InputLabel>Income strategy</InputLabel>
+                            <Select
+                                value={incomeStrategy}
+                                label="Income strategy"
+                                onChange={(e) => setIncomeStrategy(e.target.value)}
+                            >
+                                <MenuItem value="Annuity">Annuity</MenuItem>
+                                <MenuItem value="Withdrawal">Withdrawal</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                        {incomeStrategy === 'Withdrawal' ? (
+                            <WithdrawalStrategy
+                                withdrawalType={withdrawalType}
+                                setWithdrawalType={setWithdrawalType}
+                                initialAmount={initialAmount}
+                                setInitialAmount={setInitialAmount}
+                                increaseRate={increaseRate}
+                                setIncreaseRate={setIncreaseRate}
+                            />
+                        ) : (
+                            <AnnuityStrategy
+                                annuityType={annuityType}
+                                setAnnuityType={setAnnuityType}
+                                annuityIncreaseRate={annuityIncreaseRate}
+                                setAnnuityIncreaseRate={setAnnuityIncreaseRate}
+                            />
+                        )}
+
 
                         <TextField
                             label="Lump sum at retirement"
