@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { Stack } from '@mui/system'; // For vertical stacking
 import { getMyInvestmentHeaders} from "../api/apiService.js";
+import WithdrawalStrategy from "./WithdrawalStrategy.jsx";
 
 function Sidebar({retirementAge, percentageLumpsum, setPercentageLumpsum, setRetirementAge, incomeStrategy, setIncomeStrategy}) {
     // Default active tab
@@ -64,12 +65,12 @@ function Sidebar({retirementAge, percentageLumpsum, setPercentageLumpsum, setRet
     }
 
     return (
-        <Paper sx={{ width: 280, p: 2, display: 'flex', flexDirection: 'column' }}>
+        <Paper sx={{width: 280, p: 2, display: 'flex', flexDirection: 'column'}}>
             <Tabs
                 value={activeTab}
                 onChange={handleTabChange}
                 variant="fullWidth"
-                sx={{ mb: 2, bgcolor: 'background.default', borderRadius: 1 }}
+                sx={{mb: 2, bgcolor: 'background.default', borderRadius: 1}}
             >
                 <Tab label="My savings" sx={{
                     bgcolor: activeTab === 0 ? 'secondary.light' : 'transparent', // Light blue background for active
@@ -79,7 +80,7 @@ function Sidebar({retirementAge, percentageLumpsum, setPercentageLumpsum, setRet
                     borderRight: activeTab === 0 ? 'none' : '1px solid grey.300',
                     borderTopLeftRadius: 'inherit',
                     borderBottomLeftRadius: 'inherit',
-                }} />
+                }}/>
                 <Tab label="My options" sx={{
                     bgcolor: activeTab === 1 ? 'secondary.light' : 'transparent',
                     color: activeTab === 1 ? 'primary.contrastText' : 'text.primary',
@@ -88,10 +89,10 @@ function Sidebar({retirementAge, percentageLumpsum, setPercentageLumpsum, setRet
                     borderLeft: activeTab === 1 ? 'none' : '1px solid grey.300',
                     borderTopRightRadius: 'inherit',
                     borderBottomRightRadius: 'inherit',
-                }} />
+                }}/>
             </Tabs>
 
-            <Box sx={{ flexGrow: 1 }}>
+            <Box sx={{flexGrow: 1}}>
                 {activeTab === 0 && (
                     <Stack spacing={2}>
                         {investments.map((item) => (
@@ -162,19 +163,13 @@ function Sidebar({retirementAge, percentageLumpsum, setPercentageLumpsum, setRet
                             variant="outlined"
                             size="small"
                             error={retirementAge < 57 || retirementAge > 120}
-                            helperText={retirementAge < 57 || retirementAge > 120 ? "Normal pension retirement age is at least 57": ""}
+                            helperText={retirementAge < 57 || retirementAge > 120 ? "Normal pension retirement age is at least 57" : ""}
                         />
-                        <FormControl fullWidth variant="outlined" size="small">
-                            <InputLabel>Income strategy</InputLabel>
-                            <Select
-                                value={incomeStrategy}
-                                label="Income strategy"
-                                onChange={(e) => setIncomeStrategy(e.target.value)}
-                            >
-                                <MenuItem value="Annuity">Annuity</MenuItem>
-                                <MenuItem value="Withdrawal">Withdrawal</MenuItem>
-                            </Select>
-                        </FormControl>
+                        <WithdrawalStrategy
+                            incomeStrategy={incomeStrategy}
+                            setIncomeStrategy={setIncomeStrategy}
+                        />
+
                         <TextField
                             label="Lump sum at retirement"
                             value={percentageLumpsum}
