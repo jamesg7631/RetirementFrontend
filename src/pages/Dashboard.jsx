@@ -11,9 +11,17 @@ import {useState} from "react";
 export default function Dashboard() {
     console.log("Dashboard page 3");
     const [outcomeValue, setOutcomeValue] = useState(50);
-    const [retirementAge, setRetirementAge] = useState(53);
+    const [retirementAge, setRetirementAge] = useState(57);
     const [percentageLumpsum, setPercentageLumpsum] = useState(25);
     const [incomeStrategy, setIncomeStrategy] = useState('Annuity');
+
+    const [withdrawalType, setWithdrawalType] = useState('fixed');
+    const [initialAmount, setInitialAmount] = useState('1000');
+    const [increaseRate, setIncreaseRate] = useState('3');
+
+    const [annuityType, setAnnuityType] = useState('level');
+    const [annuityIncreaseRate, setAnnuityIncreaseRate] = useState('2');
+
 
 
     const handleOutcomeChange = (event, newValue) => {
@@ -46,12 +54,33 @@ export default function Dashboard() {
                         mt: 1.5, // Margin top from tabs
                     }}
                 >
-                    <Sidebar retirementAge={retirementAge} setRetirementAge={setRetirementAge}
-                             percentageLumpsum={percentageLumpsum} setPercentageLumpsum={setPercentageLumpsum}
-                            incomeStrategy={incomeStrategy} setIncomeStrategy={setIncomeStrategy}/>
+                    <Sidebar
+                        retirementAge={retirementAge}
+                        setRetirementAge={setRetirementAge}
+                        percentageLumpsum={percentageLumpsum}
+                        setPercentageLumpsum={setPercentageLumpsum}
+                        incomeStrategy={incomeStrategy}
+                        setIncomeStrategy={setIncomeStrategy}
+                        withdrawalType={withdrawalType}
+                        setWithdrawalType={setWithdrawalType}
+                        initialAmount={initialAmount}
+                        setInitialAmount={setInitialAmount}
+                        increaseRate={increaseRate}
+                        setIncreaseRate={setIncreaseRate}
+                        annuityType={annuityType}
+                        setAnnuityType={setAnnuityType}
+                        annuityIncreaseRate={annuityIncreaseRate}
+                        setAnnuityIncreaseRate={setAnnuityIncreaseRate}
+                    />
+
                     <MainContentArea outcomeValue={outcomeValue} retirementAge={retirementAge}
                                      percentageLumpsum={percentageLumpsum}
-                                    incomeStrategy={{incomeStrategy}}/>
+                                    incomeStrategy={incomeStrategy}
+                                    withdrawalType={withdrawalType}
+                                    initialAmount={initialAmount}
+                                    increaseRate={increaseRate}
+                                    annuityType={annuityType}
+                                    annuityIncreaseRate={annuityIncreaseRate}/>
                     <RightSidebar
                         outcomeValue={outcomeValue}
                         setOutcomeValue={setOutcomeValue}

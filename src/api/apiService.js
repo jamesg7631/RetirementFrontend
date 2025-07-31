@@ -42,18 +42,21 @@ export const getMyInvestmentHeaders = async () => {
 }
 
 export const getInvestmentChartIncomeData = async (graphType, valueType, spousePercentage, outcomeValue, retirementAge, percentageLumpsum,
-                                                   incomeStrategy) => {
+                                                   incomeStrategy, strategyParameters) => {
     console.log(`GraphType: ${graphType}\n
                 ValueType: ${valueType}\n
                 SpousePercentage:${spousePercentage}\n
                 outcomeValue:${outcomeValue}\n
                 retirementAge: ${retirementAge}\n
                 percentageLumpsum: ${percentageLumpsum}\n
-                incomeStrategy: ${incomeStrategy.incomeStrategy}`)
+                incomeStrategy: ${incomeStrategy.incomeStrategy}\n`)
     try {
         // console.log("Investment Chart data!")
         const investmentCalcParameters = {graphType, valueType, spousePercentage, outcomeValue, retirementAge,
-        percentageLumpsum, incomeStrategy};
+        percentageLumpsum, incomeStrategy, strategyDetails: {
+            strategy: incomeStrategy,
+            parameters: strategyParameters
+            }};
         const jsonRequest = JSON.stringify(investmentCalcParameters, null, 2);
         console.log("Investment Chart parameters ",jsonRequest);
         const response = await api.post(`${API_URL}/investments/chartIncome`, investmentCalcParameters, {
