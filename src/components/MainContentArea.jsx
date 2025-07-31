@@ -14,7 +14,9 @@ const CASHFLOW_COLORS = [
     '#FFBB28', // Orange
 ];
 
-export default function MainContentArea({outcomeValue, retirementAge, percentageLumpsum, incomeStrategy}) {
+export default function MainContentArea({outcomeValue, retirementAge, percentageLumpsum, incomeStrategy,
+                                        withdrawalType,initialAmount, increaseRate,
+                                        annuityType, annuityIncreaseRate}) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [chartData, setChartData] = useState([]);
@@ -22,6 +24,13 @@ export default function MainContentArea({outcomeValue, retirementAge, percentage
     const [valueType, setValueType] = useState('present'); // Default to 'present'
     const [spousePercentage, setSpousePercentage] = useState(50);
     const [cashflowKeys, setCashflowKeys] = useState([]);
+
+    // Validation functions
+    const isRetirementAgeValid = (age) => age >=57;
+    const isPercentageLumpsumValid = (percentage) => percentage >= 0 && percentage <= 100;
+    const isInitialAmountValid = (amount) => !isNaN(amount) && parseFloat(amount) > 0;
+    const isIncreaseRateValid = (rate) => !isNaN(rate) && parseFloat(rate) >=0;
+    const isAnnuityIncreaseRateValid = (rate) => !isNaN(rate) && parseFloat(rate) >= 0;
 
     const handleGraphTypeChange = (event, newGraphType) => {
         if (newGraphType !== null) {
@@ -41,16 +50,57 @@ export default function MainContentArea({outcomeValue, retirementAge, percentage
         }
     };
 
+    const areValuesValid = () => {
+        return isRetirementAgeValid(retirementAge)
+        && isPercentageLumpsumValid(percentageLumpsum)
+        && isInitialAmountValid(initialAmount)
+        && isIncreaseRateValid(increaseRate)
+        && isAnnuityIncreaseRateValid(annuityIncreaseRate);
+    };
+
+
     // useEffect to update chart data whenever graphType or valueType changes
     useEffect(() => {
         // const mockData = generateMockData(graphType, valueType);
         // data below is real but kept variable name as mock to make it easier to change to other mode which I only have mock data for
         const mockData = async () => {
             console.log("Graph type or value type has changed!")
+            if (!areValuesValid()) {
+                console.log("Skipping API call as values are not valid!");
+                return;
+            }
             try {
                 setLoading(true);
-                const response = await getInvestmentChartIncomeData(graphType, valueType, spousePercentage,
-                    outcomeValue, retirementAge, percentageLumpsum, incomeStrategy);
+                setError(null);
+                let strategyParameters;
+                if (incomeStrategy === 'Withdrawal') {
+                    strategyParameters = {
+                        withdrawalType,
+                        initialAmount: parseFloat(initialAmount),
+                        increaseRate: withdrawalType === 'percentage' ?
+                            parseFloat(increaseRate) :
+                            parseFloat(increaseRate)
+                    };
+                } else { // Annuity
+                    strategyParameters = {
+                        annuityType,
+                        increaseRate: annuityType === 'escalating' ?
+                            parseFloat(annuityIncreaseRate) :
+                            0
+                    };
+                }
+
+                const response = await getInvestmentChartIncomeData(
+                    graphType,
+                    valueType,
+                    spousePercentage,
+                    outcomeValue,
+                    retirementAge,
+                    percentageLumpsum,
+                    incomeStrategy,
+                    strategyParameters
+                );
+
                 console.log("Graph Data in dashboard", response);
                 setChartData(response);
                 const unfilteredCashflowKeys = Object.keys(response[0]);
@@ -59,13 +109,15 @@ export default function MainContentArea({outcomeValue, retirementAge, percentage
                 setCashflowKeys(filteredCashflowKeys)
             } catch (err) {
                 setError(err.message);
+                setChartData([]);
             } finally {
                 setLoading(false);
             }
         }
         console.log("Chart data", mockData);
         mockData();
-    }, [graphType, valueType, spousePercentage, outcomeValue, retirementAge, percentageLumpsum, incomeStrategy]); // Re-run when these dependencies change
+    }, [graphType, valueType, spousePercentage, outcomeValue, retirementAge, percentageLumpsum, incomeStrategy, withdrawalType, initialAmount,
+    increaseRate, annuityType, annuityIncreaseRate]); // Re-run when these dependencies change
 
     return (
         <Paper

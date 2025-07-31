@@ -11,7 +11,7 @@ import {useState} from "react";
 export default function Dashboard() {
     console.log("Dashboard page 3");
     const [outcomeValue, setOutcomeValue] = useState(50);
-    const [retirementAge, setRetirementAge] = useState(53);
+    const [retirementAge, setRetirementAge] = useState(57);
     const [percentageLumpsum, setPercentageLumpsum] = useState(25);
     const [incomeStrategy, setIncomeStrategy] = useState('Annuity');
 
@@ -75,7 +75,12 @@ export default function Dashboard() {
 
                     <MainContentArea outcomeValue={outcomeValue} retirementAge={retirementAge}
                                      percentageLumpsum={percentageLumpsum}
-                                    incomeStrategy={{incomeStrategy}}/>
+                                    incomeStrategy={incomeStrategy}
+                                    withdrawalType={withdrawalType}
+                                    initialAmount={initialAmount}
+                                    increaseRate={increaseRate}
+                                    annuityType={annuityType}
+                                    annuityIncreaseRate={annuityIncreaseRate}/>
                     <RightSidebar
                         outcomeValue={outcomeValue}
                         setOutcomeValue={setOutcomeValue}
