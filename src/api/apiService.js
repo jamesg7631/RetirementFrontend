@@ -89,7 +89,7 @@ export const loginUser = async (credentials) => {
         return response.data;
     } catch (error) {
         console.error("Error: Failed to login", error);
-        throw error;
+        return "loginFailure"
     }
 }
 
