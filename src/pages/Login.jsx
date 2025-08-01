@@ -9,6 +9,7 @@ import {useNavigate} from "react-router";
 export default function Login() {
     const [userLogin, setUserLogin] = useState({username:'', password:''})
     const navigate= useNavigate();
+    const [errors, setErrors] = useState({});
 
     function updateLoginInformation(e) {
         const {name, value} = e.target;
@@ -16,15 +17,28 @@ export default function Login() {
         console.log(value);
         // setUserLogin(...userLogin, [name]: value);
         setUserLogin({...userLogin, [name]:value});
+        setErrors({})
     }
 
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevent default form submission
+        e.preventDefault();
+        const newErrors = {};
         try {
             const response = await loginUser(userLogin);
-            navigate('/dashboard');
+            console.log("Am I registered: " + response.registered);
+            if (response === "loginFailure") {
+                throw new Error("Username or password was incorrect!")
+            }
+            if (response.registered === "notRegistered") {
+                navigate('/register-user')
+            } else {
+                console.log("User login: " + response)
+                navigate('/dashboard');
+            }
         } catch (error) {
             console.error('Login failed:', error);
+            newErrors.password = "Either username or password was incorrect. Please try again";
+            setErrors(newErrors);
         }
     }
 
@@ -69,6 +83,15 @@ export default function Login() {
                             fullWidth
                             type="password"
                         />
+                        {errors.password && (
+                            <Typography
+                                color="error"
+                                variant="body2"
+                                textAlign="center"
+                            >
+                                {errors.password}
+                            </Typography>
+                        )}
                         <Button
                             name="sign-in"
                             variant="contained"

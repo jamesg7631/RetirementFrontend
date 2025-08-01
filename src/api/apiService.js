@@ -22,10 +22,28 @@ api.interceptors.request.use(
 
 export const createAccount = async (content) => {
     try {
-        const response = await axios.post(`${API_URL}/register`, {content});
+        console.log("Create account post to springboot " + content);
+        const response = await axios.post(`${API_URL}/register/`, content);
+        console.log("Springboot response" + response.status);
         return response.data;
     } catch (error) {
         console.error('Error fetching messages:', error);
+        throw error;
+    }
+}
+
+export const registerUser = async (content) => {
+    try {
+        console.log("Register account to springboot " + content);
+        const response = await api.post(`${API_URL}/users/`, content, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log("Springboot response" + response.status);
+        return response.data;
+    } catch (error) {
+        console.error('Error registering user: ', error);
         throw error;
     }
 }
@@ -80,12 +98,14 @@ export const loginUser = async (credentials) => {
     try {
         console.log(`Credentials ${JSON.stringify(credentials, null, 2)}`);
         const response = await axios.post(`${API_URL}/user-login/`, credentials);
-        localStorage.setItem('token', response.data);
+        console.log("Login object: " ,response)
+        const token = response.data.token
+        localStorage.setItem('token', token);
         console.log("Stored token: " + localStorage.getItem('token'));
         return response.data;
     } catch (error) {
         console.error("Error: Failed to login", error);
-        throw error;
+        return "loginFailure"
     }
 }
 
