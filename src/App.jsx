@@ -36,7 +36,7 @@ function App() {
                     <Route path="/dashboard" element={<Dashboard/>} />
                     <Route path="/reset-password" element={<ResetPassword/>}/>
                     <Route path="/create-account" element={<CreateAccount/>}/>
-                    <Route path="/register-user" element={RegisterUser}/>
+                    <Route path="/register-user" element={<RegisterUser/>}/>
                 </Routes>
             </BrowserRouter>
         </ThemeProvider>

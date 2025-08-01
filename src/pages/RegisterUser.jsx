@@ -19,6 +19,7 @@ import { useNavigate } from "react-router";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import {registerUser} from "../api/apiService.js";
 
 export default function RegisterUser() {
     const [userDetails, setUserDetails] = useState({
@@ -26,12 +27,12 @@ export default function RegisterUser() {
         dateOfBirth: null,
         plannedRetirementAge: '',
         postcode: '',
-        taxResidency: '',
+        taxResidencyEngland: '',
         numberOfDependants: '',
-        gender: '',
+        sexMale: '',
         grossSalary: '',
         monthlyLivingExpenses: '',
-        maritalStatus: '',
+        married: '',
         armedForcesService: ''
     });
 
@@ -60,11 +61,11 @@ export default function RegisterUser() {
         if (!userDetails.dateOfBirth) newErrors.dateOfBirth = 'Date of birth is required';
         if (!userDetails.plannedRetirementAge) newErrors.plannedRetirementAge = 'Planned retirement age is required';
         if (!userDetails.postcode) newErrors.postcode = 'Postcode is required';
-        if (!userDetails.taxResidency) newErrors.taxResidency = 'Tax residency is required';
-        if (!userDetails.gender) newErrors.gender = 'Gender is required';
+        if (!userDetails.taxResidencyEngland) newErrors.taxResidencyEngland = 'Tax residency is required';
+        if (!userDetails.sexMale) newErrors.sexMale = 'Gender is required';
         if (!userDetails.grossSalary) newErrors.grossSalary = 'Gross salary is required';
         if (!userDetails.monthlyLivingExpenses) newErrors.monthlyLivingExpenses = 'Monthly living expenses is required';
-        if (!userDetails.maritalStatus) newErrors.maritalStatus = 'Marital status is required';
+        if (!userDetails.married) newErrors.married = 'Marital status is required';
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -74,9 +75,14 @@ export default function RegisterUser() {
         e.preventDefault();
         if (validateForm()) {
             try {
-                // Add API call here to submit user registration details
+                const response = await registerUser(userDetails);
                 navigate('/dashboard');
             } catch (error) {
+                const errorMessage = error.response.data;
+                if (errorMessage === "User already registered") {
+                    console.error("User has already been registered. Redirecting to dashboard!")
+                    navigate("/dashboard")
+                }
                 console.error('Registration failed:', error);
             }
         }
@@ -154,11 +160,11 @@ export default function RegisterUser() {
                                 helperText={errors.postcode}
                             />
 
-                            <FormControl fullWidth error={!!errors.taxResidency}>
+                            <FormControl fullWidth error={!!errors.taxResidencyEngland}>
                                 <InputLabel>Tax Residency</InputLabel>
                                 <Select
-                                    name="taxResidency"
-                                    value={userDetails.taxResidency}
+                                    name="taxResidencyEngland"
+                                    value={userDetails.taxResidencyEngland}
                                     label="Tax Residency"
                                     onChange={handleInputChange}
                                 >
@@ -167,7 +173,7 @@ export default function RegisterUser() {
                                     <MenuItem value="wales">Wales</MenuItem>
                                     <MenuItem value="northern-ireland">Northern Ireland</MenuItem>
                                 </Select>
-                                {errors.taxResidency && <FormHelperText>{errors.taxResidency}</FormHelperText>}
+                                {errors.taxResidencyEngland && <FormHelperText>{errors.taxResidencyEngland}</FormHelperText>}
                             </FormControl>
 
                             <TextField
@@ -180,19 +186,18 @@ export default function RegisterUser() {
                                 onChange={handleInputChange}
                             />
 
-                            <FormControl fullWidth error={!!errors.gender}>
+                            <FormControl fullWidth error={!!errors.sexMale}>
                                 <InputLabel>Gender</InputLabel>
                                 <Select
-                                    name="gender"
-                                    value={userDetails.gender}
+                                    name="sexMale"
+                                    value={userDetails.sexMale}
                                     label="Gender"
                                     onChange={handleInputChange}
                                 >
                                     <MenuItem value="male">Male</MenuItem>
                                     <MenuItem value="female">Female</MenuItem>
-                                    <MenuItem value="other">Other</MenuItem>
                                 </Select>
-                                {errors.gender && <FormHelperText>{errors.gender}</FormHelperText>}
+                                {errors.sexMale && <FormHelperText>{errors.sexMale}</FormHelperText>}
                             </FormControl>
 
                             <TextField
@@ -219,11 +224,11 @@ export default function RegisterUser() {
                                 helperText={errors.monthlyLivingExpenses}
                             />
 
-                            <FormControl fullWidth error={!!errors.maritalStatus}>
+                            <FormControl fullWidth error={!!errors.married}>
                                 <InputLabel>Marital Status</InputLabel>
                                 <Select
-                                    name="maritalStatus"
-                                    value={userDetails.maritalStatus}
+                                    name="married"
+                                    value={userDetails.married}
                                     label="Marital Status"
                                     onChange={handleInputChange}
                                 >
@@ -232,7 +237,7 @@ export default function RegisterUser() {
                                     <MenuItem value="divorced">Divorced</MenuItem>
                                     <MenuItem value="widowed">Widowed</MenuItem>
                                 </Select>
-                                {errors.maritalStatus && <FormHelperText>{errors.maritalStatus}</FormHelperText>}
+                                {errors.married && <FormHelperText>{errors.married}</FormHelperText>}
                             </FormControl>
 
                             <FormControl fullWidth>

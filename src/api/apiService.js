@@ -32,6 +32,22 @@ export const createAccount = async (content) => {
     }
 }
 
+export const registerUser = async (content) => {
+    try {
+        console.log("Register account to springboot " + content);
+        const response = await api.post(`${API_URL}/users/`, content, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log("Springboot response" + response.status);
+        return response.data;
+    } catch (error) {
+        console.error('Error registering user: ', error);
+        throw error;
+    }
+}
+
 export const getMyInvestmentHeaders = async () => {
     try {
         // console.log("Investment Header API is called!")
