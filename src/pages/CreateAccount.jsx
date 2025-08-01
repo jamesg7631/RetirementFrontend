@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router";
 import GoogleIcon from '@mui/icons-material/Google'
+import {createAccount} from "../api/apiService.js";
 
 export default function CreateAccount() {
     const [userDetails, setUserDetails] = useState({
@@ -102,13 +103,28 @@ export default function CreateAccount() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (validateForm()) {
+            const newErrors = {};
+            setErrors(newErrors);
             try {
                 // Add your API call here to create the account
                 // const response = await createUser(userDetails);
+                const response = await createAccount(userDetails)
                 navigate('/'); // Redirect to login page after successful account creation
             } catch (error) {
                 console.error('Account creation failed:', error);
+                const errorMessage = error.response.data;
+                if (errorMessage === "User already exists") {
+                    const newErrors = {}
+                    newErrors.username = errorMessage;
+                    setErrors(newErrors);
+                }
+                const userDetails = {        username: '',
+                    email: '',
+                    password: '',
+                    confirmPassword: ''};
+                setUserDetails(userDetails);
             }
+
         }
     };
 

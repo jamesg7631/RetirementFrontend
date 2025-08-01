@@ -22,7 +22,9 @@ api.interceptors.request.use(
 
 export const createAccount = async (content) => {
     try {
-        const response = await axios.post(`${API_URL}/register`, {content});
+        console.log("Create account post to springboot " + content);
+        const response = await axios.post(`${API_URL}/register/`, content);
+        console.log("Springboot response" + response.status);
         return response.data;
     } catch (error) {
         console.error('Error fetching messages:', error);
