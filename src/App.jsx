@@ -4,6 +4,7 @@ import Login from "./pages/Login.jsx"
 import Dashboard from "./pages/Dashboard.jsx"
 import {ResetPassword} from "./pages/ResetPassword.jsx";
 import CreateAccount from "./pages/CreateAccount.jsx";
+import RegisterUser from "./pages/RegisterUser.jsx";
 
 const theme = createTheme({
   palette: {
@@ -35,6 +36,7 @@ function App() {
                     <Route path="/dashboard" element={<Dashboard/>} />
                     <Route path="/reset-password" element={<ResetPassword/>}/>
                     <Route path="/create-account" element={<CreateAccount/>}/>
+                    <Route path="/register-user" element={RegisterUser}/>
                 </Routes>
             </BrowserRouter>
         </ThemeProvider>

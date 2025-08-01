@@ -22,7 +22,13 @@ export default function Login() {
         e.preventDefault(); // Prevent default form submission
         try {
             const response = await loginUser(userLogin);
-            navigate('/dashboard');
+            console.log("Am I registered: " + response.registered);
+            if (response.registered === "notRegistered") {
+                navigate('/register-user')
+            } else {
+                console.log("User login: " + response)
+                navigate('/dashboard');
+            }
         } catch (error) {
             console.error('Login failed:', error);
         }

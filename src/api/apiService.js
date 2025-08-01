@@ -82,7 +82,9 @@ export const loginUser = async (credentials) => {
     try {
         console.log(`Credentials ${JSON.stringify(credentials, null, 2)}`);
         const response = await axios.post(`${API_URL}/user-login/`, credentials);
-        localStorage.setItem('token', response.data);
+        console.log("Login object: " ,response)
+        const token = response.data.token
+        localStorage.setItem('token', token);
         console.log("Stored token: " + localStorage.getItem('token'));
         return response.data;
     } catch (error) {
