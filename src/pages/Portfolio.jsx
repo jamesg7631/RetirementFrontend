@@ -74,7 +74,7 @@ export default function Portfolio() {
                         color="primary"
                         onClick={() => setOpenAddDialog(true)}
                     >
-                        Add Portfolio
+                        Create Portfolio
                     </Button>
                 </Box>
 

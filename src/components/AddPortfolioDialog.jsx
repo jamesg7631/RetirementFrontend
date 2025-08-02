@@ -37,11 +37,17 @@ export default function AddPortfolioDialog({ open, onClose }) {
     const handleClose = () => {
         setPortfolioName('');
         setAllocations({
-            'Stocks': '',
-            'Bonds': '',
-            'Cash': '',
-            'Property': '',
-            'Other': ''
+            'Commodities': '',
+            'Developed Market Equities': '',
+            'Global Emerging Market Equities': '',
+            'Global Bonds': '',
+            'Global High Yield Corporate Bonds': '',
+            'Global Infrastructure Equities': '',
+            'International Property': '',
+            'Moneymarket': '',
+            'Precious Metals': '',
+            'UK Property': '',
+            'US Corporate Bonds': ''
         });
         onClose();
     };
