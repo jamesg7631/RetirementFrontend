@@ -38,6 +38,37 @@ export default function RegisterUser() {
 
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
+    const validRetirementAge = 57;
+
+    const isNameValid = (name) => {
+        for (let char of name) {
+            if (!(
+                (char >= 'a' && char <= 'z') ||
+                (char >= 'A' && char <= 'Z')
+            )) {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    const isPostcodeValid = (postcode) => {
+        return postcode.length >=6 && postcode.length <= 8;
+    };
+
+    const isSalaryValid = (salary) => {
+        return salary > 0 && salary < 1000000;
+    };
+
+    const isMonthlyExpensesValid = (expenses) => {
+        return expenses >= 0 && expenses < 100000;
+    };
+
+    const isRetirementAgeValid = (age) => {
+        return age >= validRetirementAge;
+    }
+
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -57,14 +88,38 @@ export default function RegisterUser() {
     const validateForm = () => {
         const newErrors = {};
 
+
         if (!userDetails.name) newErrors.name = 'Name is required';
+        if (!userDetails.name) {
+            newErrors.name = "Name is required";
+        } else if(!isNameValid(userDetails.name)) {
+            newErrors.name = "Name can only contain letters and spaces";
+        }
         if (!userDetails.dateOfBirth) newErrors.dateOfBirth = 'Date of birth is required';
-        if (!userDetails.plannedRetirementAge) newErrors.plannedRetirementAge = 'Planned retirement age is required';
-        if (!userDetails.postcode) newErrors.postcode = 'Postcode is required';
+        if (!userDetails.plannedRetirementAge) {
+            newErrors.plannedRetirementAge = 'Planned retirement age is required';
+        } else if (!isRetirementAgeValid(userDetails.plannedRetirementAge)) {
+            newErrors.plannedRetirementAge = "Retirement age must be greater than or equal to age " + validRetirementAge;
+        }
+
+        if (!userDetails.postcode) {
+            newErrors.postcode = 'Postcode is required';
+        } else if(!isPostcodeValid(userDetails.postcode)) {
+            newErrors.postcode = "Please enter a valid UK postcode."
+        }
+
         if (!userDetails.taxResidencyEngland) newErrors.taxResidencyEngland = 'Tax residency is required';
         if (!userDetails.sexMale) newErrors.sexMale = 'Gender is required';
-        if (!userDetails.grossSalary) newErrors.grossSalary = 'Gross salary is required';
-        if (!userDetails.monthlyLivingExpenses) newErrors.monthlyLivingExpenses = 'Monthly living expenses is required';
+        if (!userDetails.grossSalary) {
+            newErrors.grossSalary = 'Gross salary is required';
+        } else if (!isSalaryValid(userDetails.grossSalary)) {
+            newErrors.grossSalary = "Please enter a gross salary of less than £1 million"
+        }
+        if (!userDetails.monthlyLivingExpenses) {
+            newErrors.monthlyLivingExpenses = 'Monthly living expenses is required';
+        } else if (!isMonthlyExpensesValid(userDetails.monthlyLivingExpenses)) {
+            newErrors.monthlyLivingExpenses = 'Please enter monthly living expenses of less than £100,000'
+        }
         if (!userDetails.married) newErrors.married = 'Marital status is required';
 
         setErrors(newErrors);
