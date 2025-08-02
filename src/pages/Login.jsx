@@ -15,7 +15,6 @@ export default function Login() {
         const {name, value} = e.target;
         console.log(name);
         console.log(value);
-        // setUserLogin(...userLogin, [name]: value);
         setUserLogin({...userLogin, [name]:value});
         setErrors({})
     }
