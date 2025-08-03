@@ -15,58 +15,59 @@ export default function PortfolioEditDialog({ open, onClose, portfolio }) {
     const [total, setTotal] = useState(0);
 
     useEffect(() => {
-        console.log("Portfolio Dialog useEffect")
-        const assetClasses = {...portfolio}
+        const assetClasses = {...portfolio};
         delete assetClasses.portfolioName;
         delete assetClasses.id;
-        console.log(assetClasses)
         setAllocations(assetClasses || {});
         calculateTotal(assetClasses || {});
     }, [portfolio]);
 
     const calculateTotal = (assetClasses) => {
-        let sum = 0;
-        for (const [key,value] of Object.entries(assetClasses)) {
-            const holding = value.holdings * 100;
-            sum += holding;
-        }
-
+        const sum = Object.values(assetClasses).reduce((acc, value) => {
+            return acc + (value.holdings * 100 || 0);
+        }, 0);
         setTotal(sum);
     };
 
     const handleAllocationChange = (assetClass, value) => {
-        console.log("Check what is passed when asset allocations change!")
         const key = Object.entries(assetClass)[0][0];
-        allocations[key].holdings = Number(value);
+        const numericValue = value === '' ? 0 : parseFloat(value) / 100;
+
         const newAllocations = {
             ...allocations,
-            // assetClass
+            [key]: {
+                ...allocations[key],
+                holdings: numericValue
+            }
         };
         setAllocations(newAllocations);
         calculateTotal(newAllocations);
     };
 
     const renderAllocationFields = () => {
-        const fields = [];
-        for (const [key,value] of Object.entries(allocations)) {
-            console.log("Key: " + key);
-            console.log("Value: " + value);
-            const assetClass = {};
-            assetClass[key] = value;
-            fields.push(
+        return Object.entries(allocations).map(([key, value]) => {
+            const assetClass = { [key]: value };
+            const displayValue = (value.holdings * 100).toFixed(2);
+
+            return (
                 <TextField
                     key={value.name}
                     label={value.name}
                     type="number"
-                    value={value.holdings * 100}
-                    onChange={(e) => handleAllocationChange(assetClass, e.target.value / 100)}
+                    value={displayValue === '0.00' ? '' : displayValue}
+                    onChange={(e) => handleAllocationChange(assetClass, e.target.value)}
                     fullWidth
                     variant="outlined"
+                    inputProps={{
+                        step: "0.01",
+                        min: "0",
+                        max: "100"
+                    }}
                 />
             );
-        }
-        return fields;
-    }
+        });
+    };
+
 
     return (
         <Dialog
