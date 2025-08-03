@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Box,
     Typography,
@@ -17,6 +17,7 @@ import Footer from "../components/Footer";
 import PortfolioEditDialog from '../components/PortfolioEditDialog';
 import PortfolioViewDialog from '../components/PortfolioViewDialog';
 import AddPortfolioDialog from "../components/AddPortfolioDialog.jsx";
+import {getAllPortfolios} from "../api/apiService.js";
 
 export default function Portfolio() {
     const [userPortfolios, setUserPortfolios] = useState([]);
@@ -39,6 +40,28 @@ export default function Portfolio() {
 
     const handleDelete = (portfolioId) => {
     };
+
+    useEffect( () => {
+        const  data = async () => {
+            console.log("Load All Portfolios")
+            try {
+                const response = await getAllPortfolios();
+                const portfolios = [];
+                for (let i = 0; i < response.length; i++) {
+                    const portfolio = response[i];
+                    portfolio.id = i;
+                    portfolios.push(portfolio);
+                    console.log("Added portfolio");
+                }
+                setAllPortfolios(portfolios);
+                setUserPortfolios(portfolios);
+            } catch (error) {
+                console.log(error.message);
+                setAllPortfolios([]);
+            }
+        }
+        data();
+    }, [openEditDialog, openViewDialog])
 
     return (
         <Box
@@ -93,7 +116,7 @@ export default function Portfolio() {
                         <TableBody>
                             {userPortfolios.map((portfolio) => (
                                 <TableRow key={portfolio.id}>
-                                    <TableCell>{portfolio.name}</TableCell>
+                                    <TableCell>{portfolio.portfolioName}</TableCell>
                                     <TableCell align="right">{portfolio.average}%</TableCell>
                                     <TableCell align="right">
                                         <Button
@@ -148,7 +171,7 @@ export default function Portfolio() {
                         <TableBody>
                             {allPortfolios.map((portfolio) => (
                                 <TableRow key={portfolio.id}>
-                                    <TableCell>{portfolio.name}</TableCell>
+                                    <TableCell>{portfolio.portfolioName}</TableCell>
                                     <TableCell align="right">{portfolio.average}%</TableCell>
                                     <TableCell align="right">
                                         <Button

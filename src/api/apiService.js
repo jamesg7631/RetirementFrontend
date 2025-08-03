@@ -40,10 +40,37 @@ export const registerUser = async (content) => {
                 'Content-Type': 'application/json'
             }
         });
-        console.log("Springboot response" + response.status);
+        console.log("Register user Springboot response" + response.status);
         return response.data;
     } catch (error) {
         console.error('Error registering user: ', error);
+        throw error;
+    }
+}
+
+export const createNewPortfolio = async (content) => {
+    try {
+        console.log("Register account to springboot " + content);
+        const response = await api.post(`${API_URL}/portfolios/add/`, content, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log("Register user Springboot response" + response.status);
+        return response.data;
+    } catch (error) {
+        console.error('Error registering user: ', error);
+        throw error;
+    }
+}
+
+export const getAllPortfolios = async () => {
+    try {
+        console.log("Attempt to get All potfolios api");
+        const response = await api.get(`${API_URL}/portfolios/all`)
+        return response.data;
+    } catch (error) {
+        console.error("Error: Failed to retrieve all portfolios");
         throw error;
     }
 }
