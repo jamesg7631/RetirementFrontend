@@ -9,6 +9,7 @@ import {
     Box, Typography
 } from '@mui/material';
 import {createNewPortfolio} from "../api/apiService.js";
+import {useNavigate} from "react-router";
 
 export default function AddPortfolioDialog({ open, onClose }) {
     const [portfolioName, setPortfolioName] = useState('');
@@ -84,11 +85,16 @@ export default function AddPortfolioDialog({ open, onClose }) {
         setAllocations((newAllocations));
     };
 
-    const handleSubmit = () => {
+    const navigate = useNavigate();
+    const handleSubmit = async () => {
         try {
             const portfolio = {...allocations};
             portfolio.portfolioName = portfolioName;
-            const response = createNewPortfolio(portfolio);
+            const response = await createNewPortfolio(portfolio);
+            if (response === "success") {
+                navigate("/portfolios")
+                window.location.reload();
+            }
             console.log("Successfully added portfolio");
 
         } catch (error) {
