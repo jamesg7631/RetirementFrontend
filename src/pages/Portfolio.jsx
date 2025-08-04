@@ -49,7 +49,6 @@ export default function Portfolio() {
                 const portfolios = [];
                 for (let i = 0; i < response.length; i++) {
                     const portfolio = response[i];
-                    portfolio.id = i;
                     portfolios.push(portfolio);
                     console.log("Added portfolio");
                 }

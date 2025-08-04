@@ -51,7 +51,7 @@ export const registerUser = async (content) => {
 export const createNewPortfolio = async (content) => {
     try {
         console.log("Register account to springboot " + content);
-        const response = await api.post(`${API_URL}/portfolios/add/`, content, {
+        const response = await api.post(`${API_URL}/portfolios/add`, content, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -60,6 +60,20 @@ export const createNewPortfolio = async (content) => {
         return response.data;
     } catch (error) {
         console.error('Error registering user: ', error);
+        throw error;
+    }
+}
+
+export const editPortfolio = async (content) => {
+    try {
+        const response = await api.post(`${API_URL}/portfolios/edit`, content, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error updating User portfolio: ', error);
         throw error;
     }
 }

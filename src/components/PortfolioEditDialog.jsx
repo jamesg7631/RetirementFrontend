@@ -9,17 +9,25 @@ import {
     Typography,
     Box
 } from '@mui/material';
+import {createNewPortfolio, editPortfolio} from "../api/apiService.js";
+import {useNavigate} from "react-router";
 
 export default function PortfolioEditDialog({ open, onClose, portfolio }) {
     const [allocations, setAllocations] = useState({});
     const [total, setTotal] = useState(0);
+    const [portfolioName, setPortfolioName] = useState({}) // was portfolio.portfolioName then realised portfolio value was null on web page load. Could make async or {} originally?
+    const [id, setId] = useState(0); // Same logic as above for portfolio.id
 
     useEffect(() => {
         const assetClasses = {...portfolio};
+        setPortfolioName(assetClasses.portfolioName || {});
+        setId(assetClasses.id || {});
         delete assetClasses.portfolioName;
         delete assetClasses.id;
         setAllocations(assetClasses || {});
         calculateTotal(assetClasses || {});
+
+
     }, [portfolio]);
 
     const calculateTotal = (assetClasses) => {
@@ -43,6 +51,23 @@ export default function PortfolioEditDialog({ open, onClose, portfolio }) {
         setAllocations(newAllocations);
         calculateTotal(newAllocations);
     };
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (total === 100) {
+            try {
+                portfolio = {...allocations}
+                portfolio.portfolioName = portfolioName;
+                portfolio.id = id;
+                const response = await editPortfolio(portfolio);
+                navigate('/portfolios')
+            } catch (error) {
+                console.log("Error: Failure to add Portfolio " + error)
+                navigate('/portfolios')
+            }
+        }
+    }
 
     const renderAllocationFields = () => {
         return Object.entries(allocations).map(([key, value]) => {
@@ -97,7 +122,7 @@ export default function PortfolioEditDialog({ open, onClose, portfolio }) {
             <DialogActions>
                 <Button onClick={onClose} color="primary">Cancel</Button>
                 <Button
-                    onClick={() => {/* Save handler */}}
+                    onClick={handleSubmit}
                     disabled={total !== 100}
                     color="primary"
                     variant="contained"
