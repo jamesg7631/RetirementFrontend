@@ -107,7 +107,6 @@ export default function Portfolio() {
                             <TableRow>
                                 <TableCell>Portfolio Name</TableCell>
                                 <TableCell align="right">Average Return</TableCell>
-                                <TableCell align="right">View</TableCell>
                                 <TableCell align="center">Edit</TableCell>
                                 <TableCell align="center">Delete</TableCell>
                             </TableRow>
@@ -116,7 +115,6 @@ export default function Portfolio() {
                             {userPortfolios.map((portfolio) => (
                                 <TableRow key={portfolio.id}>
                                     <TableCell>{portfolio.portfolioName}</TableCell>
-                                    <TableCell align="right">{portfolio.average}%</TableCell>
                                     <TableCell align="right">
                                         <Button
                                             startIcon={<Visibility />}
@@ -163,7 +161,6 @@ export default function Portfolio() {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Portfolio Name</TableCell>
-                                <TableCell align="right">Average Return</TableCell>
                                 <TableCell align="right">View</TableCell>
                             </TableRow>
                         </TableHead>
@@ -171,7 +168,6 @@ export default function Portfolio() {
                             {allPortfolios.map((portfolio) => (
                                 <TableRow key={portfolio.id}>
                                     <TableCell>{portfolio.portfolioName}</TableCell>
-                                    <TableCell align="right">{portfolio.average}%</TableCell>
                                     <TableCell align="right">
                                         <Button
                                             startIcon={<Visibility />}
