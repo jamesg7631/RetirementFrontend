@@ -9,14 +9,14 @@ import {
     Typography,
     Box
 } from '@mui/material';
-import {createNewPortfolio, editPortfolio} from "../api/apiService.js";
+import {editPortfolio} from "../api/apiService.js";
 import {useNavigate} from "react-router";
 
 export default function PortfolioEditDialog({ open, onClose, portfolio }) {
     const [allocations, setAllocations] = useState({});
     const [total, setTotal] = useState(0);
-    const [portfolioName, setPortfolioName] = useState({}) // was portfolio.portfolioName then realised portfolio value was null on web page load. Could make async or {} originally?
-    const [id, setId] = useState(0); // Same logic as above for portfolio.id
+    const [portfolioName, setPortfolioName] = useState({});
+    const [id, setId] = useState(0);
 
     useEffect(() => {
         const assetClasses = {...portfolio};
@@ -77,7 +77,7 @@ export default function PortfolioEditDialog({ open, onClose, portfolio }) {
             return (
                 <TextField
                     key={value.name}
-                    label={value.name}
+                    label={`${value.name} Allocation (%)`}
                     type="number"
                     value={displayValue === '0.00' ? '' : displayValue}
                     onChange={(e) => handleAllocationChange(assetClass, e.target.value)}

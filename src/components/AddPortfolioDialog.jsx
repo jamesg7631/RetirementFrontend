@@ -11,25 +11,59 @@ import {
 
 export default function AddPortfolioDialog({ open, onClose }) {
     const [portfolioName, setPortfolioName] = useState('');
-    const [allocations, setAllocations] = useState({
-        'Commodities': '',
-        'Developed Market Equities': '',
-        'Global Emerging Market Equities': '',
-        'Global Bonds': '',
-        'Global High Yield Corporate Bonds': '',
-        'Global Infrastructure Equities': '',
-        'International Property': '',
-        'Moneymarket': '',
-        'Precious Metals': '',
-        'UK Property': '',
-        'US Corporate Bonds': ''
-    });
+    // const [allocations, setAllocations] = useState({
+    //     'Commodities': '',
+    //     'Developed Market Equities': '',
+    //     'Global Emerging Market Equities': '',
+    //     'Global Bonds': '',
+    //     'Global High Yield Corporate Bonds': '',
+    //     'Global Infrastructure Equities': '',
+    //     'International Property': '',
+    //     'Moneymarket': '',
+    //     'Precious Metals': '',
+    //     'UK Property': '',
+    //     'US Corporate Bonds': ''
+    // });
+    // const initialAllocations = [
+    //     {"commodities": {"name": "Commodities", "holdings": 0}},
+    //     {"developedMarketEquities": [{"name": "Developed Market Equities"}, {"holdings": 0}]},
+    //     {"globalBonds": [{"name": "Commodities"}, {"holdings": 0}]},
+    //     {"emergingMarketEquities": [{"name": "Commodities"}, {"holdings": 0}]},
+    //     {"globalHighYieldCorporateBonds": [{"name": "Commodities"}, {"holdings": 0}]},
+    //     {"globalInfrastructureEquities": [{"name": "Commodities"}, {"holdings": 0}]},
+    //     {"internationalProperty": [{"name": "Commodities"}, {"holdings": 0}]},
+    //     {"moneymarket": [{"name": "Commodities"}, {"holdings": 0}]},
+    //     {"preciousMetals": [{"name": "Commodities"}, {"holdings": 0}]},
+    //     {"ukProperty": [{"name": "Commodities"}, {"holdings": 0}]},
+    //     {"usCorporateBonds": [{"name": "Commodities"}, {"holdings": 0}]},
+    // ];
+
+    const initialAllocations = {
+        "commodities": {"name": "Commodities", "holdings": 0},
+        "developedMarketEquities": {"name": "Developed Market Equities", "holdings": 0},
+        "globalBonds":{"name": "Global Bonds","holdings": 0},
+        "emergingMarketEquities": {"name": "Global Emerging Market Equities","holdings": 0},
+        "globalHighYieldCorporateBonds": {"name": "Global High Yield Corporate Bonds","holdings": 0},
+        "globalInfrastructureEquities": {"name": "Global Infrastructure Equities","holdings": 0},
+        "internationalProperty": {"name": "International Property","holdings": 0},
+        "moneymarket": {"name": "Moneymarket","holdings": 0},
+        "preciousMetals": {"name": "Precious Metals","holdings": 0},
+        "ukProperty": {"name": "UK Property","holdings": 0},
+        "usCorporateBonds": {"name": "US Corporate Bonds","holdings": 0},
+
+
+
+
+
+    }
+    const [allocations, setAllocations] = useState(initialAllocations);
 
     const handleNameChange = (event) => {
         setPortfolioName(event.target.value);
     };
 
     const handleAllocationChange = (type, value) => {
+        console.log("Asset allocation change!")
         setAllocations(prev => ({
             ...prev,
             [type]: value
@@ -43,21 +77,33 @@ export default function AddPortfolioDialog({ open, onClose }) {
 
     const handleClose = () => {
         setPortfolioName('');
-        setAllocations({
-            'Commodities': '',
-            'Developed Market Equities': '',
-            'Global Emerging Market Equities': '',
-            'Global Bonds': '',
-            'Global High Yield Corporate Bonds': '',
-            'Global Infrastructure Equities': '',
-            'International Property': '',
-            'Moneymarket': '',
-            'Precious Metals': '',
-            'UK Property': '',
-            'US Corporate Bonds': ''
-        });
+        setAllocations(initialAllocations);
         onClose();
     };
+
+    const renderAllocationFields = () => {
+        return Object.entries(allocations).map(([key, value]) => {
+            const assetClass = {[key]: value};
+            const displayValue = (value.holdings * 100).toFixed(2);
+
+            return (
+                <TextField
+                    key={value.name}
+                    label={`${value.name} Allocation (%)`}
+                    type="number"
+                    value={displayValue === '0.00' ? '' : displayValue}
+                    onChange={(e) => handleAllocationChange(assetClass, e.target.value)}
+                    fullWidth
+                    variant="outlined"
+                    inputProps={{
+                        step: "0.01",
+                        min: "0",
+                        max: "100"
+                    }}
+                />
+            );
+        });
+    }
 
     return (
         <Dialog
@@ -76,17 +122,18 @@ export default function AddPortfolioDialog({ open, onClose }) {
                         fullWidth
                         required
                     />
-                    {Object.entries(allocations).map(([type, value]) => (
-                        <TextField
-                            key={type}
-                            label={`${type} Allocation (%)`}
-                            type="number"
-                            value={value}
-                            onChange={(e) => handleAllocationChange(type, e.target.value)}
-                            fullWidth
-                            required
-                        />
-                    ))}
+                    { renderAllocationFields()}
+                    {/*{Object.entries(allocations).map(([type, value]) => (*/}
+                    {/*    <TextField*/}
+                    {/*        key={type}*/}
+                    {/*        label={`${type} Allocation (%)`}*/}
+                    {/*        type="number"*/}
+                    {/*        value={value}*/}
+                    {/*        onChange={(e) => handleAllocationChange(type, e.target.value)}*/}
+                    {/*        fullWidth*/}
+                    {/*        required*/}
+                    {/*    />*/}
+                    {/*))}*/}
                 </Box>
             </DialogContent>
             <DialogActions>
