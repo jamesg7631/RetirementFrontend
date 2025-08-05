@@ -30,6 +30,7 @@ export default function AddDCPensionDialog({ open, onClose }) {
         contributionRate: '',
         employerContributionRate: '',
     });
+    const [portfolioName, setPortfolioName] = useState("");
 
     const [newPortfolio, setNewPortfolio] = useState(initialAllocations);
 
@@ -70,13 +71,21 @@ export default function AddDCPensionDialog({ open, onClose }) {
         setNewPortfolio(replacementPortfolio);
     };
 
+    const handlePortfolioNameChange = (e) => {
+        setPortfolioName(e.target.value)
+    }
+
     const handleTabChange = (event, newValue) => {
         setActiveTab(newValue);
     };
 
     const getTotalAllocation = () => {
-        const values = Object.values(newPortfolio).filter(value => typeof value === 'number');
-        return values.reduce((sum, value) => sum + value, 0);
+        let sum = 0;
+        for (const [key, value] of Object.entries(newPortfolio)) {
+            const holdingsPercentage = value.holdings * 100;
+            sum += holdingsPercentage;
+        }
+        return sum;
     };
 
     function getAllocationsPaper(key, value, displayValue) {
@@ -120,12 +129,47 @@ export default function AddDCPensionDialog({ open, onClose }) {
         console.log("Results")
         return results;
     }
+
+    const addPensionIsDisabled = () => {
+        if (pensionData.name === "" || pensionData.name == null) {
+            return true;
+        }
+        if (pensionData.currentValue === "") {
+            return true;
+        }
+
+        if (pensionData.contributionRate === "") {
+            return true;
+        }
+
+        if (pensionData.employerContributionRate === "") {
+            return true;
+        }
+
+        if (activeTab === 0) {
+            if (selectedPortfolio === "" || portfolioName == null) {
+                return true;
+            }
+        }
+
+        if (activeTab === 1) {
+            if (getTotalAllocation() !== 100) {
+                return true;
+            }
+
+            if (portfolioName === "") {
+                return true;
+            }
+        }
+
+        return false;
+    }
     const renderNewPortfolioSection = () => (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
                 label="Portfolio Name"
-                value={newPortfolio.portfolioName}
-                onChange={handleNewPortfolioChange('portfolioName')}
+                value={portfolioName}
+                onChange={(e) => handlePortfolioNameChange(e)}
                 fullWidth
                 required
             />
@@ -260,10 +304,11 @@ export default function AddDCPensionDialog({ open, onClose }) {
                     variant="contained"
                     color="primary"
                     disabled={
-                        !pensionData.name ||
-                        !pensionData.currentValue ||
-                        (activeTab === 0 && !selectedPortfolio) ||
-                        (activeTab === 1 && getTotalAllocation() !== 100)
+                        // !pensionData.name ||
+                        // !pensionData.currentValue ||
+                        // (activeTab === 0 && !selectedPortfolio) ||
+                        // (activeTab === 1 && getTotalAllocation() !== 100)
+                        addPensionIsDisabled()
                     }
                 >
                     Add Pension
