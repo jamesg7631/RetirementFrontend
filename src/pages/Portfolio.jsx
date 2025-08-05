@@ -17,7 +17,8 @@ import Footer from "../components/Footer";
 import PortfolioEditDialog from '../components/PortfolioEditDialog';
 import PortfolioViewDialog from '../components/PortfolioViewDialog';
 import AddPortfolioDialog from "../components/AddPortfolioDialog.jsx";
-import {getAllPortfolios} from "../api/apiService.js";
+import {deleteMyPortfolio, getAllPortfolios, getMyPortfolios} from "../api/apiService.js";
+import {useNavigate} from "react-router";
 
 export default function Portfolio() {
     const [userPortfolios, setUserPortfolios] = useState([]);
@@ -26,6 +27,7 @@ export default function Portfolio() {
     const [openViewDialog, setOpenViewDialog] = useState(false);
     const [selectedPortfolio, setSelectedPortfolio] = useState(null);
     const [openAddDialog, setOpenAddDialog] = useState(false);
+    const navigate = useNavigate();
 
 
     const handleEditOpen = (portfolio) => {
@@ -38,22 +40,28 @@ export default function Portfolio() {
         setOpenViewDialog(true);
     };
 
-    const handleDelete = (portfolioId) => {
+    const handleDelete = async (portfolioId) => {
+        console.log("Delete portfolio", portfolioId);
+        try {
+            const response = await deleteMyPortfolio(portfolioId);
+            console.log(response);
+            navigate("/portfolios");
+            window.location.reload();
+        } catch (error) {
+            console.error("Failed to delete portfolio", error);
+            navigate("/portfolios");
+            window.location.reload();
+        }
     };
 
     useEffect( () => {
         const  data = async () => {
             console.log("Load All Portfolios")
             try {
-                const response = await getAllPortfolios();
-                const portfolios = [];
-                for (let i = 0; i < response.length; i++) {
-                    const portfolio = response[i];
-                    portfolios.push(portfolio);
-                    console.log("Added portfolio");
-                }
-                setAllPortfolios(portfolios);
-                setUserPortfolios(portfolios);
+                const responseAllPortfolios = await getAllPortfolios();
+                const responseMyPortfolios = await getMyPortfolios();
+                setAllPortfolios(responseAllPortfolios);
+                setUserPortfolios(responseMyPortfolios);
             } catch (error) {
                 console.log(error.message);
                 setAllPortfolios([]);
@@ -106,7 +114,7 @@ export default function Portfolio() {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Portfolio Name</TableCell>
-                                <TableCell align="right">Average Return</TableCell>
+                                <TableCell align="center">View</TableCell>
                                 <TableCell align="center">Edit</TableCell>
                                 <TableCell align="center">Delete</TableCell>
                             </TableRow>
@@ -115,7 +123,7 @@ export default function Portfolio() {
                             {userPortfolios.map((portfolio) => (
                                 <TableRow key={portfolio.id}>
                                     <TableCell>{portfolio.portfolioName}</TableCell>
-                                    <TableCell align="right">
+                                    <TableCell align="center">
                                         <Button
                                             startIcon={<Visibility />}
                                             onClick={() => handleViewOpen(portfolio)}
@@ -161,14 +169,14 @@ export default function Portfolio() {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Portfolio Name</TableCell>
-                                <TableCell align="right">View</TableCell>
+                                <TableCell align="center">View</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {allPortfolios.map((portfolio) => (
                                 <TableRow key={portfolio.id}>
                                     <TableCell>{portfolio.portfolioName}</TableCell>
-                                    <TableCell align="right">
+                                    <TableCell align="center">
                                         <Button
                                             startIcon={<Visibility />}
                                             onClick={() => handleViewOpen(portfolio)}

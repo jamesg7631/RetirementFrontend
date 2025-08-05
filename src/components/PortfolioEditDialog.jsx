@@ -62,6 +62,7 @@ export default function PortfolioEditDialog({ open, onClose, portfolio }) {
                 portfolio.id = id;
                 const response = await editPortfolio(portfolio);
                 navigate('/portfolios')
+                window.location.reload();
             } catch (error) {
                 console.log("Error: Failure to add Portfolio " + error)
                 navigate('/portfolios')

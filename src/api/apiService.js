@@ -89,6 +89,33 @@ export const getAllPortfolios = async () => {
     }
 }
 
+export const getMyPortfolios = async () => {
+    try {
+        console.log("Attempt to get my portfolios api");
+        const response = await api.get(`${API_URL}/portfolios/mine`)
+        return response.data;
+    } catch (error) {
+        console.error("Error: Failed to retrieve my portfolios");
+        throw error;
+    }
+}
+
+export const  deleteMyPortfolio = async (portfolioId) => {
+    try {
+        console.log("Attempt to delete portfolio", portfolioId);
+        const response = await api.delete(`${API_URL}/portfolios/delete`, {
+            data: portfolioId,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        return response.data;
+    } catch (error) {
+        console.error("Error: Delete my portfolio");
+        throw error;
+    }
+}
+
 export const getMyInvestmentHeaders = async () => {
     try {
         // console.log("Investment Header API is called!")
