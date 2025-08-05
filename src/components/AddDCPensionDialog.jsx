@@ -75,6 +75,81 @@ export default function AddDCPensionDialog({ open, onClose }) {
         return values.reduce((sum, value) => sum + value, 0);
     };
 
+    const renderNewPortfolioSection = () => (
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <TextField
+                label="Portfolio Name"
+                value={newPortfolio.portfolioName}
+                onChange={handleNewPortfolioChange('portfolioName')}
+                fullWidth
+                required
+            />
+
+            <Box sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+                gap: 2,
+                maxHeight: '400px',
+                overflowY: 'auto',
+                padding: 2,
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: 1,
+            }}>
+                {Object.entries(initialAllocations).map(([key, value]) => (
+                    <Paper
+                        key={key}
+                        elevation={0}
+                        sx={{
+                            p: 1,
+                            backgroundColor: 'background.paper',
+                            border: '1px solid',
+                            borderColor: 'divider',
+                        }}
+                    >
+                        <TextField
+                            label={value.name}
+                            type="number"
+                            value={newPortfolio[key]?.holdings || 0}
+                            onChange={(e) => handleNewPortfolioChange(key)(e)}
+                            fullWidth
+                            size="small"
+                            InputProps={{
+                                endAdornment: <Typography sx={{ ml: 1 }}>%</Typography>,
+                                inputProps: {
+                                    min: 0,
+                                    max: 100,
+                                    step: 0.01
+                                }
+                            }}
+                        />
+                    </Paper>
+                ))}
+            </Box>
+
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                mt: 1,
+                p: 2,
+                backgroundColor: getTotalAllocation() === 100 ? 'success.light' : 'warning.light',
+                borderRadius: 1,
+            }}>
+                <Typography variant="subtitle1" fontWeight="medium">
+                    Total Allocation
+                </Typography>
+                <Typography
+                    variant="h6"
+                    color={getTotalAllocation() === 100 ? 'success.dark' : 'warning.dark'}
+                >
+                    {getTotalAllocation()}%
+                </Typography>
+            </Box>
+        </Box>
+    );
+
+
     const renderBasicDetails = () => (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 3 }}>
             <Typography variant="h6" sx={{ mb: 2 }}>Basic Details</Typography>
@@ -165,137 +240,7 @@ export default function AddDCPensionDialog({ open, onClose }) {
                                     ))}
                                 </Select>
                             </FormControl>
-                        ) : (
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                <TextField
-                                    label="Portfolio Name"
-                                    value={newPortfolio.portfolioName}
-                                    onChange={handleNewPortfolioChange('portfolioName')}
-                                    fullWidth
-                                    required
-                                />
-                                <Grid container spacing={2}>
-                                    {/* Asset allocation fields */}
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            label="Commodities (%)"
-                                            type="number"
-                                            value={newPortfolio.commodities}
-                                            onChange={handleNewPortfolioChange('commodities')}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    {/* Add other asset class fields similarly */}
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            label="Commodities (%)"
-                                            type="number"
-                                            value={newPortfolio.commodities}
-                                            onChange={handleNewPortfolioChange('commodities')}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    {/* Add other asset class fields similarly */}
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            label="Commodities (%)"
-                                            type="number"
-                                            value={newPortfolio.commodities}
-                                            onChange={handleNewPortfolioChange('commodities')}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    {/* Add other asset class fields similarly */}
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            label="Commodities (%)"
-                                            type="number"
-                                            value={newPortfolio.commodities}
-                                            onChange={handleNewPortfolioChange('commodities')}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    {/* Add other asset class fields similarly */}
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            label="Commodities (%)"
-                                            type="number"
-                                            value={newPortfolio.commodities}
-                                            onChange={handleNewPortfolioChange('commodities')}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    {/* Add other asset class fields similarly */}
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            label="Commodities (%)"
-                                            type="number"
-                                            value={newPortfolio.commodities}
-                                            onChange={handleNewPortfolioChange('commodities')}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    {/* Add other asset class fields similarly */}
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            label="Commodities (%)"
-                                            type="number"
-                                            value={newPortfolio.commodities}
-                                            onChange={handleNewPortfolioChange('commodities')}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    {/* Add other asset class fields similarly */}
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            label="Commodities (%)"
-                                            type="number"
-                                            value={newPortfolio.commodities}
-                                            onChange={handleNewPortfolioChange('commodities')}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    {/* Add other asset class fields similarly */}
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            label="Commodities (%)"
-                                            type="number"
-                                            value={newPortfolio.commodities}
-                                            onChange={handleNewPortfolioChange('commodities')}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    {/* Add other asset class fields similarly */}
-
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            label="Commodities (%)"
-                                            type="number"
-                                            value={newPortfolio.commodities}
-                                            onChange={handleNewPortfolioChange('commodities')}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    {/* Add other asset class fields similarly */}
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            label="Commodities (%)"
-                                            type="number"
-                                            value={newPortfolio.commodities}
-                                            onChange={handleNewPortfolioChange('commodities')}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    {/* Add other asset class fields similarly */}
-                                </Grid>
-                                <Typography
-                                    color={getTotalAllocation() === 100 ? 'success.main' : 'error.main'}
-                                    sx={{ mt: 2 }}
-                                >
-                                    Total Allocation: {getTotalAllocation()}%
-                                </Typography>
-                            </Box>
-                        )}
+                        ) : renderNewPortfolioSection()}
                     </Box>
                 </Paper>
             </DialogContent>
