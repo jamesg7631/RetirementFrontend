@@ -58,12 +58,16 @@ export default function AddDCPensionDialog({ open, onClose }) {
         setSelectedPortfolio(event.target.value);
     };
 
-    const handleNewPortfolioChange = (field) => (event) => {
-        const value = parseFloat(event.target.value) || 0;
-        setNewPortfolio(prev => ({
-            ...prev,
-            [field]: value
-        }));
+    const handleNewPortfolioChange = (key, value, e)=> {
+        if (e == null) {
+            return;
+        }
+        console.log("Change new portfolio!");
+        const replacementPortfolio = {...newPortfolio};
+        const valueN = (parseFloat(e.target.value) / 100) || 0;
+        value.holdings = valueN;
+        replacementPortfolio.key = value;
+        setNewPortfolio(replacementPortfolio);
     };
 
     const handleTabChange = (event, newValue) => {
@@ -75,6 +79,45 @@ export default function AddDCPensionDialog({ open, onClose }) {
         return values.reduce((sum, value) => sum + value, 0);
     };
 
+    function getAllocationsPaper(key, value) {
+        const displayValue = value.holdings * 100;
+        return <Paper
+            key={key}
+            elevation={0}
+            sx={{
+                p: 1,
+                backgroundColor: 'background.paper',
+                border: '1px solid',
+                borderColor: 'divider',
+            }}
+        >
+            <TextField
+                label={value.name}
+                type="number"
+                value={displayValue || 0}
+                onChange={(e) => handleNewPortfolioChange(key, value, e)}
+                fullWidth
+                size="small"
+                InputProps={{
+                    endAdornment: <Typography sx={{ml: 1}}>%</Typography>,
+                    inputProps: {
+                        min: 0,
+                        max: 100,
+                        step: 0.01
+                    }
+                }}
+            />
+        </Paper>;
+    }
+
+    const allocationsProcessing = () => {
+        return Object.entries(newPortfolio).map(([key, value]) => {
+            const assetClass = {[key]: value};
+            const displayValue = (value.holdings * 100).toFixed(2);
+
+            return getAllocationsPaper(key, value);
+        });
+    }
     const renderNewPortfolioSection = () => (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
@@ -96,35 +139,8 @@ export default function AddDCPensionDialog({ open, onClose }) {
                 borderColor: 'divider',
                 borderRadius: 1,
             }}>
-                {Object.entries(initialAllocations).map(([key, value]) => (
-                    <Paper
-                        key={key}
-                        elevation={0}
-                        sx={{
-                            p: 1,
-                            backgroundColor: 'background.paper',
-                            border: '1px solid',
-                            borderColor: 'divider',
-                        }}
-                    >
-                        <TextField
-                            label={value.name}
-                            type="number"
-                            value={newPortfolio[key]?.holdings || 0}
-                            onChange={(e) => handleNewPortfolioChange(key)(e)}
-                            fullWidth
-                            size="small"
-                            InputProps={{
-                                endAdornment: <Typography sx={{ ml: 1 }}>%</Typography>,
-                                inputProps: {
-                                    min: 0,
-                                    max: 100,
-                                    step: 0.01
-                                }
-                            }}
-                        />
-                    </Paper>
-                ))}
+                {allocationsProcessing()}
+                {/*{Object.entries(initialAllocations).map(([key, value]) => getAllocationsPaper(key, value))}*/}
             </Box>
 
             <Box sx={{
@@ -160,13 +176,6 @@ export default function AddDCPensionDialog({ open, onClose }) {
                 fullWidth
                 required
             />
-            {/*<TextField*/}
-            {/*    label="Provider"*/}
-            {/*    value={pensionData.provider}*/}
-            {/*    onChange={handleChange('provider')}*/}
-            {/*    fullWidth*/}
-            {/*    required*/}
-            {/*/>*/}
             <TextField
                 label="Current Value"
                 type="number"
@@ -251,7 +260,6 @@ export default function AddDCPensionDialog({ open, onClose }) {
                     color="primary"
                     disabled={
                         !pensionData.name ||
-                        // !pensionData.provider ||
                         !pensionData.currentValue ||
                         (activeTab === 0 && !selectedPortfolio) ||
                         (activeTab === 1 && getTotalAllocation() !== 100)
