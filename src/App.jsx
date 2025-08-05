@@ -6,6 +6,7 @@ import {ResetPassword} from "./pages/ResetPassword.jsx";
 import CreateAccount from "./pages/CreateAccount.jsx";
 import RegisterUser from "./pages/RegisterUser.jsx";
 import Portfolio from "./pages/Portfolio.jsx";
+import DCPensions from "./pages/DCPensions.jsx";
 
 const theme = createTheme({
   palette: {
@@ -39,6 +40,7 @@ function App() {
                     <Route path="/create-account" element={<CreateAccount/>}/>
                     <Route path="/register-user" element={<RegisterUser/>}/>
                     <Route path="/portfolios" element={<Portfolio/>}/>
+                    <Route path="/dc-pensions" element={<DCPensions/>}/>
                 </Routes>
             </BrowserRouter>
         </ThemeProvider>
