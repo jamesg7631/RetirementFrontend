@@ -66,7 +66,7 @@ export default function AddDCPensionDialog({ open, onClose }) {
         const replacementPortfolio = {...newPortfolio};
         const valueN = (parseFloat(e.target.value) / 100) || 0;
         value.holdings = valueN;
-        replacementPortfolio.key = value;
+        // replacementPortfolio.key = value;
         setNewPortfolio(replacementPortfolio);
     };
 
@@ -79,8 +79,7 @@ export default function AddDCPensionDialog({ open, onClose }) {
         return values.reduce((sum, value) => sum + value, 0);
     };
 
-    function getAllocationsPaper(key, value) {
-        const displayValue = value.holdings * 100;
+    function getAllocationsPaper(key, value, displayValue) {
         return <Paper
             key={key}
             elevation={0}
@@ -111,12 +110,15 @@ export default function AddDCPensionDialog({ open, onClose }) {
     }
 
     const allocationsProcessing = () => {
-        return Object.entries(newPortfolio).map(([key, value]) => {
+        const results = (
+            Object.entries(newPortfolio).map(([key, value]) => {
             const assetClass = {[key]: value};
             const displayValue = (value.holdings * 100).toFixed(2);
 
-            return getAllocationsPaper(key, value);
-        });
+            return getAllocationsPaper(key, value, displayValue);
+        }));
+        console.log("Results")
+        return results;
     }
     const renderNewPortfolioSection = () => (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -140,7 +142,6 @@ export default function AddDCPensionDialog({ open, onClose }) {
                 borderRadius: 1,
             }}>
                 {allocationsProcessing()}
-                {/*{Object.entries(initialAllocations).map(([key, value]) => getAllocationsPaper(key, value))}*/}
             </Box>
 
             <Box sx={{
