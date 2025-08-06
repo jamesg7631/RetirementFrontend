@@ -29,10 +29,30 @@ export default function AddDCPensionDialog({ open, onClose }) {
         currentValue: '',
         contributionRate: '',
         employerContributionRate: '',
+        ocf: ''
     });
+
+    const setInitialPensionData = () => {
+        const pData = {
+            name: '',
+            currentValue: '',
+            contributionRate: '',
+            employerContributionRate: '',
+            ocf: ''
+        }
+        setPensionData(pData);
+    }
     const [portfolioName, setPortfolioName] = useState("");
 
-    const [newPortfolio, setNewPortfolio] = useState(initialAllocations);
+    const getInitialAllocations = () => {
+        const serialised = JSON.stringify(initialAllocations);
+        const deepCopy = JSON.parse(serialised);
+        return deepCopy;
+    }
+
+    const [newPortfolio, setNewPortfolio] = useState(getInitialAllocations());
+
+
 
     useEffect(() => {
         const fetchPortfolios = async () => {
@@ -45,6 +65,8 @@ export default function AddDCPensionDialog({ open, onClose }) {
         };
         if (open) {
             fetchPortfolios();
+            const initAllocations = getInitialAllocations();
+            setNewPortfolio((initAllocations));
         }
     }, [open]);
 
@@ -130,12 +152,20 @@ export default function AddDCPensionDialog({ open, onClose }) {
         return results;
     }
 
+    const resetPage = () => {
+        setActiveTab(0);
+        setSelectedPortfolio('');
+        setInitialPensionData();
+        setPortfolioName("");
+        setNewPortfolio(initialAllocations);
+        onClose();
+    }
+
     const handleSubmit = async () => {
         console.log("Breakpoint")
         try {
             if (activeTab === 1) {
-                const name = pensionData.name;
-                const createPortfolio = {...newPortfolio, name}
+                const createPortfolio = {...newPortfolio, portfolioName}
                 const portfolioCreationResponse = await createNewPortfolio(createPortfolio);
                 if (portfolioCreationResponse.status !== "success") {
                     throw new Error("Failed to create portfolio");
@@ -143,9 +173,12 @@ export default function AddDCPensionDialog({ open, onClose }) {
                 const portfolioId = parseInt(portfolioCreationResponse.portfolioId);
                 const postPensionData = {...pensionData, portfolioId};
                 const createNewDCPension = await createNewDcPension(postPensionData);
-                console.log("portfolio response")
+                console.log("portfolio response");
+                if (createNewDCPension.result === "success") {
+                    console.log("Successfully added new pension");
+                }
             }
-
+            resetPage();
         } catch (error) {
             console.error("Error Creating portfolio");
         }
@@ -164,6 +197,9 @@ export default function AddDCPensionDialog({ open, onClose }) {
         }
 
         if (pensionData.employerContributionRate === "") {
+            return true;
+        }
+        if (pensionData.ocf === "") {
             return true;
         }
 
@@ -270,6 +306,16 @@ export default function AddDCPensionDialog({ open, onClose }) {
                         type="number"
                         value={pensionData.employerContributionRate}
                         onChange={handleChange('employerContributionRate')}
+                        fullWidth
+                        required
+                    />
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField
+                        label="Ongoing Charges Figure OCF (%)"
+                        type="number"
+                        value={pensionData.ocf}
+                        onChange={handleChange('ocf')}
                         fullWidth
                         required
                     />
