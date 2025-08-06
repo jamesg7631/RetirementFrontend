@@ -48,6 +48,22 @@ export const registerUser = async (content) => {
     }
 }
 
+export const createNewDcPension = async (content) => {
+    try {
+        console.log("Attempt to create new DCPension" + content);
+        const response = await api.post(`${API_URL}/investments/dc`, content, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log("Create new DC pension response" + response.status);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating DC pension: ', error);
+        throw error;
+    }
+}
+
 export const createNewPortfolio = async (content) => {
     try {
         console.log("Register account to springboot " + content);

@@ -17,7 +17,7 @@ import {
     Grid,
     Paper
 } from '@mui/material';
-import { getAllPortfolios } from '../api/apiService';
+import {createNewDcPension, createNewPortfolio, getAllPortfolios} from '../api/apiService';
 import { initialAllocations} from "../utils/config.js";
 
 export default function AddDCPensionDialog({ open, onClose }) {
@@ -128,6 +128,27 @@ export default function AddDCPensionDialog({ open, onClose }) {
         }));
         console.log("Results")
         return results;
+    }
+
+    const handleSubmit = async () => {
+        console.log("Breakpoint")
+        try {
+            if (activeTab === 1) {
+                const name = pensionData.name;
+                const createPortfolio = {...newPortfolio, name}
+                const portfolioCreationResponse = await createNewPortfolio(createPortfolio);
+                if (portfolioCreationResponse.status !== "success") {
+                    throw new Error("Failed to create portfolio");
+                }
+                const portfolioId = parseInt(portfolioCreationResponse.portfolioId);
+                const postPensionData = {...pensionData, portfolioId};
+                const createNewDCPension = await createNewDcPension(postPensionData);
+                console.log("portfolio response")
+            }
+
+        } catch (error) {
+            console.error("Error Creating portfolio");
+        }
     }
 
     const addPensionIsDisabled = () => {
@@ -304,12 +325,9 @@ export default function AddDCPensionDialog({ open, onClose }) {
                     variant="contained"
                     color="primary"
                     disabled={
-                        // !pensionData.name ||
-                        // !pensionData.currentValue ||
-                        // (activeTab === 0 && !selectedPortfolio) ||
-                        // (activeTab === 1 && getTotalAllocation() !== 100)
                         addPensionIsDisabled()
                     }
+                    onClick={handleSubmit}
                 >
                     Add Pension
                 </Button>
