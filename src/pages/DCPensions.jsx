@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Box,
     Typography,
@@ -15,20 +15,36 @@ import { Edit, Delete } from '@mui/icons-material';
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import AddDCPensionDialog from '../components/AddDCPensionDialog';
+import {deleteDcPension, getAllDcPensions} from "../api/apiService.js";
 
 export default function DCPensions() {
     const [userDCPensions, setUserDCPensions] = useState([]);
     const [openAddDialog, setOpenAddDialog] = useState(false);
     const [openEditDialog, setOpenEditDialog] = useState(false);
     const [selectedPension, setSelectedPension] = useState(null);
+    const [deletePortfolio, setDeletePortfolio] = useState({});
 
     const handleEditOpen = (pension) => {
         setSelectedPension(pension);
         setOpenEditDialog(true);
     };
 
-    const handleDelete = async (pensionId) => {
-        // Implementation for delete functionality
+    useEffect(() => {
+        const data = async () => {
+            try {
+                const responseAllDcPensions = await getAllDcPensions();
+                setUserDCPensions(responseAllDcPensions);
+            } catch (error) {
+                console.error("Failed to get DC Pensions");
+            }
+        }
+        data();
+    }, [openEditDialog, openAddDialog, deletePortfolio]);
+
+    const handleDelete = async (pensionname) => {
+        setDeletePortfolio("");
+        const response = await deleteDcPension(pensionname);
+        setDeletePortfolio(response);
     };
 
     return (
@@ -75,17 +91,20 @@ export default function DCPensions() {
                             <TableRow>
                                 <TableCell>Pension Name</TableCell>
                                 <TableCell>Current Value</TableCell>
-                                <TableCell>Contribution Rate (%)</TableCell>
+                                <TableCell>Your Contribution Rate (%)</TableCell>
+                                <TableCell>Employer Contribution Rate (%)</TableCell>
+                                <TableCell>Ongoing Charges Figure OCF (%)</TableCell>
                                 <TableCell align="center">Actions</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {userDCPensions.map((pension) => (
-                                <TableRow key={pension.id}>
+                                <TableRow key={pension.name}>
                                     <TableCell>{pension.name}</TableCell>
                                     <TableCell>£{pension.currentValue}</TableCell>
-                                    <TableCell>{pension.employeeContributionRate}%</TableCell>
+                                    <TableCell>{pension.contributionRate}%</TableCell>
                                     <TableCell>{pension.employerContributionRate}%</TableCell>
+                                    <TableCell>{pension.ocf}%</TableCell>
                                     <TableCell align="center">
                                         <Button
                                             startIcon={<Edit />}
@@ -96,7 +115,7 @@ export default function DCPensions() {
                                         <Button
                                             startIcon={<Delete />}
                                             color="error"
-                                            onClick={() => handleDelete(pension.id)}
+                                            onClick={() => handleDelete(pension.name)}
                                         >
                                             Delete
                                         </Button>

@@ -64,6 +64,32 @@ export const createNewDcPension = async (content) => {
     }
 }
 
+export const getAllDcPensions = async () => {
+    try {
+        console.log("Attempt to get All Dc Pensions");
+        const response = await api.get(`${API_URL}/investments/dc`)
+        return response.data;
+    } catch (error) {
+        console.error("Error: Failed to retrieve all portfolios");
+        throw error;
+    }
+}
+
+export const deleteDcPension = async (content) => {
+    try {
+        console.log("Attempt to delete Dc pension");
+        const response = await api.post(`${API_URL}/investments/dc/delete`, content, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log(response);
+        return response.data;
+    } catch (error) {
+        console.error("Failed to delete pension from the database " + error);
+    }
+}
+
 export const createNewPortfolio = async (content) => {
     try {
         console.log("Register account to springboot " + content);
