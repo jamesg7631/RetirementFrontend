@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {initialAllocations} from "../utils/config.js";
 import {
     Dialog,
     DialogTitle,
@@ -13,48 +14,6 @@ import {useNavigate} from "react-router";
 
 export default function AddPortfolioDialog({ open, onClose }) {
     const [portfolioName, setPortfolioName] = useState('');
-    // const [allocations, setAllocations] = useState({
-    //     'Commodities': '',
-    //     'Developed Market Equities': '',
-    //     'Global Emerging Market Equities': '',
-    //     'Global Bonds': '',
-    //     'Global High Yield Corporate Bonds': '',
-    //     'Global Infrastructure Equities': '',
-    //     'International Property': '',
-    //     'Moneymarket': '',
-    //     'Precious Metals': '',
-    //     'UK Property': '',
-    //     'US Corporate Bonds': ''
-    // });
-    // const initialAllocations = [
-    //     {"commodities": {"name": "Commodities", "holdings": 0}},
-    //     {"developedMarketEquities": [{"name": "Developed Market Equities"}, {"holdings": 0}]},
-    //     {"globalBonds": [{"name": "Commodities"}, {"holdings": 0}]},
-    //     {"emergingMarketEquities": [{"name": "Commodities"}, {"holdings": 0}]},
-    //     {"globalHighYieldCorporateBonds": [{"name": "Commodities"}, {"holdings": 0}]},
-    //     {"globalInfrastructureEquities": [{"name": "Commodities"}, {"holdings": 0}]},
-    //     {"internationalProperty": [{"name": "Commodities"}, {"holdings": 0}]},
-    //     {"moneymarket": [{"name": "Commodities"}, {"holdings": 0}]},
-    //     {"preciousMetals": [{"name": "Commodities"}, {"holdings": 0}]},
-    //     {"ukProperty": [{"name": "Commodities"}, {"holdings": 0}]},
-    //     {"usCorporateBonds": [{"name": "Commodities"}, {"holdings": 0}]},
-    // ];
-
-
-
-    const initialAllocations = {
-        "commodities": {"name": "Commodities", "holdings": 0},
-        "developedMarketEquities": {"name": "Developed Market Equities", "holdings": 0},
-        "globalBonds":{"name": "Global Bonds","holdings": 0},
-        "emergingMarketEquities": {"name": "Global Emerging Market Equities","holdings": 0},
-        "globalHighYieldCorporateBonds": {"name": "Global High Yield Corporate Bonds","holdings": 0},
-        "globalInfrastructureEquities": {"name": "Global Infrastructure Equities","holdings": 0},
-        "internationalProperty": {"name": "International Property","holdings": 0},
-        "moneymarket": {"name": "Moneymarket","holdings": 0},
-        "preciousMetals": {"name": "Precious Metals","holdings": 0},
-        "ukProperty": {"name": "UK Property","holdings": 0},
-        "usCorporateBonds": {"name": "US Corporate Bonds","holdings": 0},
-    }
     const [allocations, setAllocations] = useState(initialAllocations);
     const [total, setTotal] = useState(0);
 
