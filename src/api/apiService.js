@@ -64,6 +64,22 @@ export const createNewDcPension = async (content) => {
     }
 }
 
+export const amendNewDcPension = async (content) => {
+    try {
+        console.log("Attempt to amend DC Pension" + content);
+        const response = await api.post(`${API_URL}/investments/dc/amend`, content, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log("Create new DC pension response" + response.status);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating DC pension: ', error);
+        throw error;
+    }
+}
+
 export const getAllDcPensions = async () => {
     try {
         console.log("Attempt to get All Dc Pensions");

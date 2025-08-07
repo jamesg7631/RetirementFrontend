@@ -17,7 +17,7 @@ import {
     Grid,
     Paper
 } from '@mui/material';
-import {createNewDcPension, createNewPortfolio, getAllPortfolios} from '../api/apiService';
+import {amendNewDcPension, createNewDcPension, createNewPortfolio, getAllPortfolios} from '../api/apiService';
 import { initialAllocations} from "../utils/config.js";
 
 export default function AddDCPensionDialog({ open, onClose, selectedPension, mode}) {
@@ -194,14 +194,14 @@ export default function AddDCPensionDialog({ open, onClose, selectedPension, mod
                 portfolioId = selectedPortfolio;
             }
             const postPensionData = {...pensionData, portfolioId};
-            const createNewDCPension = await createNewDcPension(postPensionData);
-            console.log("portfolio response");
-            if (createNewDCPension.result === "success") {
-                console.log("Successfully added new pension");
+            if (mode == "add") {
+                const createNewDCPension = await createNewDcPension(postPensionData);
+            } else {
+                const ammendedDcPension = await amendNewDcPension(postPensionData);
             }
+            console.log("portfolio response");
+            window.location.reload();
 
-
-            resetPage();
         } catch (error) {
             console.error("Error Creating portfolio");
         }
