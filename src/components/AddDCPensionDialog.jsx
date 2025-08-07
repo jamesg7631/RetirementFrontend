@@ -20,28 +20,25 @@ import {
 import {createNewDcPension, createNewPortfolio, getAllPortfolios} from '../api/apiService';
 import { initialAllocations} from "../utils/config.js";
 
-export default function AddDCPensionDialog({ open, onClose }) {
+export default function AddDCPensionDialog({ open, onClose, selectedPension, mode}) {
+    const getInitialPensionData = () => {
+        if (selectedPension == null) {
+            return {
+                name: '',
+                currentValue: '',
+                contributionRate: '',
+                employerContributionRate: '',
+                ocf: ''
+            };
+        } else {
+            return {...selectedPension};
+        }
+    };
+
     const [activeTab, setActiveTab] = useState(0);
     const [existingPortfolios, setExistingPortfolios] = useState([]);
     const [selectedPortfolio, setSelectedPortfolio] = useState('');
-    const [pensionData, setPensionData] = useState({
-        name: '',
-        currentValue: '',
-        contributionRate: '',
-        employerContributionRate: '',
-        ocf: ''
-    });
-
-    const setInitialPensionData = () => {
-        const pData = {
-            name: '',
-            currentValue: '',
-            contributionRate: '',
-            employerContributionRate: '',
-            ocf: ''
-        }
-        setPensionData(pData);
-    }
+    const [pensionData, setPensionData] = useState(getInitialPensionData());
     const [portfolioName, setPortfolioName] = useState("");
 
     const getInitialAllocations = () => {
@@ -68,7 +65,29 @@ export default function AddDCPensionDialog({ open, onClose }) {
             const initAllocations = getInitialAllocations();
             setNewPortfolio((initAllocations));
         }
-    }, [open]);
+    }, [open, selectedPortfolio]);
+
+    useEffect(() => {
+        if (mode === "edit") {
+            setPensionData({...selectedPension});
+            for (let i = 0; existingPortfolios.length; i++) {
+                let sPortfolio = existingPortfolios[i];
+                if (sPortfolio.id === pensionData.portfolioId) {
+                    setSelectedPortfolio(sPortfolio.id);
+                    break;
+                }
+            }
+        } else {
+            setPensionData({
+                name: '',
+                currentValue: '',
+                contributionRate: '',
+                employerContributionRate: '',
+                ocf: ''
+            });
+        }
+    }, [selectedPension, existingPortfolios, pensionData.portfolioId, mode]);
+
 
     const handleChange = (field) => (event) => {
         setPensionData({
@@ -89,7 +108,6 @@ export default function AddDCPensionDialog({ open, onClose }) {
         const replacementPortfolio = {...newPortfolio};
         const valueN = (parseFloat(e.target.value) / 100) || 0;
         value.holdings = valueN;
-        // replacementPortfolio.key = value;
         setNewPortfolio(replacementPortfolio);
     };
 
@@ -155,10 +173,10 @@ export default function AddDCPensionDialog({ open, onClose }) {
     const resetPage = () => {
         setActiveTab(0);
         setSelectedPortfolio('');
-        setInitialPensionData();
         setPortfolioName("");
         setNewPortfolio(initialAllocations);
         onClose();
+        window.location.reload();
     }
 
     const handleSubmit = async () => {

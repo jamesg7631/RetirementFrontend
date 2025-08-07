@@ -20,14 +20,26 @@ import {deleteDcPension, getAllDcPensions} from "../api/apiService.js";
 export default function DCPensions() {
     const [userDCPensions, setUserDCPensions] = useState([]);
     const [openAddDialog, setOpenAddDialog] = useState(false);
-    const [openEditDialog, setOpenEditDialog] = useState(false);
     const [selectedPension, setSelectedPension] = useState(null);
     const [deletePortfolio, setDeletePortfolio] = useState({});
+    const [mode, setMode] = useState("add");
 
     const handleEditOpen = (pension) => {
         setSelectedPension(pension);
-        setOpenEditDialog(true);
+        setOpenAddDialog(true);
+        setMode("edit");
     };
+
+    const onClose = () => {
+        setOpenAddDialog(false);
+        window.location.reload();
+    }
+
+    const handleAddOpen = () => {
+        setMode("add");
+        setSelectedPension(null);
+        setOpenAddDialog(true);
+    }
 
     useEffect(() => {
         const data = async () => {
@@ -39,7 +51,7 @@ export default function DCPensions() {
             }
         }
         data();
-    }, [openEditDialog, openAddDialog, deletePortfolio]);
+    }, [openAddDialog, deletePortfolio]);
 
     const handleDelete = async (pensionname) => {
         setDeletePortfolio("");
@@ -79,7 +91,7 @@ export default function DCPensions() {
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => setOpenAddDialog(true)}
+                        onClick={() => handleAddOpen()}
                     >
                         Add DC Pension
                     </Button>
@@ -128,7 +140,9 @@ export default function DCPensions() {
 
                 <AddDCPensionDialog
                     open={openAddDialog}
-                    onClose={() => setOpenAddDialog(false)}
+                    onClose={onClose}
+                    selectedPension={selectedPension}
+                    mode={mode}
                 />
 
             </Container>
