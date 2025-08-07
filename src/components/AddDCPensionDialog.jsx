@@ -164,20 +164,25 @@ export default function AddDCPensionDialog({ open, onClose }) {
     const handleSubmit = async () => {
         console.log("Breakpoint")
         try {
+            let portfolioId;
             if (activeTab === 1) {
                 const createPortfolio = {...newPortfolio, portfolioName}
                 const portfolioCreationResponse = await createNewPortfolio(createPortfolio);
                 if (portfolioCreationResponse.status !== "success") {
                     throw new Error("Failed to create portfolio");
                 }
-                const portfolioId = parseInt(portfolioCreationResponse.portfolioId);
-                const postPensionData = {...pensionData, portfolioId};
-                const createNewDCPension = await createNewDcPension(postPensionData);
-                console.log("portfolio response");
-                if (createNewDCPension.result === "success") {
-                    console.log("Successfully added new pension");
-                }
+                portfolioId = parseInt(portfolioCreationResponse.portfolioId);
+            } else {
+                portfolioId = selectedPortfolio;
             }
+            const postPensionData = {...pensionData, portfolioId};
+            const createNewDCPension = await createNewDcPension(postPensionData);
+            console.log("portfolio response");
+            if (createNewDCPension.result === "success") {
+                console.log("Successfully added new pension");
+            }
+
+
             resetPage();
         } catch (error) {
             console.error("Error Creating portfolio");
