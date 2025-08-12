@@ -258,14 +258,12 @@ export default function MainContentArea({ outcomeValue, retirementAge, percentag
                     position: 'insideLeft'
                   }}/>
                   <Tooltip/>
-                  <Legend/>
+                  <Legend
+                  verticalAlign="bottom"
+                  height={10}/>
                   {graphType === "income" && (
                       <ReferenceLine
                           y={desiredIncome}
-                          // label={{
-                          //   value: `Desired Income: £${desiredIncome.toLocaleString()}`,
-                          //   position: 'right'
-                          // }}
                           stroke="#ff0000"
                           strokeDasharray="3 3"
                       />
