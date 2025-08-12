@@ -24,6 +24,7 @@ export default function Dashboard() {
   const [statePensionAge, setStatePensionAge] = useState('67');
   const [statePensionValue, setStatePensionValue] = useState('11973');
   const [graphType, setGraphType] = useState('income');
+  const [desiredAnnualIncome, setDesiredAnnualIncome] = useState(150000);
 
 
 
@@ -91,7 +92,8 @@ export default function Dashboard() {
             setStatePensionAge={setStatePensionAge}
             setStatePensionValue={setStatePensionValue}
             graphType={graphType}
-            setGraphType={setGraphType}/>
+            setGraphType={setGraphType}
+            desiredIncome={desiredAnnualIncome}/>
           <RightSidebar
             outcomeValue={outcomeValue}
             setOutcomeValue={setOutcomeValue}

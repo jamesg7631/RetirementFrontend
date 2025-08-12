@@ -229,17 +229,19 @@ function Sidebar({
               variant="outlined"
               size="small"
             />
-            <TextField
-              label="Desired Annual Income"
-              value={desiredIncome}
-              onChange={(e) => setDesiredIncome(Number(e.target.value))}
-              fullWidth
-              variant="outlined"
-              size="small"
-              InputProps={{
-                startAdornment: <Typography sx={{ mr: 0.5 }}>£</Typography>,
-              }}
-            />
+            {graphType === "income" && (
+                <TextField
+                    label="Desired Annual Income"
+                    value={desiredIncome}
+                    onChange={(e) => setDesiredIncome(Number(e.target.value))}
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    InputProps={{
+                      startAdornment: <Typography sx={{ mr: 0.5 }}>£</Typography>,
+                    }}
+                />
+            )}
           </Stack>
         )}
       </Box>

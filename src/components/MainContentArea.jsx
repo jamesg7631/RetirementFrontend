@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Paper, Typography, ToggleButton, ToggleButtonGroup, FormControl, InputLabel, Select, MenuItem, TextField,
   CircularProgress} from '@mui/material';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine
 } from 'recharts';
 import { getInvestmentChartIncomeData } from "../api/apiService.js";
 
@@ -18,7 +18,7 @@ const CASHFLOW_COLORS = [
 export default function MainContentArea({ outcomeValue, retirementAge, percentageLumpsum, incomeStrategy,
   withdrawalType, initialAmount, increaseRate,
   annuityType, annuityIncreaseRate, statePensionAge, statePensionValue, setStatePensionAge, setStatePensionValue,
-                                          graphType, setGraphType}) {
+                                          graphType, setGraphType, desiredIncome}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [chartData, setChartData] = useState([]);
@@ -137,134 +137,148 @@ export default function MainContentArea({ outcomeValue, retirementAge, percentag
     increaseRate, annuityType, annuityIncreaseRate, setStatePensionAge, setStatePensionValue]); // Re-run when these dependencies change
 
   return (
-    <Paper
-      sx={{
-        flexGrow: 1, // Allows it to take up remaining horizontal space
-        p: 2, // Padding inside the Paper component
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between', // Pushes graph up, text down
-        boxShadow: 3, // Material-UI shadow level
-      }}
-    >
-      {/* Top Controls Area */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', mb: 3 }}>
-        {/* Income Forecast / Savings Forecast Toggle */}
-        <ToggleButtonGroup
-          value={graphType}
-          exclusive
-          onChange={handleGraphTypeChange}
-          aria-label="graph type"
-          size="small"
-        >
-          <ToggleButton value="income" aria-label="income forecast">
-            <Typography variant="caption" sx={{ fontWeight: 'bold' }}>Income Forecast</Typography>
-          </ToggleButton>
-          <ToggleButton value="savings" aria-label="savings forecast">
-            <Typography variant="caption" sx={{ fontWeight: 'bold' }}>Savings Forecast</Typography>
-          </ToggleButton>
-        </ToggleButtonGroup>
-
-        {/* Present Value / Future Value Dropdown */}
-        <FormControl sx={{ minWidth: 150 }} size="small">
-          <InputLabel id="value-type-label">Value Type</InputLabel>
-          <Select
-            labelId="value-type-label"
-            id="value-type-select"
-            value={valueType}
-            label="Value Type"
-            onChange={handleValueTypeChange}
+      <Paper
+          sx={{
+            flexGrow: 1, // Allows it to take up remaining horizontal space
+            p: 2, // Padding inside the Paper component
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between', // Pushes graph up, text down
+            boxShadow: 3, // Material-UI shadow level
+          }}
+      >
+        {/* Top Controls Area */}
+        <Box sx={{display: 'flex', justifyContent: 'space-around', alignItems: 'center', mb: 3}}>
+          {/* Income Forecast / Savings Forecast Toggle */}
+          <ToggleButtonGroup
+              value={graphType}
+              exclusive
+              onChange={handleGraphTypeChange}
+              aria-label="graph type"
+              size="small"
           >
-            <MenuItem value="present">Present Value</MenuItem>
-            <MenuItem value="future">Future Value</MenuItem>
-          </Select>
-        </FormControl>
+            <ToggleButton value="income" aria-label="income forecast">
+              <Typography variant="caption" sx={{fontWeight: 'bold'}}>Income Forecast</Typography>
+            </ToggleButton>
+            <ToggleButton value="savings" aria-label="savings forecast">
+              <Typography variant="caption" sx={{fontWeight: 'bold'}}>Savings Forecast</Typography>
+            </ToggleButton>
+          </ToggleButtonGroup>
 
-        {/* % Spouse Input */}
-        <TextField
-          label="% Spouse"
-          variant="outlined"
-          size="small"
-          value={spousePercentage}
-          onChange={handleSpousePercentageChange}
-          inputProps={{
-            inputMode: 'numeric',
-            pattern: '[0-9]*', // Suggests numeric input for mobile keyboards
-          }}
-          sx={{ width: 100 }} // Adjust width as needed
-          InputProps={{
-            endAdornment: <Typography sx={{ mr: 0.5 }}>%</Typography>, // Add percentage sign at the end
-          }}
-        />
-      </Box>
+          {/* Present Value / Future Value Dropdown */}
+          <FormControl sx={{minWidth: 150}} size="small">
+            <InputLabel id="value-type-label">Value Type</InputLabel>
+            <Select
+                labelId="value-type-label"
+                id="value-type-select"
+                value={valueType}
+                label="Value Type"
+                onChange={handleValueTypeChange}
+            >
+              <MenuItem value="present">Present Value</MenuItem>
+              <MenuItem value="future">Future Value</MenuItem>
+            </Select>
+          </FormControl>
 
-      {/* Graph Area */}
-      <Box
-          sx={{
-            border: '2px dashed',
-            borderColor: 'grey.400',
-            flexGrow: 1,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            mb: 3,
-            minHeight: '250px',
-            overflow: 'hidden',
-          }}
-      >
-        {loading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <CircularProgress />
-            </Box>
-        ) : (
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                  data={chartData}
-                  margin={{
-                    top: 20, right: 30, left: 20, bottom: 5,
-                  }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="age" label={{ value: 'Age', position: 'insideBottom', offset: -5 }} />
-                <YAxis label={{ value: `${graphType === 'income' ? 'Income' : 'Savings'} (${valueType === 'present' ? 'Present' : 'Future'} Value)`, angle: -90, position: 'insideLeft' }} />
-                <Tooltip />
-                <Legend />
-                {cashflowKeys.map((key, i) => (
-                    <Bar
-                        key={key}
-                        dataKey={key}
-                        stackId="a"
-                        fill={CASHFLOW_COLORS[i % (CASHFLOW_COLORS.length)]}
-                        name={key.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ').trim().replace(/^\w/, c => c.toUpperCase())}
-                    />
-                ))}
-              </BarChart>
-            </ResponsiveContainer>
-        )}
-      </Box>
+          {/* % Spouse Input */}
+          <TextField
+              label="% Spouse"
+              variant="outlined"
+              size="small"
+              value={spousePercentage}
+              onChange={handleSpousePercentageChange}
+              inputProps={{
+                inputMode: 'numeric',
+                pattern: '[0-9]*', // Suggests numeric input for mobile keyboards
+              }}
+              sx={{width: 100}} // Adjust width as needed
+              InputProps={{
+                endAdornment: <Typography sx={{mr: 0.5}}>%</Typography>, // Add percentage sign at the end
+              }}
+          />
+        </Box>
 
-
-
-      {/* Outcome Probability Section */}
-      <Box
-        sx={{
-          textAlign: 'center',
-          bgcolor: 'grey.200',
-          p: 2,
-          borderRadius: 1,
-        }}
-      >
-        <Typography variant="body1" sx={{ mb: 2 }}>
-          According to forecasts, there is a {outcomeValue} % chance of achieving less than this outcome
-        </Typography>
+        {/* Graph Area */}
         <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-around',
-            gap: 2,
-          }}
-        />
-      </Box>
-    </Paper>
+            sx={{
+              border: '2px dashed',
+              borderColor: 'grey.400',
+              flexGrow: 1,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              mb: 3,
+              minHeight: '250px',
+              overflow: 'hidden',
+            }}
+        >
+          {loading ? (
+              <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <CircularProgress/>
+              </Box>
+          ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                    data={chartData}
+                    margin={{
+                      top: 20, right: 30, left: 20, bottom: 5,
+                    }}
+                >
+                  <CartesianGrid strokeDasharray="3 3"/>
+                  <XAxis dataKey="age" label={{value: 'Age', position: 'insideBottom', offset: -5}}/>
+                  <YAxis label={{
+                    value: `${graphType === 'income' ? 'Income' : 'Savings'} (${valueType === 'present' ? 'Present' : 'Future'} Value)`,
+                    angle: -90,
+                    position: 'insideLeft'
+                  }}/>
+                  <Tooltip/>
+                  <Legend/>
+                  {graphType === "income" && (
+                      <ReferenceLine
+                          y={desiredIncome}
+                          label={{
+                            value: `Desired Income: £${desiredIncome.toLocaleString()}`,
+                            position: 'right'
+                          }}
+                          stroke="#ff0000"
+                          strokeDasharray="3 3"
+                      />
+                  )}
+                  {cashflowKeys.map((key, i) => (
+                      <Bar
+                          key={key}
+                          dataKey={key}
+                          stackId="a"
+                          fill={CASHFLOW_COLORS[i % (CASHFLOW_COLORS.length)]}
+                          name={key.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ').trim().replace(/^\w/, c => c.toUpperCase())}
+                      />
+                  ))}
+                </BarChart>
+              </ResponsiveContainer>
+          )}
+        </Box>
+
+
+        {/* Outcome Probability Section */}
+        <Box
+            sx={{
+              textAlign: 'center',
+              bgcolor: 'grey.200',
+              p: 2,
+              borderRadius: 1,
+            }}
+        >
+          <Typography variant="body1" sx={{mb: 2}}>
+            According to forecasts, there is a {outcomeValue} % chance of achieving less than this outcome
+          </Typography>
+          <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-around',
+                gap: 2,
+              }}
+          />
+        </Box>
+      </Paper>
   );
 }
