@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Paper, Typography, ToggleButton, ToggleButtonGroup, FormControl, InputLabel, Select, MenuItem, TextField } from '@mui/material';
+import { Box, Paper, Typography, ToggleButton, ToggleButtonGroup, FormControl, InputLabel, Select, MenuItem, TextField,
+  CircularProgress} from '@mui/material';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
@@ -199,45 +200,49 @@ export default function MainContentArea({ outcomeValue, retirementAge, percentag
 
       {/* Graph Area */}
       <Box
-        sx={{
-          border: '2px dashed',
-          borderColor: 'grey.400',
-          flexGrow: 1,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          mb: 3,
-          minHeight: '250px',
-          overflow: 'hidden', // Ensure graph doesn't overflow
-        }}
+          sx={{
+            border: '2px dashed',
+            borderColor: 'grey.400',
+            flexGrow: 1,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            mb: 3,
+            minHeight: '250px',
+            overflow: 'hidden',
+          }}
       >
-        {/* ResponsiveContainer makes the chart responsive to its parent's size */}
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={chartData}
-            margin={{
-              top: 20, right: 30, left: 20, bottom: 5,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" /> {/* Dashed grid lines */}
-            <XAxis dataKey="age" label={{ value: 'Age', position: 'insideBottom', offset: -5 }} />
-            <YAxis label={{ value: `${graphType === 'income' ? 'Income' : 'Savings'} (${valueType === 'present' ? 'Present' : 'Future'} Value)`, angle: -90, position: 'insideLeft' }} />
-            <Tooltip /> {/* Shows data on hover */}
-            <Legend /> {/* Displays the key for different colored bars */}
-
-            {/* Render a Bar for each cash flow type */}
-            {cashflowKeys.map((key, i) => (
-              <Bar
-                key={key}
-                dataKey={key}
-                stackId="a" // 'a' makes all bars stack on top of each other
-                fill={CASHFLOW_COLORS[i % (CASHFLOW_COLORS.length)]} // Use predefined colors
-                name={key.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ').trim().replace(/^\w/, c => c.toUpperCase())} // Nicer name for legend
-              />
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
+        {loading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <CircularProgress />
+            </Box>
+        ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                  data={chartData}
+                  margin={{
+                    top: 20, right: 30, left: 20, bottom: 5,
+                  }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="age" label={{ value: 'Age', position: 'insideBottom', offset: -5 }} />
+                <YAxis label={{ value: `${graphType === 'income' ? 'Income' : 'Savings'} (${valueType === 'present' ? 'Present' : 'Future'} Value)`, angle: -90, position: 'insideLeft' }} />
+                <Tooltip />
+                <Legend />
+                {cashflowKeys.map((key, i) => (
+                    <Bar
+                        key={key}
+                        dataKey={key}
+                        stackId="a"
+                        fill={CASHFLOW_COLORS[i % (CASHFLOW_COLORS.length)]}
+                        name={key.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ').trim().replace(/^\w/, c => c.toUpperCase())}
+                    />
+                ))}
+              </BarChart>
+            </ResponsiveContainer>
+        )}
       </Box>
+
 
 
       {/* Outcome Probability Section */}
