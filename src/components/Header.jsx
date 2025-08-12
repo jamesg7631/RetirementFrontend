@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {
   AppBar,
   Toolbar,
@@ -9,10 +9,22 @@ import {
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import {useNavigate, Link} from "react-router";
+import LearnMoreModal from "./LearnMoreModal.jsx";
 export default function Header() {
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  return (
+    const handleOpenModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
+
+
+    return (
+        <>
       <AppBar position="static" sx={{ bgcolor: "primary.main" }}>
         <Toolbar>
           <Typography
@@ -30,13 +42,15 @@ export default function Header() {
             <Button color="inherit" onClick={() => navigate("/dc-pensions")}>My Pensions</Button>
             <Button color="inherit">My snapshots</Button>
             <Button color="inherit">My scenarios</Button>
-            <Button color="inherit">Learn more ?</Button>
+            <Button color="inherit" onClick={handleOpenModal}>Learn more ?</Button>
           </Box>
           <IconButton size="large" edge="end" color="inherit" aria-label="account">
             <AccountCircleIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
+        <LearnMoreModal open={isModalOpen} onClose={handleCloseModal} />
+    </>
   );
 }
 
