@@ -197,6 +197,28 @@ export default function MainContentArea({ outcomeValue, retirementAge, percentag
               }}
           />
         </Box>
+          <Box
+              sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                  mb: 1,
+                  mr: 8
+              }}
+          >
+              <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
+        <span style={{
+            display: 'inline-block',
+            width: '40px',
+            height: '1px',
+            background: 'none',  // Remove any background
+            borderTop: '1px dashed #ff0000',  // Use border instead of background image
+            marginRight: '8px'
+        }}></span>
+                  Desired Annual Income: £{desiredIncome.toLocaleString()}
+              </Typography>
+          </Box>
+
 
         {/* Graph Area */}
         <Box
@@ -224,26 +246,25 @@ export default function MainContentArea({ outcomeValue, retirementAge, percentag
                     margin={{
                       top: 20,
                       right: 60,
-                      left: 60,
-                      bottom: 20,
+                      left: 80,
+                      bottom: 50,
                     }}
                 >
                   <CartesianGrid strokeDasharray="3 3"/>
-                  <XAxis dataKey="age" label={{value: 'Age', position: 'insideBottom', offset: -5}}/>
+                  <XAxis dataKey="age" label={{value: 'Age', position: 'insideBottom', offset: -40}}/>
                   <YAxis label={{
                     value: `${graphType === 'income' ? 'Income' : 'Savings'} (${valueType === 'present' ? 'Present' : 'Future'} Value)`,
                     angle: -90,
-                    position: 'insideLeft'
+                    position: 'insideLeft',
+                      offset: -40
                   }}/>
                   <Tooltip/>
-                  <Legend/>
+                  <Legend
+                  verticalAlign="bottom"
+                  height={-40}/>
                   {graphType === "income" && (
                       <ReferenceLine
                           y={desiredIncome}
-                          label={{
-                            value: `Desired Income: £${desiredIncome.toLocaleString()}`,
-                            position: 'right'
-                          }}
                           stroke="#ff0000"
                           strokeDasharray="3 3"
                       />
