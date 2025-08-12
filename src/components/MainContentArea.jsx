@@ -197,6 +197,27 @@ export default function MainContentArea({ outcomeValue, retirementAge, percentag
               }}
           />
         </Box>
+        <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              mb: 1,
+              mr: 8  // Add right margin to align with the graph area
+            }}
+        >
+          <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
+        <span style={{
+          display: 'inline-block',
+          width: '20px',
+          height: '2px',
+          backgroundColor: '#ff0000',
+          marginRight: '8px',
+          borderStyle: 'dashed'
+        }}></span>
+            Desired Annual Income: £{desiredIncome.toLocaleString()}
+          </Typography>
+        </Box>
 
         {/* Graph Area */}
         <Box
