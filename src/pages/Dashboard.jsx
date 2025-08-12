@@ -46,7 +46,7 @@ export default function Dashboard() {
           display: "flex",
           flexDirection: "column",
           flexGrow: 1,
-          p: 1.5, // Padding around the main content (1 unit = 8px by default)
+          p: 1.5,
         }}
       >
         <NavigationTabs />
@@ -59,7 +59,8 @@ export default function Dashboard() {
           }}
         >
           <Sidebar
-            retirementAge={retirementAge}
+              sx={{ width: 280, flexShrink: 0 }}
+              retirementAge={retirementAge}
             setRetirementAge={setRetirementAge}
             percentageLumpsum={percentageLumpsum}
             setPercentageLumpsum={setPercentageLumpsum}
@@ -79,7 +80,9 @@ export default function Dashboard() {
             statePensionValue={statePensionValue}
             graphType={graphType}/>
 
-          <MainContentArea outcomeValue={outcomeValue} retirementAge={retirementAge}
+          <MainContentArea
+              sx={{ flexGrow: 4, minWidth: 800 }}
+              outcomeValue={outcomeValue} retirementAge={retirementAge}
             percentageLumpsum={percentageLumpsum}
             incomeStrategy={incomeStrategy}
             withdrawalType={withdrawalType}
@@ -95,7 +98,8 @@ export default function Dashboard() {
             setGraphType={setGraphType}
             desiredIncome={desiredAnnualIncome}/>
           <RightSidebar
-            outcomeValue={outcomeValue}
+              sx={{ width: 250, flexShrink: 0 }}
+              outcomeValue={outcomeValue}
             setOutcomeValue={setOutcomeValue}
             handleOutcomeChange={handleOutcomeChange}
             incomeStrategy={incomeStrategy}

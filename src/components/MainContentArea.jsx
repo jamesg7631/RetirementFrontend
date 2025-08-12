@@ -208,7 +208,8 @@ export default function MainContentArea({ outcomeValue, retirementAge, percentag
               justifyContent: 'center',
               alignItems: 'center',
               mb: 3,
-              minHeight: '250px',
+              minHeight: '400px',
+              height: '500px',
               overflow: 'hidden',
             }}
         >
@@ -221,7 +222,10 @@ export default function MainContentArea({ outcomeValue, retirementAge, percentag
                 <BarChart
                     data={chartData}
                     margin={{
-                      top: 20, right: 30, left: 20, bottom: 5,
+                      top: 20,
+                      right: 60,
+                      left: 60,
+                      bottom: 20,
                     }}
                 >
                   <CartesianGrid strokeDasharray="3 3"/>
