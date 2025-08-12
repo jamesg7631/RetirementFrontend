@@ -247,11 +247,11 @@ export default function MainContentArea({ outcomeValue, retirementAge, percentag
                       top: 20,
                       right: 60,
                       left: 80,
-                      bottom: 20,
+                      bottom: 50,
                     }}
                 >
                   <CartesianGrid strokeDasharray="3 3"/>
-                  <XAxis dataKey="age" label={{value: 'Age', position: 'insideBottom', offset: -5}}/>
+                  <XAxis dataKey="age" label={{value: 'Age', position: 'insideBottom', offset: -40}}/>
                   <YAxis label={{
                     value: `${graphType === 'income' ? 'Income' : 'Savings'} (${valueType === 'present' ? 'Present' : 'Future'} Value)`,
                     angle: -90,
@@ -261,7 +261,7 @@ export default function MainContentArea({ outcomeValue, retirementAge, percentag
                   <Tooltip/>
                   <Legend
                   verticalAlign="bottom"
-                  height={10}/>
+                  height={-40}/>
                   {graphType === "income" && (
                       <ReferenceLine
                           y={desiredIncome}
