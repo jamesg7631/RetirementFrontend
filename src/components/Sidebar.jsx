@@ -10,12 +10,14 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Container, CircularProgress
+  Container, CircularProgress, Button
 } from '@mui/material';
 import { Stack } from '@mui/system'; // For vertical stacking
 import {getMyInvestmentHeaders } from "../api/apiService.js";
 import WithdrawalStrategy from "./WithdrawalStrategy.jsx";
 import AnnuityStrategy from "./AnnuityStrategy.jsx";
+import AddDCPensionDialog from './AddDCPensionDialog';
+
 
 function Sidebar({
   retirementAge,
@@ -46,6 +48,18 @@ function Sidebar({
   // const [statePension, setStatePension] = useState({});
   // const [percentageLumpsum.percenttageLumpsum, setPercentageLumpSum] = useState(25);
   const [desiredIncome, setDesiredIncome] = useState(30000);
+  const [openAddDCPensionDialog, setOpenAddDCPensionDialog] = useState(false);
+
+  const handleOpenAddDCPension = () => {
+    setOpenAddDCPensionDialog(true);
+  };
+
+  const handleCloseAddDCPension = () => {
+    setOpenAddDCPensionDialog(false);
+    window.location.reload();
+  };
+
+
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
@@ -87,6 +101,7 @@ function Sidebar({
   }
 
   return (
+      <>
     <Paper sx={{ width: 280, p: 2, display: 'flex', flexDirection: 'column' }}>
       <Tabs
         value={activeTab}
@@ -117,6 +132,14 @@ function Sidebar({
       <Box sx={{ flexGrow: 1 }}>
         {activeTab === 0 && (
           <Stack spacing={2}>
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={handleOpenAddDCPension}
+                sx={{ mb: 2 }}
+            >
+              Add DC Pension
+            </Button>
             {investments.map((item) => (
               <Box
                 key={item.id}
@@ -246,6 +269,13 @@ function Sidebar({
         )}
       </Box>
     </Paper>
+  <AddDCPensionDialog
+      open={openAddDCPensionDialog}
+      onClose={handleCloseAddDCPension}
+      selectedPension={null}
+      mode="add"
+  />
+        </>
   );
 }
 
