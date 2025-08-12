@@ -96,6 +96,7 @@ export default function Dashboard() {
             outcomeValue={outcomeValue}
             setOutcomeValue={setOutcomeValue}
             handleOutcomeChange={handleOutcomeChange}
+            incomeStrategy={incomeStrategy}
           />
         </Box>
       </Box>

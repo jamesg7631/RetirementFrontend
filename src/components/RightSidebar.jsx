@@ -1,10 +1,24 @@
 import React, { useState } from 'react';
 import { Box, Paper, Typography, Slider, IconButton } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info'; // Import the Info icon
+import LongevityAgeModal from "./LongevityAgeModal.jsx";
 
-function RightSidebar({outcomeValue, setOutcomeValue, handleOutcomeChange}) {
+function RightSidebar({outcomeValue, setOutcomeValue, handleOutcomeChange, incomeStrategy}) {
     // State for the Outcome slider, you might want this to be driven by actual data later
     console.log(`Received props: outcomeValue:${outcomeValue}, setOutcomeValue:${setOutcomeValue}, handleOutcomeChange:${setOutcomeValue}`)
+    const [isLongevityModalOpen, setIsLongevityModalOpen] = useState(false);
+    const [longevityAge, setLongevityAge] = useState(91);
+    const [savingsDepletionAge, setSavingsDepletionAge] = useState(81);
+    const handleOpenLongevityModal = () => {
+        setIsLongevityModalOpen(true);
+    };
+
+    const handleCloseLongevityModal = () => {
+        setIsLongevityModalOpen(false);
+    };
+
+
+
     return (
         <Paper
             sx={{
@@ -22,23 +36,24 @@ function RightSidebar({outcomeValue, setOutcomeValue, handleOutcomeChange}) {
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Typography variant="body1" sx={{ mr: 0.5 }}>
-                        91
+                        {longevityAge}
                     </Typography>
-                    <IconButton size="small" sx={{ p: 0.5, bgcolor: 'grey.500', color: 'white' }}>
+                    <IconButton onClick={handleOpenLongevityModal} size="small" sx={{ p: 0.5, bgcolor: 'grey.500', color: 'white' }}>
                         <InfoIcon sx={{ fontSize: '1rem' }} /> {/* Smaller icon */}
                     </IconButton>
                 </Box>
             </Box>
 
-            {/* Savings depletion age */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, pb: 1, borderBottom: '1px solid', borderColor: 'grey.300' }}>
-                <Typography variant="body1" fontWeight="bold" color="text.secondary">
-                    Savings depletion age
-                </Typography>
-                <Typography variant="body1">
-                    81
-                </Typography>
-            </Box>
+            {incomeStrategy !== "Annuity" && (
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, pb: 1, borderBottom: '1px solid', borderColor: 'grey.300' }}>
+                    <Typography variant="body1" fontWeight="bold" color="text.secondary">
+                        Savings depletion age
+                    </Typography>
+                    <Typography variant="body1">
+                        81
+                    </Typography>
+                </Box>
+            )}
 
             {/* Target Income Age */}
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}> {/* No bottom border for the last fixed text item */}
@@ -80,6 +95,10 @@ function RightSidebar({outcomeValue, setOutcomeValue, handleOutcomeChange}) {
             Current Value: {outcomeValue}
         </Typography> */}
             </Box>
+            <LongevityAgeModal
+                open={isLongevityModalOpen}
+                handleClose={handleCloseLongevityModal}
+            />
         </Paper>
     );
 }
