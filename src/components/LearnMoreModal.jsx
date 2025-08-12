@@ -14,10 +14,18 @@ import {
     List,
     ListItem,
     ListItemText,
+    Card,
+    CardContent,
+    ListItemIcon
 } from '@mui/material';
 
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import CalculateIcon from '@mui/icons-material/Calculate';
+
 
 function TabPanel({ children, value, index }) {
     return (
@@ -212,96 +220,260 @@ export default function LearnMoreModal({ open, onClose }) {
                     </Accordion>
                 </TabPanel>
                 <TabPanel value={tabValue} index={3}>
-                    <h2>Lump sum: What are my options?</h2>
-                    <p>The most common approach is to take up to 25% of a pension pot as a tax-free lump sum.
-                        This is often referred to as a Pension Commencement Lump Sum. The remaining 75% stays
-                        invested and can be used to provide a retirement income, such as through an annuity or drawdown.
-                        There are limits on the total tax-free cash you can take from all your pensions, known as the
-                        Lump Sum Allowance (LSA). This allowance is currently £268,275, meaning you can take up to
-                        25% of your total pension savings tax-free, as long as that amount does not exceed the LSA.</p>
-                    <p>However, taking a lump sum doesn't always mean you take the full 25% upfront. There are a few
-                        different approaches people can take depending on their circumstances and needs:</p>
-                    <ol>
-                        <li><strong>Taking all the tax-free cash at once and putting the rest into Drawdown:</strong>
-                            This is a popular option where you "crystallise" your pension pot.
-                            You take the 25% tax-free lump sum in one go, and the remaining 75% is moved into a drawdown
-                            account. This remaining money stays invested, and you can withdraw taxable income from it as
-                            and when you need it. This gives you maximum flexibility to manage your retirement income,
-                            but it also means your remaining funds are still subject to market risk.</li>
-                        <li><strong>Taking ad-hoc lump sums:</strong>
-                            This approach is known as an Uncrystallised Funds Pension Lump Sum (UFPLS).
-                            Instead of taking the 25% tax-free lump sum all at once, you take smaller, flexible
-                            lump sums as and when you need them. With each withdrawal, 25% of the amount is tax-free
-                            and the remaining 75% is treated as taxable income. This can be a useful way to manage
-                            your tax bill, as spreading withdrawals over different tax years can help keep you in a
-                            lower tax bracket. However, it's important to remember that taking money this way will
-                            trigger the Money Purchase Annual Allowance (MPAA), which reduces the amount you can
-                            contribute to a pension in the future.
-                        </li>
-                        <li>
-                            <strong>Taking the entire pension pot as a single lump sum: </strong>
-                            While you have the option to cash in your entire pension, this is rarely the most
-                            tax-efficient choice. In this scenario, only the first 25% of the total amount would be
-                            tax-free. The remaining 75% is added to your income for that tax year and could push you
-                            into a much higher income tax bracket, resulting in a large tax bill. This approach also
-                            leaves you with the full responsibility of managing a significant amount of money and the
-                            risk of it running out before the end of your life.
-                        </li>
-                    </ol>
-                    <p>The approach you choose has significant implications for your tax situation, your future
-                        investment growth, and your long-term financial security. It is therefore crucial to consider
-                        these options carefully and understand the specific rules that apply to your situation.</p>
+                    <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography variant="subtitle1">Basic Overview</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Typography paragraph>
+                                The most common approach is to take up to 25% of a pension pot as a tax-free lump sum.
+                                This is often referred to as a Pension Commencement Lump Sum. The remaining 75% stays
+                                invested and can be used to provide a retirement income, such as through an annuity or drawdown.
+                            </Typography>
+                            <Typography paragraph>
+                                There are limits on the total tax-free cash you can take from all your pensions, known as the
+                                Lump Sum Allowance (LSA). This allowance is currently £268,275, meaning you can take up to
+                                25% of your total pension savings tax-free, as long as that amount does not exceed the LSA.
+                            </Typography>
+                        </AccordionDetails>
+                    </Accordion>
+
+                    <Accordion>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography variant="subtitle1">Available Approaches</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <List>
+                            <ListItem>
+                                <ListItemText
+                                    primary="Taking all tax-free cash upfront with Drawdown"
+                                    secondary={
+                                        <Typography variant="body2" color="text.secondary">
+                                            Take the full 25% tax-free lump sum immediately. The remaining 75% moves to a drawdown
+                                            account, staying invested while allowing flexible withdrawals. Offers maximum flexibility
+                                            but keeps your remaining funds subject to market risk.
+                                        </Typography>
+                                    }
+                                />
+                            </ListItem>
+
+                            <ListItem>
+                                <ListItemText
+                                    primary="Ad-hoc lump sums (UFPLS)"
+                                    secondary={
+                                        <Typography variant="body2" color="text.secondary">
+                                            Take smaller, flexible lump sums as needed. Each withdrawal is 25% tax-free, with the
+                                            remaining 75% taxed as income. Can help manage your tax position but triggers the Money
+                                            Purchase Annual Allowance (MPAA), limiting future pension contributions.
+                                        </Typography>
+                                    }
+                                />
+                            </ListItem>
+
+                            <ListItem>
+                                <ListItemText
+                                    primary="Full pot withdrawal"
+                                    secondary={
+                                        <Typography variant="body2" color="text.secondary">
+                                            Cash in your entire pension at once. Only the first 25% is tax-free, with the remaining
+                                            75% added to your annual income for tax purposes. Usually not tax-efficient and risks
+                                            depleting retirement savings too quickly.
+                                        </Typography>
+                                    }
+                                />
+                            </ListItem>
+                        </List>
+                    </AccordionDetails>
+                </Accordion>
+
+                <Accordion>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography variant="subtitle1">Important Considerations</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <Typography paragraph>
+                            Your choice has significant implications for:
+                        </Typography>
+                        <List dense>
+                            <ListItem>
+                                <ListItemText primary="• Tax situation" />
+                            </ListItem>
+                            <ListItem>
+                                <ListItemText primary="• Future investment growth potential" />
+                            </ListItem>
+                            <ListItem>
+                                <ListItemText primary="• Long-term financial security" />
+                            </ListItem>
+                        </List>
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                            Consider these options carefully and understand the specific rules that apply to your situation.
+                        </Typography>
+                    </AccordionDetails>
+                </Accordion>
                 </TabPanel>
                 <TabPanel value={tabValue} index={4}>
-                    <h2>
+                    <Typography variant="h6" gutterBottom>
                         Investment Forecasting: A Historical Bootstrapping Approach
-                    </h2>
-                        To model the future performance of your investments, we use an investment forecasting engine
-                        built on a historical bootstrapping approach. This method is designed to capture the complex,
-                        real-world correlations between different types of investments.
-                    <ul>
-                        <li>Instead of predicting the return of each individual asset class in isolation, our model samples
-                            full months of historical data. For each simulation, the engine randomly selects a month from the
-                            past and uses the returns from that single month for all asset classes simultaneously. </li>
-                        <li>This preserves the relationships between different asset classes—for example, when equities
-                            perform poorly, bonds might perform well—and ensures that the simulated scenarios are realistic.</li>
-                        <li>
-                            By using asset class proxies, we can map your pension fund's specific holdings to these historical
-                            correlations, providing a more accurate representation of your portfolio's potential behavior over time.
-                        </li>
-                    </ul>
+                    </Typography>
+
+                    <Accordion defaultExpanded>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography variant="subtitle1">Our Forecasting Method</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Typography paragraph>
+                                To model the future performance of your investments, we use an investment forecasting engine
+                                built on a historical bootstrapping approach. This method is designed to capture the complex,
+                                real-world correlations between different types of investments.
+                            </Typography>
+                        </AccordionDetails>
+                    </Accordion>
+
+                    <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography variant="subtitle1">How It Works</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <List>
+                                <ListItem>
+                                    <ListItemText
+                                        primary="Historical Data Sampling"
+                                        secondary="Instead of predicting the return of each individual asset class in isolation, our model samples
+                        full months of historical data. For each simulation, the engine randomly selects a month from the
+                        past and uses the returns from that single month for all asset classes simultaneously."
+                                    />
+                                </ListItem>
+
+                                <ListItem>
+                                    <ListItemText
+                                        primary="Preserved Asset Relationships"
+                                        secondary="This preserves the relationships between different asset classes—for example, when equities
+                        perform poorly, bonds might perform well—and ensures that the simulated scenarios are realistic."
+                                    />
+                                </ListItem>
+
+                                <ListItem>
+                                    <ListItemText
+                                        primary="Portfolio Mapping"
+                                        secondary="By using asset class proxies, we can map your pension fund's specific holdings to these historical
+                        correlations, providing a more accurate representation of your portfolio's potential behavior over time."
+                                    />
+                                </ListItem>
+                            </List>
+                        </AccordionDetails>
+                    </Accordion>
+
                 </TabPanel>
                 <TabPanel value={tabValue} index={5}>
-                    <h2>How We Plan Your Future: Stochastic vs. Deterministic Modelling</h2>
-                    <ul>
-                        <li>Traditional retirement planning tools often use a deterministic model. This method relies on
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography variant="h6" gutterBottom>How We Plan Your Future: Stochastic vs. Deterministic Modelling</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <Typography paragraph>
+                            To model the future performance of your investments, we use an investment forecasting engine
+                            built on a historical bootstrapping approach. This method is designed to capture the complex,
+                            real-world correlations between different types of investments.
+                        </Typography>
+                        <Typography paragraph>Traditional retirement planning tools often use a deterministic model. This method relies on
                             a single, fixed set of assumptions for things like investment growth and inflation. The
                             result is a single projected outcome for your retirement savings, which can give a false
                             sense of certainty. It tells you what will happen, but it ignores the inherent randomness
-                            and volatility of the financial markets.</li>
-                        <li>Our application utilizes a more sophisticated method known as stochastic modelling.
+                            and volatility of the financial markets.</Typography>
+                        <Typography paragraph>Our application utilizes a more sophisticated method known as stochastic modelling.
                             Instead of one fixed forecast, this approach runs thousands of simulations, each with a
                             different randomly generated economic scenario. By doing this, we create a wide distribution
                             of potential outcomes, allowing you to see the full range of possibilities—from a pessimistic
                             scenario to an optimistic one. This methodology provides a much more realistic and
                             comprehensive view of your retirement journey, enabling you to make more informed decisions
-                            based on a spectrum of potential risks and rewards.</li>
-                    </ul>
+                            based on a spectrum of potential risks and rewards.</Typography>
+                    </AccordionDetails>
                 </TabPanel>
                 <TabPanel value={tabValue} index={6}>
-                    <h2>
+                    <Typography variant="h6" gutterBottom>
                         Inflation and Gilt Yields: Key Variables for a Realistic Forecast
-                    </h2>
-                    <ul>
-                        <li>Two critical variables that profoundly impact the value of your retirement are inflation and the yields on UK government bonds.</li>
-                        <li>To account for the erosion of purchasing power, we model inflation by using historical Consumer Price Index (CPI) data within our
-                            bootstrapping framework. This allows our simulations to show you the real value of your savings in future pounds, rather than just
-                            their nominal value.</li>
-                        <li>We also incorporate historical gilt yields, specifically from 30-year government bonds. These yields are a foundational element
-                            in actuarial science and are used to determine the cost of purchasing a guaranteed income stream in retirement, known as an annuity.
-                            By including 30-year gilt yields, our application can provide a more precise calculation of how much of your retirement pot would be
-                            required to secure a specific level of lifetime income, which is an essential part of a comprehensive retirement plan.</li>
-                    </ul>
+                    </Typography>
+
+                    <Card sx={{ mb: 2 }}>
+                        <CardContent>
+                            <Typography variant="body1" paragraph>
+                                Two critical variables that profoundly impact the value of your retirement are inflation and the yields on UK government bonds.
+                            </Typography>
+                        </CardContent>
+                    </Card>
+
+                    <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography variant="subtitle1">Inflation Modeling</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Typography variant="body1" paragraph>
+                                To account for the erosion of purchasing power, we model inflation by using historical Consumer Price Index (CPI) data within our
+                                bootstrapping framework. This allows our simulations to show you the real value of your savings in future pounds, rather than just
+                                their nominal value.
+                            </Typography>
+
+                            <Box sx={{ mt: 2 }}>
+                                <List dense>
+                                    <ListItem>
+                                        <ListItemIcon>
+                                            <TrendingUpIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary="Uses historical CPI data"
+                                        />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemIcon>
+                                            <ShowChartIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary="Shows real future value"
+                                        />
+                                    </ListItem>
+                                </List>
+                            </Box>
+                        </AccordionDetails>
+                    </Accordion>
+
+                    <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography variant="subtitle1">Gilt Yields Impact</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Typography variant="body1" paragraph>
+                                We also incorporate historical gilt yields, specifically from 30-year government bonds. These yields are a foundational element
+                                in actuarial science and are used to determine the cost of purchasing a guaranteed income stream in retirement, known as an annuity.
+                            </Typography>
+
+                            <Typography variant="body1" paragraph>
+                                By including 30-year gilt yields, our application can provide a more precise calculation of how much of your retirement pot would be
+                                required to secure a specific level of lifetime income, which is an essential part of a comprehensive retirement plan.
+                            </Typography>
+
+                            <Box sx={{ mt: 2 }}>
+                                <List dense>
+                                    <ListItem>
+                                        <ListItemIcon>
+                                            <AccountBalanceIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary="30-year government bonds"
+                                            secondary="Foundation for actuarial calculations"
+                                        />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemIcon>
+                                            <CalculateIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary="Precise income calculations"
+                                            secondary="For lifetime income planning"
+                                        />
+                                    </ListItem>
+                                </List>
+                            </Box>
+                        </AccordionDetails>
+                    </Accordion>
                 </TabPanel>
             </DialogContent>
         </Dialog>
