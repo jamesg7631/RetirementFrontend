@@ -14,38 +14,68 @@ const CASHFLOW_COLORS = [
     '#8884d8', '#82ca9d', '#ffc658', '#0088FE', '#00C49F', '#FFBB28',
 ];
 
-// Helper function to format the names for the legend
 const formatLegendName = (key) => {
     return key
-        .replace(/^(current_|explored_)/, '') // Remove prefix
-        .replace(/([A-Z])/g, ' $1') // Add space before uppercase letters
-        .replace(/_/g, ' ') // Replace underscores with spaces
+        .replace(/^(current_|explored_)/, '')
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/_/g, ' ')
         .trim();
+};
+
+// ✅ --- NEW CUSTOM LEGEND COMPONENT --- ✅
+// This component creates the two-column layout you wanted.
+const CustomLegend = (props) => {
+    const { payload } = props;
+
+    // Separate the legend items into 'Current' and 'Explored' arrays
+    const currentItems = payload.filter(entry => entry.value.startsWith('Current'));
+    const exploredItems = payload.filter(entry => entry.value.startsWith('Explored'));
+
+    // A small helper component to render each list of items
+    const renderLegendList = (title, items) => (
+        <Box>
+            <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1, textAlign: 'center' }}>
+                {title}
+            </Typography>
+            {items.map((entry, index) => (
+                <Box key={`item-${index}`} sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
+                    {/* The colored square */}
+                    <Box component="span" sx={{ width: 12, height: 12, bgcolor: entry.color, mr: 1.5, display: 'inline-block', flexShrink: 0 }} />
+                    {/* The text, with the "Current - " prefix removed */}
+                    <Typography variant="body2">
+                        {entry.value.replace(/^(Current - |Explored - )/, '')}
+                    </Typography>
+                </Box>
+            ))}
+        </Box>
+    );
+
+    return (
+        // Use a flex container to place the two columns side-by-side
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 5, mt: 2 }}>
+            {currentItems.length > 0 && renderLegendList('Current Scenario', currentItems)}
+            {exploredItems.length > 0 && renderLegendList('Explored Scenario', exploredItems)}
+        </Box>
+    );
 };
 
 
 export default function MainContentArea({
-                                            // Props for the active scenario (current or explored)
+                                            // (Props remain the same as before)
                                             outcomeValue, retirementAge, percentageLumpsum, incomeStrategy,
                                             withdrawalType, initialAmount, increaseRate,
                                             annuityType, annuityIncreaseRate, statePensionAge, statePensionValue,
                                             graphType, setGraphType, desiredAnnualIncome,
-
-                                            // Props specific to the explored view
-                                            currentScenario, // This will contain the state of the "Current Scenario" tab
-                                            isExploredView   // This boolean tells us if we are on the "Explored Scenario" tab
+                                            currentScenario,
+                                            isExploredView
                                         }) {
-    // State for the active scenario's data (this will be the explored data in explored view)
+    // (All state and hooks remain the same as before)
     const [activeChartData, setActiveChartData] = useState([]);
-    // State specifically for the current scenario's data when in explored view
     const [currentScenarioChartData, setCurrentScenarioChartData] = useState([]);
-
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [valueType, setValueType] = useState('present');
     const [spousePercentage, setSpousePercentage] = useState(50);
-
-    // Using a ref to prevent multiple fetches on rapid state changes
     const fetchInProgress = useRef(false);
 
     const handleGraphTypeChange = (event, newGraphType) => {
@@ -61,7 +91,6 @@ export default function MainContentArea({
         }
     };
 
-    // This useEffect fetches data for the ACTIVE scenario (either current or explored)
     useEffect(() => {
         if (fetchInProgress.current) return;
         if (retirementAge < 57) return;
@@ -98,7 +127,6 @@ export default function MainContentArea({
                 setLoading(true);
                 setError(null);
 
-                // Fetch data for the currently active scenario
                 const activeScenarioProps = {
                     outcomeValue, retirementAge, percentageLumpsum, incomeStrategy, withdrawalType,
                     initialAmount, increaseRate, annuityType, annuityIncreaseRate, graphType
@@ -106,7 +134,6 @@ export default function MainContentArea({
                 const response = await fetchData(activeScenarioProps);
                 setActiveChartData(response.investmentChartDTO || []);
 
-                // If in explored view, also fetch data for the current scenario for comparison
                 if (isExploredView && currentScenario) {
                     const currentResponse = await fetchData(currentScenario);
                     setCurrentScenarioChartData(currentResponse.investmentChartDTO || []);
@@ -124,16 +151,13 @@ export default function MainContentArea({
         const timeoutId = setTimeout(executeFetch, 500);
         return () => clearTimeout(timeoutId);
     }, [
-        // Dependencies for the active scenario
         graphType, valueType, spousePercentage, outcomeValue,
         retirementAge, percentageLumpsum, incomeStrategy,
         withdrawalType, initialAmount, increaseRate,
         annuityType, annuityIncreaseRate,
-        // Dependencies for the comparison view
         isExploredView, currentScenario
     ]);
 
-    // This useMemo hook merges the two datasets when in explored view
     const combinedChartData = useMemo(() => {
         if (!isExploredView || !currentScenarioChartData.length || !activeChartData.length) {
             return activeChartData;
@@ -141,7 +165,6 @@ export default function MainContentArea({
 
         const mergedDataMap = new Map();
 
-        // Process current scenario data first
         currentScenarioChartData.forEach(item => {
             const entry = { age: item.age };
             Object.keys(item).forEach(key => {
@@ -152,7 +175,6 @@ export default function MainContentArea({
             mergedDataMap.set(item.age, entry);
         });
 
-        // Merge explored scenario data
         activeChartData.forEach(item => {
             const entry = mergedDataMap.get(item.age) || { age: item.age };
             Object.keys(item).forEach(key => {
@@ -166,7 +188,6 @@ export default function MainContentArea({
         return Array.from(mergedDataMap.values()).sort((a, b) => a.age - b.age);
     }, [isExploredView, activeChartData, currentScenarioChartData]);
 
-    // Determine the keys for rendering the bars
     const { cashflowKeys, currentKeys, exploredKeys } = useMemo(() => {
         const data = isExploredView ? combinedChartData : activeChartData;
         if (!data || data.length === 0) {
@@ -198,8 +219,8 @@ export default function MainContentArea({
             flexGrow: 1, p: 2, display: 'flex', flexDirection: 'column',
             justifyContent: 'space-between', boxShadow: 3,
         }}>
+            {/* --- TOP CONTROLS (UNCHANGED) --- */}
             <Box sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', mb: 3 }}>
-                {/* Controls remain the same */}
                 <ToggleButtonGroup
                     value={graphType}
                     exclusive
@@ -265,7 +286,8 @@ export default function MainContentArea({
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart
                             data={chartDataToDisplay}
-                            margin={{ top: 20, right: 60, left: 80, bottom: 50 }}
+                            // Increased bottom margin to give the custom legend more space
+                            margin={{ top: 20, right: 60, left: 80, bottom: 80 }}
                         >
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis
@@ -279,43 +301,43 @@ export default function MainContentArea({
                                 }}
                             />
                             <Tooltip />
-                            <Legend verticalAlign="bottom" height={36} />
+
+                            {/* ✅ --- UPDATED LEGEND USAGE --- ✅ */}
+                            {/* We now render our custom component for the legend */}
+                            <Legend content={<CustomLegend />} />
 
                             {graphType === "income" && (
                                 <ReferenceLine y={desiredAnnualIncome} stroke="#ff0000" strokeDasharray="3 3" />
                             )}
 
-                            {/* CONDITIONAL RENDERING FOR BARS */}
+                            {/* --- BARS (UNCHANGED) --- */}
                             {isExploredView ? (
                                 <>
-                                    {/* Render bars for CURRENT scenario */}
                                     {currentKeys.map((key, i) => (
                                         <Bar
                                             key={key}
                                             dataKey={key}
-                                            stackId="current" // Grouped by this ID
+                                            stackId="current"
                                             fill={CASHFLOW_COLORS[i % CASHFLOW_COLORS.length]}
                                             name={`Current - ${formatLegendName(key)}`}
                                         />
                                     ))}
-                                    {/* Render bars for EXPLORED scenario */}
                                     {exploredKeys.map((key, i) => (
                                         <Bar
                                             key={key}
                                             dataKey={key}
-                                            stackId="explored" // Grouped by this ID
+                                            stackId="explored"
                                             fill={CASHFLOW_COLORS[i % CASHFLOW_COLORS.length]}
                                             name={`Explored - ${formatLegendName(key)}`}
                                         />
                                     ))}
                                 </>
                             ) : (
-                                // Original rendering for single view
                                 cashflowKeys.map((key, i) => (
                                     <Bar
                                         key={key}
                                         dataKey={key}
-                                        stackId="a" // All stacked together
+                                        stackId="a"
                                         fill={CASHFLOW_COLORS[i % CASHFLOW_COLORS.length]}
                                         name={formatLegendName(key)}
                                     />
@@ -326,6 +348,7 @@ export default function MainContentArea({
                 )}
             </Box>
 
+            {/* --- BOTTOM TEXT (UNCHANGED) --- */}
             <Box sx={{
                 textAlign: 'center', bgcolor: 'grey.200', p: 2, borderRadius: 1,
             }}>
