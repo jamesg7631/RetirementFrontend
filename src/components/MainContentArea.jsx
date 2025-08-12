@@ -22,6 +22,7 @@ const formatLegendName = (key) => {
         .trim();
 };
 
+// ✅ --- UPDATED CUSTOM LEGEND COMPONENT --- ✅
 const CustomLegend = (props) => {
     const { payload } = props;
     const currentItems = payload.filter(entry => entry.value.startsWith('Current'));
@@ -44,14 +45,24 @@ const CustomLegend = (props) => {
     );
 
     return (
-        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 5, mt: 2 }}>
-            {currentItems.length > 0 && renderLegendList('Current Scenario', currentItems)}
-            {exploredItems.length > 0 && renderLegendList('Explored Scenario', exploredItems)}
+        // This outer box now holds everything
+        <Box sx={{ mt: 3 }}> {/* Add margin-top to space it from the axis ticks */}
+            {/* The new "Age" heading */}
+            <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 2, textAlign: 'center' }}>
+                Age
+            </Typography>
+            {/* The flex container for the two columns */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 5 }}>
+                {currentItems.length > 0 && renderLegendList('Current Scenario', currentItems)}
+                {exploredItems.length > 0 && renderLegendList('Explored Scenario', exploredItems)}
+            </Box>
         </Box>
     );
 };
 
+
 export default function MainContentArea({
+                                            // ... Props are unchanged
                                             outcomeValue, retirementAge, percentageLumpsum, incomeStrategy,
                                             withdrawalType, initialAmount, increaseRate,
                                             annuityType, annuityIncreaseRate, statePensionAge, statePensionValue,
@@ -59,7 +70,7 @@ export default function MainContentArea({
                                             currentScenario,
                                             isExploredView
                                         }) {
-    // ... all hooks and state are unchanged ...
+    // ... All state and hooks remain the same
     const [activeChartData, setActiveChartData] = useState([]);
     const [currentScenarioChartData, setCurrentScenarioChartData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -255,7 +266,7 @@ export default function MainContentArea({
 
             <Box sx={{
                 flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center',
-                mb: 3, minHeight: '650px', height: '750px' // ✅ FIXED: Increased height even more
+                mb: 3, minHeight: '650px', height: '750px'
             }}>
                 {loading ? (
                     <CircularProgress />
@@ -266,10 +277,10 @@ export default function MainContentArea({
                             margin={{ top: 20, right: 60, left: 80, bottom: 80 }}
                         >
                             <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis
-                                dataKey="age"
-                                label={{ value: 'Age', position: 'insideBottom', offset: -40 }}
-                            />
+
+                            {/* ✅ FIXED: Removed the label from here */}
+                            <XAxis dataKey="age" />
+
                             <YAxis
                                 label={{
                                     value: `${graphType === 'income' ? 'Income' : 'Savings'} (${valueType === 'present' ? 'Present' : 'Future'} Value)`,
