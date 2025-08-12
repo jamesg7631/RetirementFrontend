@@ -22,39 +22,53 @@ const formatLegendName = (key) => {
         .trim();
 };
 
-// ✅ --- UPDATED CUSTOM LEGEND COMPONENT --- ✅
-const CustomLegend = (props) => {
-    const { payload } = props;
-    const currentItems = payload.filter(entry => entry.value.startsWith('Current'));
-    const exploredItems = payload.filter(entry => entry.value.startsWith('Explored'));
+// ✅ --- ENHANCED CUSTOM LEGEND COMPONENT --- ✅
+// This component now handles the layout for BOTH the Current and Explored scenarios.
+const CustomLegend = ({ payload, isExploredView }) => {
+    // Don't render anything if there's no data
+    if (!payload || payload.length === 0) {
+        return null;
+    }
 
-    const renderLegendList = (title, items) => (
-        <Box>
-            <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1, textAlign: 'center' }}>
-                {title}
-            </Typography>
-            {items.map((entry, index) => (
-                <Box key={`item-${index}`} sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
-                    <Box component="span" sx={{ width: 12, height: 12, bgcolor: entry.color, mr: 1.5, display: 'inline-block', flexShrink: 0 }} />
-                    <Typography variant="body2">
-                        {entry.value.replace(/^(Current - |Explored - )/, '')}
-                    </Typography>
+    // A. Logic for the "Explored Scenario" two-column layout
+    if (isExploredView) {
+        const currentItems = payload.filter(entry => entry.value.startsWith('Current'));
+        const exploredItems = payload.filter(entry => entry.value.startsWith('Explored'));
+
+        const renderLegendList = (title, items) => (
+            <Box>
+                <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1, textAlign: 'center' }}>{title}</Typography>
+                {items.map((entry, index) => (
+                    <Box key={`item-${index}`} sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
+                        <Box component="span" sx={{ width: 12, height: 12, bgcolor: entry.color, mr: 1.5, display: 'inline-block', flexShrink: 0 }} />
+                        <Typography variant="body2">{entry.value.replace(/^(Current - |Explored - )/, '')}</Typography>
+                    </Box>
+                ))}
+            </Box>
+        );
+
+        return (
+            <Box sx={{ mt: 3 }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 2, textAlign: 'center' }}>Age</Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'center', gap: 5 }}>
+                    {currentItems.length > 0 && renderLegendList('Current Scenario', currentItems)}
+                    {exploredItems.length > 0 && renderLegendList('Explored Scenario', exploredItems)}
                 </Box>
-            ))}
-        </Box>
-    );
+            </Box>
+        );
+    }
 
+    // B. Logic for the "Current Scenario" single-row layout
     return (
-        // This outer box now holds everything
-        <Box sx={{ mt: 3 }}> {/* Add margin-top to space it from the axis ticks */}
-            {/* The new "Age" heading */}
-            <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 2, textAlign: 'center' }}>
-                Age
-            </Typography>
-            {/* The flex container for the two columns */}
-            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 5 }}>
-                {currentItems.length > 0 && renderLegendList('Current Scenario', currentItems)}
-                {exploredItems.length > 0 && renderLegendList('Explored Scenario', exploredItems)}
+        <Box sx={{ mt: 3 }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 2, textAlign: 'center' }}>Age</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', columnGap: 3, rowGap: 1 }}>
+                {payload.map((entry, index) => (
+                    <Box key={`item-${index}`} sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box component="span" sx={{ width: 12, height: 12, bgcolor: entry.color, mr: 1 }} />
+                        <Typography variant="body2">{entry.value}</Typography>
+                    </Box>
+                ))}
             </Box>
         </Box>
     );
@@ -79,6 +93,7 @@ export default function MainContentArea({
     const [spousePercentage, setSpousePercentage] = useState(50);
     const fetchInProgress = useRef(false);
 
+    // ... All handlers and useEffect hooks remain the same
     const handleGraphTypeChange = (event, newGraphType) => {
         if (newGraphType !== null) {
             setGraphType(newGraphType);
@@ -248,7 +263,6 @@ export default function MainContentArea({
                     }}
                 />
             </Box>
-
             {graphType === "income" && (
                 <Box sx={{
                     display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
@@ -274,11 +288,12 @@ export default function MainContentArea({
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart
                             data={chartDataToDisplay}
-                            margin={{ top: 20, right: 60, left: 80, bottom: 80 }}
+                            // ✅ FIXED: Using a single, generous margin for both views.
+                            margin={{ top: 20, right: 60, left: 80, bottom: 120 }}
                         >
                             <CartesianGrid strokeDasharray="3 3" />
 
-                            {/* ✅ FIXED: Removed the label from here */}
+                            {/* ✅ FIXED: XAxis is now simple. The label is in the custom legend. */}
                             <XAxis dataKey="age" />
 
                             <YAxis
@@ -288,7 +303,9 @@ export default function MainContentArea({
                                 }}
                             />
                             <Tooltip />
-                            <Legend content={<CustomLegend />} />
+
+                            {/* ✅ FIXED: Unconditionally render the enhanced custom legend */}
+                            <Legend content={<CustomLegend payload={undefined} isExploredView={isExploredView} />} />
 
                             {graphType === "income" && (
                                 <ReferenceLine y={desiredAnnualIncome} stroke="#ff0000" strokeDasharray="3 3" />
