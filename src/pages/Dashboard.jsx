@@ -4,13 +4,13 @@ import Sidebar from "../components/Sidebar.jsx";
 import MainContentArea from "../components/MainContentArea.jsx";
 import RightSidebar from "../components/RightSidebar.jsx";
 import { Box } from "@mui/material";
-import Footer from "../components/Footer.jsx";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import Footer from "../components/Footer.jsx"; // ✅ FIXED: Add this import statement
 
 export default function Dashboard() {
     const [currentTab, setCurrentTab] = useState(0);
 
-    const [currentScenarioState, setCurrentScenarioState] = useState({
+    const initialState = {
         outcomeValue: 50,
         retirementAge: 57,
         percentageLumpsum: 25,
@@ -24,25 +24,29 @@ export default function Dashboard() {
         statePensionValue: '11973',
         graphType: 'income',
         desiredAnnualIncome: 150000
-    });
+    };
 
-    const [exploredScenarioState, setExploredScenarioState] = useState(null);
+    const [currentScenarioState, setCurrentScenarioState] = useState(initialState);
+    const [exploredScenarioState, setExploredScenarioState] = useState(null); // Reverted to original state
 
-    useEffect(() => {
-        if (currentTab === 1 && !exploredScenarioState) {
-            setExploredScenarioState(JSON.parse(JSON.stringify(currentScenarioState)));
+    const handleTabChange = (newTab) => {
+        if (newTab === 1 && !exploredScenarioState) {
+            setExploredScenarioState({ ...currentScenarioState });
         }
-    }, [currentTab, currentScenarioState]);
+        setCurrentTab(newTab);
+    };
 
     const getActiveScenario = () => {
-        return currentTab === 0 ? currentScenarioState : exploredScenarioState;
+        // If we are on tab 1 and explored state exists, use it. Otherwise, use current state.
+        return currentTab === 1 && exploredScenarioState ? exploredScenarioState : currentScenarioState;
     };
 
     const updateActiveScenario = (updates) => {
         if (currentTab === 0) {
             setCurrentScenarioState(prev => ({ ...prev, ...updates }));
         } else {
-            setExploredScenarioState(prev => ({ ...prev, ...updates }));
+            // Ensure explored state is initialized before trying to update it
+            setExploredScenarioState(prev => (prev ? { ...prev, ...updates } : { ...initialState, ...updates }));
         }
     };
 
@@ -60,7 +64,10 @@ export default function Dashboard() {
                 flexGrow: 1,
                 p: 1.5,
             }}>
-                <NavigationTabs currentTab={currentTab} onTabChange={setCurrentTab} />
+                <NavigationTabs
+                    currentTab={currentTab}
+                    onTabChange={handleTabChange} // Corrected handler from previous step
+                />
                 <Box sx={{
                     display: "flex",
                     flexGrow: 1,
