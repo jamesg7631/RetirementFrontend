@@ -262,10 +262,10 @@ export default function MainContentArea({ outcomeValue, retirementAge, percentag
                   {graphType === "income" && (
                       <ReferenceLine
                           y={desiredIncome}
-                          label={{
-                            value: `Desired Income: £${desiredIncome.toLocaleString()}`,
-                            position: 'right'
-                          }}
+                          // label={{
+                          //   value: `Desired Income: £${desiredIncome.toLocaleString()}`,
+                          //   position: 'right'
+                          // }}
                           stroke="#ff0000"
                           strokeDasharray="3 3"
                       />
