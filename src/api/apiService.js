@@ -91,6 +91,17 @@ export const getAllDcPensions = async () => {
     }
 }
 
+export const getStatePension = async () => {
+    try {
+        console.log("Attempt to get All Dc Pensions");
+        const response = await api.get(`${API_URL}/investments/state-pension`)
+        return response.data;
+    } catch (error) {
+        console.error("Error: Failed to retrieve State Pension");
+        throw error;
+    }
+}
+
 export const deleteDcPension = async (content) => {
     try {
         console.log("Attempt to delete Dc pension");
