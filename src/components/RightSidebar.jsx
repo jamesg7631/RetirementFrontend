@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import { Box, Paper, Typography, Slider, IconButton } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info'; // Import the Info icon
 import LongevityAgeModal from "./LongevityAgeModal.jsx";
+import OutcomeModal from "./OutcomeModal.jsx";
 
 function RightSidebar({outcomeValue, setOutcomeValue, handleOutcomeChange, incomeStrategy}) {
     // State for the Outcome slider, you might want this to be driven by actual data later
     console.log(`Received props: outcomeValue:${outcomeValue}, setOutcomeValue:${setOutcomeValue}, handleOutcomeChange:${setOutcomeValue}`)
     const [isLongevityModalOpen, setIsLongevityModalOpen] = useState(false);
+    const [isOutcomeModalOpen, setIsOutcomeModalOpen] = useState(false);
     const [longevityAge, setLongevityAge] = useState(91);
     const [savingsDepletionAge, setSavingsDepletionAge] = useState(81);
+
     const handleOpenLongevityModal = () => {
         setIsLongevityModalOpen(true);
     };
@@ -16,6 +19,16 @@ function RightSidebar({outcomeValue, setOutcomeValue, handleOutcomeChange, incom
     const handleCloseLongevityModal = () => {
         setIsLongevityModalOpen(false);
     };
+
+    const handleOpenOutcomeModal = () => {
+        setIsOutcomeModalOpen(true);
+    }
+
+    const handleCloseOutcomeModal = () => {
+        setIsOutcomeModalOpen(false);
+    }
+
+
 
 
 
@@ -72,7 +85,7 @@ function RightSidebar({outcomeValue, setOutcomeValue, handleOutcomeChange, incom
                     <Typography variant="body1" fontWeight="bold" sx={{ mr: 1 }}>
                         Outcome
                     </Typography>
-                    <IconButton size="small" sx={{ p: 0.5, bgcolor: 'grey.500', color: 'white' }}>
+                    <IconButton onClick={handleOpenOutcomeModal} size="small" sx={{ p: 0.5, bgcolor: 'grey.500', color: 'white' }}>
                         <InfoIcon sx={{ fontSize: '1rem' }} /> {/* Smaller icon */}
                     </IconButton>
                 </Box>
@@ -99,6 +112,10 @@ function RightSidebar({outcomeValue, setOutcomeValue, handleOutcomeChange, incom
                 open={isLongevityModalOpen}
                 handleClose={handleCloseLongevityModal}
             />
+            <OutcomeModal
+                open={isOutcomeModalOpen}
+                handleClose={handleCloseOutcomeModal}
+                />
         </Paper>
     );
 }
