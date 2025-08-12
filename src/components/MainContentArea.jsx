@@ -246,7 +246,7 @@ export default function MainContentArea({ outcomeValue, retirementAge, percentag
                     margin={{
                       top: 20,
                       right: 60,
-                      left: 60,
+                      left: 80,
                       bottom: 20,
                     }}
                 >
@@ -255,7 +255,8 @@ export default function MainContentArea({ outcomeValue, retirementAge, percentag
                   <YAxis label={{
                     value: `${graphType === 'income' ? 'Income' : 'Savings'} (${valueType === 'present' ? 'Present' : 'Future'} Value)`,
                     angle: -90,
-                    position: 'insideLeft'
+                    position: 'insideLeft',
+                      offset: -40
                   }}/>
                   <Tooltip/>
                   <Legend
