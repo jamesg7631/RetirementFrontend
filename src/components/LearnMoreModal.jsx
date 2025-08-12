@@ -8,8 +8,16 @@ import {
     Box,
     Typography,
     IconButton,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    List,
+    ListItem,
+    ListItemText,
 } from '@mui/material';
+
 import CloseIcon from '@mui/icons-material/Close';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 function TabPanel({ children, value, index }) {
     return (
@@ -79,63 +87,129 @@ export default function LearnMoreModal({ open, onClose }) {
             </Box>
             <DialogContent>
                 <TabPanel value={tabValue} index={0}>
-                    Welcome to Retirement Planner! This tool helps you visualise and plan your retirement journey.
-                    Make informed decisions about your future by exploring different retirement scenarios.
+                    <Typography variant="body1" paragraph>
+                        Welcome to Retirement Planner! This tool helps you visualise and plan your retirement journey.
+                        Make informed decisions about your future by exploring different retirement scenarios.
+                    </Typography>
                 </TabPanel>
                 <TabPanel value={tabValue} index={1}>
-                    <h2>Understanding Your UK State Pension</h2>
-                    <ul>
-                        <li>The State Pension is a regular payment from the government that you can claim once you
-                            reach a specific age. It is a fundamental part of retirement income for most people,
-                            but the rules surrounding it can be complex. The amount you receive and the age you can
-                            claim it are determined by a few key factors.</li>
-                        <li>First, your eligibility and the amount you receive are primarily based on your National
-                            Insurance (NI) record. You generally need at least 10 "qualifying years" to receive any
-                            State Pension and 35 qualifying years to receive the full amount. A qualifying year is one
-                            in which you have paid or been credited with National Insurance contributions, for example,
-                            through working, being a carer, or claiming certain benefits.</li>
-                        <li>Second, your State Pension age—the earliest you can claim your pension—is currently 66
-                            for both men and women. This age is not fixed, however. It is scheduled to increase to 67
-                            between 2026 and 2028, and a further increase to 68 is planned for between 2044 and 2046.
-                            The specific date you become eligible can be influenced by your exact date of birth, as
-                            these changes are often phased in gradually. The government regularly reviews the State
-                            Pension age, at least once every five years, to ensure the system's long-term sustainability,
-                            primarily considering factors like life expectancy and the fiscal health of the country.</li>
-                        <li>
-                            Finally, a very important part of the State Pension is the triple lock.
-                            This is a government commitment to increase the State Pension each year by the highest of
-                            three measures: inflation (measured by the Consumer Price Index), average earnings growth,
-                            or 2.5%. The triple lock is designed to protect the purchasing power of your pension and
-                            ensure that pensioners can share in the country's economic prosperity. While it is not a
-                            statutory requirement and can be modified or suspended by the government, it has been a
-                            significant factor in increasing the value of the State Pension over the years.
-                        </li>
-                    </ul>
+                    <Typography variant="h6" gutterBottom>Understanding Your UK State Pension</Typography>
+                    <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography variant="subtitle1">Basic Eligibility and Payments</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Typography paragraph>
+                                The State Pension is a regular payment from the government that you can claim once you
+                                reach a specific age. It is a fundamental part of retirement income for most people,
+                                but the rules surrounding it can be complex. The amount you receive and the age you can
+                                claim it are determined by a few key factors.
+                            </Typography>
+                        </AccordionDetails>
+                    </Accordion>
+                    <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography variant="subtitle1">National Insurance Record</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Typography paragraph>
+                                First, your eligibility and the amount you receive are primarily based on your National
+                                Insurance (NI) record. You generally need at least 10 "qualifying years" to receive any
+                                State Pension and 35 qualifying years to receive the full amount. A qualifying year is one
+                                in which you have paid or been credited with National Insurance contributions, for example,
+                                through working, being a carer, or claiming certain benefits.
+                            </Typography>
+                        </AccordionDetails>
+                    </Accordion>
+                    <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography variant="subtitle1">State Pension Age</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Typography paragraph>
+                                Second, your State Pension age—the earliest you can claim your pension—is currently 66
+                                for both men and women. This age is not fixed, however. It is scheduled to increase to 67
+                                between 2026 and 2028, and a further increase to 68 is planned for between 2044 and 2046.
+                                The specific date you become eligible can be influenced by your exact date of birth, as
+                                these changes are often phased in gradually. The government regularly reviews the State
+                                Pension age, at least once every five years, to ensure the system's long-term sustainability,
+                                primarily considering factors like life expectancy and the fiscal health of the country.
+                            </Typography>
+                        </AccordionDetails>
+                    </Accordion>
+                    <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography variant="subtitle1">Triple Lock</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Typography paragraph>
+                                Finally, a very important part of the State Pension is the triple lock.
+                                This is a government commitment to increase the State Pension each year by the highest of
+                                three measures: inflation (measured by the Consumer Price Index), average earnings growth,
+                                or 2.5%. The triple lock is designed to protect the purchasing power of your pension and
+                                ensure that pensioners can share in the country's economic prosperity. While it is not a
+                                statutory requirement and can be modified or suspended by the government, it has been a
+                                significant factor in increasing the value of the State Pension over the years.
+                            </Typography>
+                        </AccordionDetails>
+                    </Accordion>
                 </TabPanel>
                 <TabPanel value={tabValue} index={2}>
-                    <h2>
-                        Retirement Age: When can I retire?
-                    </h2>
-                    <ul>
-                        <li>In the UK, the age at which you can access your private pension is different from the
-                            State Pension age. For most people, the earliest you can take money from a private or
-                            workplace pension is known as the Normal Minimum Pension Age (NMPA). This age is currently
-                            55, but a significant change is coming. From April 6, 2028, the NMPA will increase to 57.</li>
-                        <li>This change means that individuals born after April 5, 1973, will have to wait until they
-                            are 57 to access their pension funds. If you were born between April 6, 1971, and April 5, 1973,
-                            you will have a specific window of time—from your 55th birthday until April 5, 2028—during
-                            which you can access your pension. If you choose not to take any funds during that period,
-                            you will then have to wait until you are 57. Individuals born before April 6, 1971, will not
-                            be affected by this change, as they will have already turned 57 by the time it comes into effect.</li>
-                        <li>There are, however, some exceptions to these rules. You might be able to access your
-                            pension earlier than the NMPA if you are retiring due to serious ill health that leaves you
-                            permanently unable to work. Additionally, some older pension schemes may have a
-                            "protected pension age" that allows you to take your pension before the NMPA. This is a
-                            complex area, and whether you have a protected pension age depends on the specific rules of
-                            your scheme and when you joined it. It is always a good idea for users to check with their
-                            pension providers to understand the specific rules that apply to their individual
-                            circumstances.</li>
-                    </ul>
+                    <Typography variant="h6" gutterBottom>Retirement Age: When can I retire?</Typography>
+                    <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography variant="subtitle1">Private Pension Access Age</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Typography paragraph>
+                                In the UK, the age at which you can access your private pension is different from the
+                                State Pension age. Currently, the Normal Minimum Pension Age (NMPA) is 55, but this
+                                will increase to 57 from April 6, 2028.
+                            </Typography>
+                        </AccordionDetails>
+                    </Accordion>
+                    <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography variant="subtitle1">Changes Coming in 2028</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <List>
+                                <ListItem>
+                                    <ListItemText
+                                        primary="Born after April 5, 1973"
+                                        secondary="Must wait until age 57 to access pension funds"
+                                    />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText
+                                        primary="Born between April 6, 1971, and April 5, 1973"
+                                        secondary="Special window of opportunity between age 55 and April 5, 2028"
+                                    />
+                                </ListItem>
+                            </List>
+                        </AccordionDetails>
+                    </Accordion>
+                    <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography variant="subtitle1">Exceptions to the Rules</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Typography color='warning'>Check with your pension provider for specific rules that may apply to your circumstances</Typography>
+                            <List>
+                                <ListItem>
+                                    <ListItemText
+                                        primary="Serious ill health retirement"
+                                    />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText
+                                        primary="Protected pension age in older schemes"
+                                    />
+                                </ListItem>
+                            </List>
+
+                        </AccordionDetails>
+                    </Accordion>
                 </TabPanel>
                 <TabPanel value={tabValue} index={3}>
                     <h2>Lump sum: What are my options?</h2>
