@@ -43,9 +43,18 @@ export default function Dashboard() {
 
     const updateActiveScenario = (updates) => {
         if (currentTab === 0) {
+            console.log(`Before current situation update: ${currentScenarioState}`);
             setCurrentScenarioState(prev => ({ ...prev, ...updates }));
+            console.log(`After current situation update: ${currentScenarioState}`);
+            // console.log(`Before Current Scenario Update: ${currentScenarioState}`);
+            // const newScenario = {...currentScenarioState};
+            // newScenario["parameters"] = updates["parameters"];
+            // newScenario["strategy"] = updates["strategy"];
+            // console.log(`New Scenario: ${newScenario}`);
+            // setCurrentScenarioState(newScenario);
         } else {
             // Ensure explored state is initialized before trying to update it
+            console.log(`Before Explored Scenario Update: ${exploredScenarioState}`);
             setExploredScenarioState(prev => (prev ? { ...prev, ...updates } : { ...initialState, ...updates }));
         }
     };

@@ -19,27 +19,20 @@ import AnnuityStrategy from "./AnnuityStrategy.jsx";
 import AddDCPensionDialog from './AddDCPensionDialog';
 
 
-function Sidebar({
-  retirementAge,
-  setRetirementAge,
-  percentageLumpsum,
-  setPercentageLumpsum,
-  incomeStrategy,
-  setIncomeStrategy,
-  withdrawalType,
-  setWithdrawalType,
-  initialAmount,
-  setInitialAmount,
-  increaseRate,
-  setIncreaseRate,
-  annuityType,
-  setAnnuityType,
-  annuityIncreaseRate,
-  setAnnuityIncreaseRate,
-    statePensionAge,
+function Sidebar({retirementAge,
+                   percentageLumpsum,
+                   incomeStrategy,
+                   withdrawalType,
+                   initialAmount,
+                   increaseRate,
+                   annuityType,
+                   annuityIncreaseRate,
+                   statePensionAge,
                    statePensionValue,
-    graphType
-}) {
+                   graphType,
+                   onUpdate
+
+                 }) {
   // Default active tab
   const [activeTab, setActiveTab] = useState(0); // 0 for My savings, 1 for My options
   const [investments, setInvestments] = useState([]);
@@ -206,7 +199,8 @@ function Sidebar({
             <TextField
               label="Retirement Age"
               value={retirementAge}
-              onChange={(e) => setRetirementAge(Number(e.target.value))}
+              // onChange={(e) => setRetirementAge(Number(e.target.value))}
+                onChange={(e) => onUpdate({retirementAge: Number(e.target.value)})}
               fullWidth
               variant="outlined"
               size="small"
@@ -218,7 +212,7 @@ function Sidebar({
               <Select
                 value={incomeStrategy}
                 label="Income strategy"
-                onChange={(e) => setIncomeStrategy(e.target.value)}
+                onChange={(e) => onUpdate({incomeStrategy: e.target.value})}
               >
                 <MenuItem value="Annuity">Annuity</MenuItem>
                 <MenuItem value="Withdrawal">Withdrawal</MenuItem>
@@ -228,18 +222,15 @@ function Sidebar({
             {incomeStrategy === 'Withdrawal' ? (
               <WithdrawalStrategy
                 withdrawalType={withdrawalType}
-                setWithdrawalType={setWithdrawalType}
                 initialAmount={initialAmount}
-                setInitialAmount={setInitialAmount}
                 increaseRate={increaseRate}
-                setIncreaseRate={setIncreaseRate}
+                onUpdate={onUpdate}
               />
             ) : (
               <AnnuityStrategy
                 annuityType={annuityType}
-                setAnnuityType={setAnnuityType}
                 annuityIncreaseRate={annuityIncreaseRate}
-                setAnnuityIncreaseRate={setAnnuityIncreaseRate}
+                onUpdate={onUpdate}
               />
             )}
 
@@ -247,7 +238,8 @@ function Sidebar({
             <TextField
               label="Lump sum at retirement"
               value={percentageLumpsum}
-              onChange={(e) => setPercentageLumpsum(Number(e.target.value))}
+              // onChange={(e) => setPercentageLumpsum(Number(e.target.value))}
+                onChange={(e) => onUpdate({percentageLumpsum: Number(e.target.value)})}
               fullWidth
               variant="outlined"
               size="small"
@@ -256,7 +248,8 @@ function Sidebar({
                 <TextField
                     label="Desired Annual Income"
                     value={desiredIncome}
-                    onChange={(e) => setDesiredIncome(Number(e.target.value))}
+                    // onChange={(e) => setDesiredIncome(Number(e.target.value))}
+                    onChange={(e) => onUpdate({desiredIncome: Number(e.target.value)})}
                     fullWidth
                     variant="outlined"
                     size="small"
