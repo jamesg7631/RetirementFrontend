@@ -22,15 +22,11 @@ const formatLegendName = (key) => {
         .trim();
 };
 
-// ✅ --- ENHANCED CUSTOM LEGEND COMPONENT --- ✅
-// This component now handles the layout for BOTH the Current and Explored scenarios.
 const CustomLegend = ({ payload, isExploredView }) => {
-    // Don't render anything if there's no data
     if (!payload || payload.length === 0) {
         return null;
     }
 
-    // A. Logic for the "Explored Scenario" two-column layout
     if (isExploredView) {
         const currentItems = payload.filter(entry => entry.value.startsWith('Current'));
         const exploredItems = payload.filter(entry => entry.value.startsWith('Explored'));
@@ -58,7 +54,6 @@ const CustomLegend = ({ payload, isExploredView }) => {
         );
     }
 
-    // B. Logic for the "Current Scenario" single-row layout
     return (
         <Box sx={{ mt: 3 }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 2, textAlign: 'center' }}>Age</Typography>
@@ -76,7 +71,6 @@ const CustomLegend = ({ payload, isExploredView }) => {
 
 
 export default function MainContentArea({
-                                            // ... Props are unchanged
                                             outcomeValue, retirementAge, percentageLumpsum, incomeStrategy,
                                             withdrawalType, initialAmount, increaseRate,
                                             annuityType, annuityIncreaseRate, statePensionAge, statePensionValue,
@@ -84,7 +78,6 @@ export default function MainContentArea({
                                             currentScenario,
                                             isExploredView
                                         }) {
-    // ... All state and hooks remain the same
     const [activeChartData, setActiveChartData] = useState([]);
     const [currentScenarioChartData, setCurrentScenarioChartData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -93,7 +86,6 @@ export default function MainContentArea({
     const [spousePercentage, setSpousePercentage] = useState(50);
     const fetchInProgress = useRef(false);
 
-    // ... All handlers and useEffect hooks remain the same
     const handleGraphTypeChange = (event, newGraphType) => {
         if (newGraphType !== null) {
             setGraphType(newGraphType);
@@ -137,7 +129,6 @@ export default function MainContentArea({
                 fetchInProgress.current = true;
                 setLoading(true);
                 setError(null);
-
                 const activeScenarioProps = {
                     outcomeValue, retirementAge, percentageLumpsum, incomeStrategy, withdrawalType,
                     initialAmount, increaseRate, annuityType, annuityIncreaseRate, graphType
@@ -157,7 +148,6 @@ export default function MainContentArea({
                 fetchInProgress.current = false;
             }
         };
-
         const timeoutId = setTimeout(executeFetch, 500);
         return () => clearTimeout(timeoutId);
     }, [
@@ -191,15 +181,19 @@ export default function MainContentArea({
             });
             mergedDataMap.set(item.age, entry);
         });
-        return Array.from(mergedDataMap.values()).sort((a, b) => a.age - b.age);
+        let array = Array.from(mergedDataMap.values()).sort((a, b) => a.age - b.age);
+        return array;
     }, [isExploredView, activeChartData, currentScenarioChartData]);
 
+    // FIXED: This entire block was corrupted in the previous response. It is now clean.
     const { cashflowKeys, currentKeys, exploredKeys } = useMemo(() => {
         const data = isExploredView ? combinedChartData : activeChartData;
         if (!data || data.length === 0) {
             return { cashflowKeys: [], currentKeys: [], exploredKeys: [] };
         }
-        const allKeys = Object.keys(data[0]).filter(key => key !== 'age');
+
+        const allKeys = Object.keys(data[0]).filter(key => key !== "age");
+
         if (isExploredView) {
             return {
                 cashflowKeys: [],
@@ -222,7 +216,6 @@ export default function MainContentArea({
             flexGrow: 1, p: 2, display: 'flex', flexDirection: 'column',
             justifyContent: 'space-between', boxShadow: 3,
         }}>
-            { /* ... Top controls are unchanged ... */ }
             <Box sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', mb: 3 }}>
                 <ToggleButtonGroup
                     value={graphType}
@@ -280,7 +273,9 @@ export default function MainContentArea({
 
             <Box sx={{
                 flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center',
-                mb: 3, minHeight: '650px', height: '750px'
+                mb: 3,
+                minHeight: isExploredView ? '650px' : '500px',
+                height: isExploredView ? '750px' : '550px'
             }}>
                 {loading ? (
                     <CircularProgress />
@@ -288,14 +283,10 @@ export default function MainContentArea({
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart
                             data={chartDataToDisplay}
-                            // ✅ FIXED: Using a single, generous margin for both views.
                             margin={{ top: 20, right: 60, left: 80, bottom: 120 }}
                         >
                             <CartesianGrid strokeDasharray="3 3" />
-
-                            {/* ✅ FIXED: XAxis is now simple. The label is in the custom legend. */}
                             <XAxis dataKey="age" />
-
                             <YAxis
                                 label={{
                                     value: `${graphType === 'income' ? 'Income' : 'Savings'} (${valueType === 'present' ? 'Present' : 'Future'} Value)`,
@@ -303,26 +294,25 @@ export default function MainContentArea({
                                 }}
                             />
                             <Tooltip />
-
-                            {/* ✅ FIXED: Unconditionally render the enhanced custom legend */}
-                            <Legend content={<CustomLegend payload={undefined} isExploredView={isExploredView} />} />
-
+                            <Legend content={<CustomLegend isExploredView={isExploredView} />} />
                             {graphType === "income" && (
                                 <ReferenceLine y={desiredAnnualIncome} stroke="#ff0000" strokeDasharray="3 3" />
                             )}
-
                             {isExploredView ? (
                                 <>
                                     {currentKeys.map((key, i) => (
                                         <Bar
-                                            key={key} dataKey={key} stackId="current"
+                                            key={key}
+                                            dataKey={key}
+                                            stackId="current"
                                             fill={CASHFLOW_COLORS[i % CASHFLOW_COLORS.length]}
                                             name={`Current - ${formatLegendName(key)}`}
                                         />
                                     ))}
                                     {exploredKeys.map((key, i) => (
                                         <Bar
-                                            key={key} dataKey={key} stackId="explored"
+                                            key={key} dataKey={key}
+                                            stackId="explored"
                                             fill={CASHFLOW_COLORS[i % CASHFLOW_COLORS.length]}
                                             name={`Explored - ${formatLegendName(key)}`}
                                         />
@@ -331,7 +321,8 @@ export default function MainContentArea({
                             ) : (
                                 cashflowKeys.map((key, i) => (
                                     <Bar
-                                        key={key} dataKey={key} stackId="a"
+                                        key={key} dataKey={key}
+                                        stackId="a"
                                         fill={CASHFLOW_COLORS[i % CASHFLOW_COLORS.length]}
                                         name={formatLegendName(key)}
                                     />
