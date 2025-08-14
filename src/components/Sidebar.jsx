@@ -30,7 +30,8 @@ function Sidebar({retirementAge,
                    statePensionAge,
                    statePensionValue,
                    graphType,
-                   onUpdate
+                   onUpdate,
+                   exploredTab
 
                  }) {
   // Default active tab
@@ -38,8 +39,6 @@ function Sidebar({retirementAge,
   const [investments, setInvestments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  // const [statePension, setStatePension] = useState({});
-  // const [percentageLumpsum.percenttageLumpsum, setPercentageLumpSum] = useState(25);
   const [desiredIncome, setDesiredIncome] = useState(30000);
   const [openAddDCPensionDialog, setOpenAddDCPensionDialog] = useState(false);
 
@@ -63,7 +62,8 @@ function Sidebar({retirementAge,
       // console.log("Investment Headers is called!")
       try {
         setLoading(true);
-        const response = await getMyInvestmentHeaders();
+        const pathVariable = activeTab === 1 ? "explored" : "current";
+        const response = await getMyInvestmentHeaders(pathVariable);
         // console.log(response);
         setInvestments(response);
       } catch (err) {

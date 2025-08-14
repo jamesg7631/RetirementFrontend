@@ -185,10 +185,10 @@ export const  deleteMyPortfolio = async (portfolioId) => {
     }
 }
 
-export const getMyInvestmentHeaders = async () => {
+export const getMyInvestmentHeaders = async (pathVariable) => {
     try {
         // console.log("Investment Header API is called!")
-        const response = await api.get(`${API_URL}/investments/headers/`)
+        const response = await api.get(`${API_URL}/investments/headers/${pathVariable}`)
         return response.data;
     } catch (error) {
         console.error("Error: Failed to retrieve Investment header data!");
@@ -196,7 +196,7 @@ export const getMyInvestmentHeaders = async () => {
     }
 }
 
-export const getInvestmentChartIncomeData = async (graphType, valueType, spousePercentage, outcomeValue, retirementAge, percentageLumpsum,
+export const getInvestmentChartIncomeData = async (explored, graphType, valueType, spousePercentage, outcomeValue, retirementAge, percentageLumpsum,
                                                    incomeStrategy, strategyParameters) => {
     console.log(`GraphType: ${graphType}\n
                 ValueType: ${valueType}\n
@@ -214,7 +214,7 @@ export const getInvestmentChartIncomeData = async (graphType, valueType, spouseP
             }};
         const jsonRequest = JSON.stringify(investmentCalcParameters, null, 2);
         console.log("Investment Chart parameters ",jsonRequest);
-        const response = await api.post(`${API_URL}/investments/chartIncome`, investmentCalcParameters, {
+        const response = await api.post(`${API_URL}/investments/chartIncome/${explored}`, investmentCalcParameters, {
             headers: {
                 'Content-Type': 'application/json'
             }

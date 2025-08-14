@@ -5,7 +5,7 @@ import MainContentArea from "../components/MainContentArea.jsx";
 import RightSidebar from "../components/RightSidebar.jsx";
 import { Box } from "@mui/material";
 import { useState } from "react";
-import Footer from "../components/Footer.jsx"; // ✅ FIXED: Add this import statement
+import Footer from "../components/Footer.jsx";
 
 export default function Dashboard() {
     const [currentTab, setCurrentTab] = useState(0);
@@ -27,7 +27,7 @@ export default function Dashboard() {
     };
 
     const [currentScenarioState, setCurrentScenarioState] = useState(initialState);
-    const [exploredScenarioState, setExploredScenarioState] = useState(null); // Reverted to original state
+    const [exploredScenarioState, setExploredScenarioState] = useState(null);
 
     const handleTabChange = (newTab) => {
         if (newTab === 1 && !exploredScenarioState) {
@@ -46,14 +46,8 @@ export default function Dashboard() {
             console.log(`Before current situation update: ${currentScenarioState}`);
             setCurrentScenarioState(prev => ({ ...prev, ...updates }));
             console.log(`After current situation update: ${currentScenarioState}`);
-            // console.log(`Before Current Scenario Update: ${currentScenarioState}`);
-            // const newScenario = {...currentScenarioState};
-            // newScenario["parameters"] = updates["parameters"];
-            // newScenario["strategy"] = updates["strategy"];
-            // console.log(`New Scenario: ${newScenario}`);
-            // setCurrentScenarioState(newScenario);
         } else {
-            // Ensure explored state is initialized before trying to update it
+            // Ensure explored state is initialised before trying to update it
             console.log(`Before Explored Scenario Update: ${exploredScenarioState}`);
             setExploredScenarioState(prev => (prev ? { ...prev, ...updates } : { ...initialState, ...updates }));
         }
@@ -75,7 +69,7 @@ export default function Dashboard() {
             }}>
                 <NavigationTabs
                     currentTab={currentTab}
-                    onTabChange={handleTabChange} // Corrected handler from previous step
+                    onTabChange={handleTabChange}
                 />
                 <Box sx={{
                     display: "flex",
@@ -87,6 +81,7 @@ export default function Dashboard() {
                         sx={{ width: 280, flexShrink: 0 }}
                         {...getActiveScenario()}
                         onUpdate={updateActiveScenario}
+                        exploredTab={currentTab}
                     />
                     <MainContentArea
                         sx={{ flexGrow: 4, minWidth: 800 }}

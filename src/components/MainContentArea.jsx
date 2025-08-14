@@ -103,7 +103,7 @@ export default function MainContentArea({
         if (fetchInProgress.current) return;
         if (retirementAge < 57) return;
 
-        const fetchData = async (scenarioProps) => {
+        const fetchData = async (scenarioProps, explored) => {
             const strategyParameters = scenarioProps.incomeStrategy === 'Withdrawal'
                 ? {
                     withdrawalType: scenarioProps.withdrawalType,
@@ -117,6 +117,7 @@ export default function MainContentArea({
                         : 0
                 };
             return getInvestmentChartIncomeData(
+                explored,
                 scenarioProps.graphType, valueType, spousePercentage,
                 scenarioProps.outcomeValue, scenarioProps.retirementAge,
                 scenarioProps.percentageLumpsum, scenarioProps.incomeStrategy,
@@ -133,11 +134,13 @@ export default function MainContentArea({
                     outcomeValue, retirementAge, percentageLumpsum, incomeStrategy, withdrawalType,
                     initialAmount, increaseRate, annuityType, annuityIncreaseRate, graphType
                 };
-                const response = await fetchData(activeScenarioProps);
+                
+                const exploredStatus = isExploredView ? "explored" : "current";
+                const response = await fetchData(activeScenarioProps, exploredStatus);
                 setActiveChartData(response.investmentChartDTO || []);
-
+                console.log(`"Explored View Status: ${isExploredView}`)
                 if (isExploredView && currentScenario) {
-                    const currentResponse = await fetchData(currentScenario);
+                    const currentResponse = await fetchData(currentScenario, "current");
                     setCurrentScenarioChartData(currentResponse.investmentChartDTO || []);
                 }
             } catch (err) {
