@@ -21,6 +21,7 @@ import {amendNewDcPension, createNewDcPension, createNewPortfolio, getAllPortfol
 import { initialAllocations} from "../utils/config.js";
 
 export default function AddDCPensionDialog({ open, onClose, selectedPension, mode, currentTab}) {
+  // Helper functions for State initialisation
     const getInitialPensionData = () => {
         if (selectedPension == null) {
             return {
@@ -35,59 +36,11 @@ export default function AddDCPensionDialog({ open, onClose, selectedPension, mod
         }
     };
 
-    const [activeTab, setActiveTab] = useState(0);
-    const [existingPortfolios, setExistingPortfolios] = useState([]);
-    const [selectedPortfolio, setSelectedPortfolio] = useState('');
-    const [pensionData, setPensionData] = useState(getInitialPensionData());
-    const [portfolioName, setPortfolioName] = useState("");
-
-    const getInitialAllocations = () => {
+      const getInitialAllocations = () => {
         const serialised = JSON.stringify(initialAllocations);
         const deepCopy = JSON.parse(serialised);
         return deepCopy;
     }
-
-    const [newPortfolio, setNewPortfolio] = useState(getInitialAllocations());
-
-
-
-    useEffect(() => {
-        const fetchPortfolios = async () => {
-            try {
-                const portfolios = await getAllPortfolios();
-                setExistingPortfolios(portfolios);
-            } catch (error) {
-                console.error('Error fetching portfolios:', error);
-            }
-        };
-        if (open) {
-            fetchPortfolios();
-            const initAllocations = getInitialAllocations();
-            setNewPortfolio((initAllocations));
-        }
-    }, [open, selectedPortfolio]);
-
-    useEffect(() => {
-        if (mode === "edit") {
-            setPensionData({...selectedPension});
-            for (let i = 0; existingPortfolios.length; i++) {
-                let sPortfolio = existingPortfolios[i];
-                if (sPortfolio.id === pensionData.portfolioId) {
-                    setSelectedPortfolio(sPortfolio.id);
-                    break;
-                }
-            }
-        } else {
-            setPensionData({
-                name: '',
-                currentValue: '',
-                contributionRate: '',
-                employerContributionRate: '',
-                ocf: ''
-            });
-        }
-    }, [selectedPension, existingPortfolios, pensionData.portfolioId, mode]);
-
 
     const handleChange = (field) => (event) => {
         setPensionData({
@@ -128,36 +81,6 @@ export default function AddDCPensionDialog({ open, onClose, selectedPension, mod
         return sum;
     };
 
-    function getAllocationsPaper(key, value, displayValue) {
-        return <Paper
-            key={key}
-            elevation={0}
-            sx={{
-                p: 1,
-                backgroundColor: 'background.paper',
-                border: '1px solid',
-                borderColor: 'divider',
-            }}
-        >
-            <TextField
-                label={value.name}
-                type="number"
-                value={displayValue || 0}
-                onChange={(e) => handleNewPortfolioChange(key, value, e)}
-                fullWidth
-                size="small"
-                InputProps={{
-                    endAdornment: <Typography sx={{ml: 1}}>%</Typography>,
-                    inputProps: {
-                        min: 0,
-                        max: 100,
-                        step: 0.01
-                    }
-                }}
-            />
-        </Paper>;
-    }
-
     const allocationsProcessing = () => {
         const results = (
             Object.entries(newPortfolio).map(([key, value]) => {
@@ -168,15 +91,6 @@ export default function AddDCPensionDialog({ open, onClose, selectedPension, mod
         }));
         console.log("Results")
         return results;
-    }
-
-    const resetPage = () => {
-        setActiveTab(0);
-        setSelectedPortfolio('');
-        setPortfolioName("");
-        setNewPortfolio(initialAllocations);
-        onClose();
-        window.location.reload();
     }
 
     const handleSubmit = async () => {
@@ -202,12 +116,11 @@ export default function AddDCPensionDialog({ open, onClose, selectedPension, mod
                 const ammendedDcPension = await amendNewDcPension(postPensionData, explored);
             }
             console.log("portfolio response");
-            window.location.reload();
-
         } catch (error) {
             console.error("Error Creating portfolio");
         }
     }
+
 
     const addPensionIsDisabled = () => {
         if (pensionData.name === "" || pensionData.name == null) {
@@ -243,9 +156,96 @@ export default function AddDCPensionDialog({ open, onClose, selectedPension, mod
                 return true;
             }
         }
-
         return false;
     }
+
+    const handleCancel = () => {
+      setActiveTab(0);
+      setExistingPortfolios([]);
+      setSelectedPortfolio('');
+      setPensionData(getInitialAllocations());
+      setPortfolioName("");
+      setNewPortfolio(getInitialAllocations());
+      onClose();
+    }
+ 
+    // State initialisation
+    const [activeTab, setActiveTab] = useState(0);
+    const [existingPortfolios, setExistingPortfolios] = useState([]);
+    const [selectedPortfolio, setSelectedPortfolio] = useState('');
+    const [pensionData, setPensionData] = useState(getInitialPensionData());
+    const [portfolioName, setPortfolioName] = useState("");
+    const [newPortfolio, setNewPortfolio] = useState(getInitialAllocations());
+
+    // Use effect
+    useEffect(() => {
+        const fetchPortfolios = async () => {
+            try {
+                const portfolios = await getAllPortfolios();
+                setExistingPortfolios(portfolios);
+            } catch (error) {
+                console.error('Error fetching portfolios:', error);
+            }
+        };
+        if (open) {
+            fetchPortfolios();
+            const initAllocations = getInitialAllocations();
+            setNewPortfolio((initAllocations));
+        }
+    }, [open, selectedPortfolio]);
+
+    useEffect(() => {
+        if (mode === "edit") {
+            setPensionData({...selectedPension});
+            for (let i = 0; existingPortfolios.length; i++) {
+                let sPortfolio = existingPortfolios[i];
+                if (sPortfolio.id === pensionData.portfolioId) {
+                    setSelectedPortfolio(sPortfolio.id);
+                    break;
+                }
+            }
+        } else {
+            setPensionData({
+                name: '',
+                currentValue: '',
+                contributionRate: '',
+                employerContributionRate: '',
+                ocf: ''
+            });
+        }
+    }, [selectedPension, existingPortfolios, pensionData.portfolioId, mode]);
+
+
+    function getAllocationsPaper(key, value, displayValue) {
+        return <Paper
+            key={key}
+            elevation={0}
+            sx={{
+                p: 1,
+                backgroundColor: 'background.paper',
+                border: '1px solid',
+                borderColor: 'divider',
+            }}
+        >
+            <TextField
+                label={value.name}
+                type="number"
+                value={displayValue || 0}
+                onChange={(e) => handleNewPortfolioChange(key, value, e)}
+                fullWidth
+                size="small"
+                InputProps={{
+                    endAdornment: <Typography sx={{ml: 1}}>%</Typography>,
+                    inputProps: {
+                        min: 0,
+                        max: 100,
+                        step: 0.01
+                    }
+                }}
+            />
+        </Paper>;
+    }
+
     const renderNewPortfolioSection = () => (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
@@ -391,7 +391,7 @@ export default function AddDCPensionDialog({ open, onClose, selectedPension, mod
                 </Paper>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose}>Cancel</Button>
+                <Button onClick={handleCancel}>Cancel</Button>
                 <Button
                     variant="contained"
                     color="primary"

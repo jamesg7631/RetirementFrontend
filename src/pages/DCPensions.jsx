@@ -33,7 +33,9 @@ export default function DCPensions() {
 
     const onClose = () => {
         setOpenAddDialog(false);
-        window.location.reload();
+        setSelectedPension(null);
+        setDeletePortfolio({});
+        setMode(add);
     }
 
     const handleAddOpen = () => {

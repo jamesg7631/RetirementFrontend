@@ -66,7 +66,7 @@ function Sidebar({retirementAge,
   const handleCloseAddDCPension = () => {
     setOpenAddDCPensionDialog(false);
     setSelectedPension(null);
-    window.location.reload();
+
   };
   
   const handleDeletePension = async (pension) => {
