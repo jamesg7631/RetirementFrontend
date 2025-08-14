@@ -44,7 +44,7 @@ export default function DCPensions() {
     useEffect(() => {
         const data = async () => {
             try {
-                const responseAllDcPensions = await getAllDcPensions();
+                const responseAllDcPensions = await getAllDcPensions("current");
                 setUserDCPensions(responseAllDcPensions);
             } catch (error) {
                 console.error("Failed to get DC Pensions");

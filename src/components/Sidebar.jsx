@@ -10,13 +10,17 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Container, CircularProgress, Button
+  Container, CircularProgress, Button,
+  IconButton,
+  Tooltip
 } from '@mui/material';
 import { Stack } from '@mui/system'; // For vertical stacking
-import {getMyInvestmentHeaders } from "../api/apiService.js";
+import {getMyInvestmentHeaders, deleteDcPension } from "../api/apiService.js";
 import WithdrawalStrategy from "./WithdrawalStrategy.jsx";
 import AnnuityStrategy from "./AnnuityStrategy.jsx";
 import AddDCPensionDialog from './AddDCPensionDialog';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 function Sidebar({retirementAge,
@@ -42,15 +46,41 @@ function Sidebar({retirementAge,
   const [error, setError] = useState(null);
   const [desiredIncome, setDesiredIncome] = useState(30000);
   const [openAddDCPensionDialog, setOpenAddDCPensionDialog] = useState(false);
-
+  const [selectedPension, setSelectedPension] = useState(null);
+  const [dialogMode, setDialogMode] = useState("add"); // "add" or "edit"
+  
   const handleOpenAddDCPension = () => {
     console.log("currentNavigationTab: " + currentNavigationTab);
+    setDialogMode("add");
+    setSelectedPension(null);
     setOpenAddDCPensionDialog(true);
   };
-
+  
+  const handleOpenEditDCPension = (pension) => {
+    console.log("Sidebar edit pension: ", pension);
+    setDialogMode("edit");
+    setSelectedPension(pension);
+    setOpenAddDCPensionDialog(true);
+  };
+  
   const handleCloseAddDCPension = () => {
     setOpenAddDCPensionDialog(false);
+    setSelectedPension(null);
     window.location.reload();
+  };
+  
+  const handleDeletePension = async (pension) => {
+    if (window.confirm(`Are you sure you want to delete ${pension.name}?`)) {
+      try {
+        const pathVariable = activeTab === 1 ? "explored" : "current";
+        await deleteDcPension({ id: pension.id, pathVariable });
+        // Refresh the pension list after deletion
+        const updatedInvestments = investments.filter(item => item.id !== pension.id);
+        setInvestments(updatedInvestments);
+      } catch (err) {
+        console.error("Failed to delete pension:", err);
+      }
+    }
   };
 
 
@@ -75,7 +105,7 @@ function Sidebar({retirementAge,
       }
     };
     getInvestmentHeaders();
-  }, []);
+  }, [activeTab]); // Refresh when active tab changes
 
 
   if (loading) {
@@ -135,6 +165,7 @@ function Sidebar({retirementAge,
             >
               Add DC Pension
             </Button>
+            {/*Start of edit section*/}
             {investments.map((item) => (
               <Box
                 key={item.id}
@@ -150,11 +181,35 @@ function Sidebar({retirementAge,
                 <Typography variant="body1" fontWeight="bold" color="text.secondary">
                   {item.name}
                 </Typography>
-                <Typography variant="body1">
-                  £ {item.value}
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Typography variant="body1" sx={{ mr: 1 }}>
+                    £ {item.value}
+                  </Typography>
+                  <Tooltip title="Edit">
+                    <IconButton 
+                      size="small" 
+                      color="primary" 
+                      onClick={() => handleOpenEditDCPension(item)}
+                      sx={{ p: 0.5 }}
+                    >
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Delete">
+                    <IconButton 
+                      size="small" 
+                      color="error" 
+                      onClick={() => handleDeletePension(item)}
+                      sx={{ p: 0.5 }}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
               </Box>
             ))}
+
+            {/*End of edit section*/}
             {graphType === "income" && (
                 <Stack>
                   <Box
@@ -267,8 +322,8 @@ function Sidebar({retirementAge,
   <AddDCPensionDialog
       open={openAddDCPensionDialog}
       onClose={handleCloseAddDCPension}
-      selectedPension={null}
-      mode="add"
+      selectedPension={selectedPension}
+      mode={dialogMode}
       currentTab={currentNavigationTab}
   />
         </>

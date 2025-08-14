@@ -80,10 +80,10 @@ export const amendNewDcPension = async (content) => {
     }
 }
 
-export const getAllDcPensions = async () => {
+export const getAllDcPensions = async (explored) => {
     try {
         console.log("Attempt to get All Dc Pensions");
-        const response = await api.get(`${API_URL}/investments/dc`)
+        const response = await api.get(`${API_URL}/investments/dc/${explored}`);
         return response.data;
     } catch (error) {
         console.error("Error: Failed to retrieve all portfolios");
