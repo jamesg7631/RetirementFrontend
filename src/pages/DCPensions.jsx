@@ -25,6 +25,7 @@ export default function DCPensions() {
     const [mode, setMode] = useState("add");
 
     const handleEditOpen = (pension) => {
+        console.log(`DC Pensions page: edit button pension: ${pension}`);
         setSelectedPension(pension);
         setOpenAddDialog(true);
         setMode("edit");

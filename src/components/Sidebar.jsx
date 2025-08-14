@@ -15,7 +15,7 @@ import {
   Tooltip
 } from '@mui/material';
 import { Stack } from '@mui/system'; // For vertical stacking
-import {getMyInvestmentHeaders, deleteDcPension } from "../api/apiService.js";
+import {getMyInvestmentHeaders, deleteDcPension, getAllDcPensions} from "../api/apiService.js";
 import WithdrawalStrategy from "./WithdrawalStrategy.jsx";
 import AnnuityStrategy from "./AnnuityStrategy.jsx";
 import AddDCPensionDialog from './AddDCPensionDialog';
@@ -56,7 +56,7 @@ function Sidebar({retirementAge,
     setOpenAddDCPensionDialog(true);
   };
   
-  const handleOpenEditDCPension = (pension) => {
+  const handleOpenEditDCPension = async (pension) => {
     console.log("Sidebar edit pension: ", pension);
     setDialogMode("edit");
     setSelectedPension(pension);
@@ -72,10 +72,10 @@ function Sidebar({retirementAge,
   const handleDeletePension = async (pension) => {
     if (window.confirm(`Are you sure you want to delete ${pension.name}?`)) {
       try {
-        const pathVariable = activeTab === 1 ? "explored" : "current";
-        await deleteDcPension({ id: pension.id, pathVariable });
+        const pathVariable = currentNavigationTab === 1 ? "explored" : "current";
+        await deleteDcPension(pension.name, pathVariable);
         // Refresh the pension list after deletion
-        const updatedInvestments = investments.filter(item => item.id !== pension.id);
+        const updatedInvestments = getAllDcPensions(pathVariable); 
         setInvestments(updatedInvestments);
       } catch (err) {
         console.error("Failed to delete pension:", err);
@@ -94,8 +94,9 @@ function Sidebar({retirementAge,
       // console.log("Investment Headers is called!")
       try {
         setLoading(true);
-        const pathVariable = activeTab === 1 ? "explored" : "current";
-        const response = await getMyInvestmentHeaders(pathVariable);
+        const explored = currentNavigationTab === 1 ? "explored" : "current";
+        // const response = await getMyInvestmentHeaders(pathVariable);
+        const response = await getAllDcPensions(explored);
         // console.log(response);
         setInvestments(response);
       } catch (err) {
@@ -183,7 +184,7 @@ function Sidebar({retirementAge,
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <Typography variant="body1" sx={{ mr: 1 }}>
-                    £ {item.value}
+                    £ {item.currentValue}
                   </Typography>
                   <Tooltip title="Edit">
                     <IconButton 

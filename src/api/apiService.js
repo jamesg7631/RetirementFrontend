@@ -115,10 +115,10 @@ export const moveToExploredScenario = async () => {
   }
 }
 
-export const deleteDcPension = async (content) => {
+export const deleteDcPension = async (content, explored) => {
     try {
         console.log("Attempt to delete Dc pension");
-        const response = await api.post(`${API_URL}/investments/dc/delete`, content, {
+        const response = await api.post(`${API_URL}/investments/dc/delete/${explored}`, content, {
             headers: {
                 'Content-Type': 'application/json'
             }
