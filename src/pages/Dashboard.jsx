@@ -44,7 +44,6 @@ export default function Dashboard() {
     };
 
     const getActiveScenario = () => {
-        // If we are on tab 1 and explored state exists, use it. Otherwise, use current state.
         return currentTab === 1 && exploredScenarioState ? exploredScenarioState : currentScenarioState;
     };
 
@@ -89,6 +88,7 @@ export default function Dashboard() {
                         {...getActiveScenario()}
                         onUpdate={updateActiveScenario}
                         exploredTab={currentTab}
+                        currentNavigationTab={currentTab}
                     />
                     <MainContentArea
                         sx={{ flexGrow: 4, minWidth: 800 }}

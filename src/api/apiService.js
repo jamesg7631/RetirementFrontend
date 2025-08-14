@@ -48,10 +48,10 @@ export const registerUser = async (content) => {
     }
 }
 
-export const createNewDcPension = async (content) => {
+export const createNewDcPension = async (content, currentTab) => {
     try {
         console.log("Attempt to create new DCPension" + content);
-        const response = await api.post(`${API_URL}/investments/dc`, content, {
+        const response = await api.post(`${API_URL}/investments/dc/${currentTab}`, content, {
             headers: {
                 'Content-Type': 'application/json'
             }

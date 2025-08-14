@@ -31,7 +31,8 @@ function Sidebar({retirementAge,
                    statePensionValue,
                    graphType,
                    onUpdate,
-                   exploredTab
+                   exploredTab, 
+                   currentNavigationTab
 
                  }) {
   // Default active tab
@@ -43,6 +44,7 @@ function Sidebar({retirementAge,
   const [openAddDCPensionDialog, setOpenAddDCPensionDialog] = useState(false);
 
   const handleOpenAddDCPension = () => {
+    console.log("currentNavigationTab: " + currentNavigationTab);
     setOpenAddDCPensionDialog(true);
   };
 
@@ -267,6 +269,7 @@ function Sidebar({retirementAge,
       onClose={handleCloseAddDCPension}
       selectedPension={null}
       mode="add"
+      currentTab={currentNavigationTab}
   />
         </>
   );
