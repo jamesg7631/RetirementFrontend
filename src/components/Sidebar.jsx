@@ -75,7 +75,7 @@ function Sidebar({retirementAge,
         const pathVariable = currentNavigationTab === 1 ? "explored" : "current";
         await deleteDcPension(pension.name, pathVariable);
         // Refresh the pension list after deletion
-        const updatedInvestments = getAllDcPensions(pathVariable); 
+        const updatedInvestments = await getAllDcPensions(pathVariable); 
         setInvestments(updatedInvestments);
       } catch (err) {
         console.error("Failed to delete pension:", err);
@@ -92,6 +92,9 @@ function Sidebar({retirementAge,
   useEffect(() => {
     const getInvestmentHeaders = async () => {
       // console.log("Investment Headers is called!")
+      if (openAddDCPensionDialog == true) {
+            return;
+      }
       try {
         setLoading(true);
         const explored = currentNavigationTab === 1 ? "explored" : "current";
@@ -106,7 +109,7 @@ function Sidebar({retirementAge,
       }
     };
     getInvestmentHeaders();
-  }, [activeTab]); // Refresh when active tab changes
+  }, [activeTab, openAddDCPensionDialog, currentNavigationTab]);
 
 
   if (loading) {

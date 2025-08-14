@@ -64,10 +64,10 @@ export const createNewDcPension = async (content, currentTab) => {
     }
 }
 
-export const amendNewDcPension = async (content) => {
+export const amendNewDcPension = async (content, explored) => {
     try {
         console.log("Attempt to amend DC Pension" + content);
-        const response = await api.post(`${API_URL}/investments/dc/amend`, content, {
+        const response = await api.post(`${API_URL}/investments/dc/amend/${explored}`, content, {
             headers: {
                 'Content-Type': 'application/json'
             }
