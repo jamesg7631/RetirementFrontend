@@ -102,6 +102,19 @@ export const getStatePension = async () => {
     }
 }
 
+export const moveToExploredScenario = async () => {
+  try {
+    console.log("API: Attempt to update from Current Situation to Explored Scenario");
+    const response = await api.get(`${API_URL}/investments/explored-scenario`);
+    if (response.data === "success") {
+     return response.data; 
+    }
+    throw new Error("API: Failed to update DC Pensions when moving from Current Situation to Explore Scenario tab");
+  } catch (error) {
+      console.error(e);
+  }
+}
+
 export const deleteDcPension = async (content) => {
     try {
         console.log("Attempt to delete Dc pension");

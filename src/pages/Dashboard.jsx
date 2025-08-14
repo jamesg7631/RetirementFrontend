@@ -6,6 +6,7 @@ import RightSidebar from "../components/RightSidebar.jsx";
 import { Box } from "@mui/material";
 import { useState } from "react";
 import Footer from "../components/Footer.jsx";
+import {moveToExploredScenario} from "../api/apiService.js";
 
 export default function Dashboard() {
     const [currentTab, setCurrentTab] = useState(0);
@@ -29,9 +30,15 @@ export default function Dashboard() {
     const [currentScenarioState, setCurrentScenarioState] = useState(initialState);
     const [exploredScenarioState, setExploredScenarioState] = useState(null);
 
-    const handleTabChange = (newTab) => {
+    const handleTabChange = async (newTab) => {
         if (newTab === 1 && !exploredScenarioState) {
             setExploredScenarioState({ ...currentScenarioState });
+            try {
+              const response = await moveToExploredScenario();
+            } catch (error) {
+                console.error(`Tab Change error: ${error}`);
+            }
+            await moveToExploredScenario
         }
         setCurrentTab(newTab);
     };
