@@ -12,14 +12,21 @@ import {
 
 export default function WithdrawalStrategy({
                                                withdrawalType,
-                                               setWithdrawalType,
                                                initialAmount,
-                                               setInitialAmount,
                                                increaseRate,
-                                               setIncreaseRate
+                                               onUpdate
                                            }) {
-    const handleWithdrawalTypeChange = (event) => {
-        setWithdrawalType(event.target.value);
+
+    const handleWithdrawalTypeChange = (newType) => {
+        onUpdate({ withdrawalType: newType });
+    };
+
+    const handleInitialAmountChange = (newAmount) => {
+        onUpdate({ initialAmount: newAmount });
+    };
+
+    const handleIncreaseRateChange = (newRate) => {
+        onUpdate({ increaseRate: newRate });
     };
 
     return (
@@ -30,12 +37,12 @@ export default function WithdrawalStrategy({
                 </Typography>
                 <RadioGroup
                     value={withdrawalType}
-                    onChange={handleWithdrawalTypeChange}
+                    onChange={(e) => handleWithdrawalTypeChange(e.target.value)}
                 >
                     <Tooltip title="Fixed amount withdrawn each year">
                         <FormControlLabel
                             value="fixed"
-                            control={<Radio />}
+                            control={<Radio/>}
                             label="Fixed Amount"
                         />
                     </Tooltip>
@@ -49,7 +56,7 @@ export default function WithdrawalStrategy({
                     <Tooltip title="Amount increases by a percentage each year">
                         <FormControlLabel
                             value="percentage"
-                            control={<Radio />}
+                            control={<Radio/>}
                             label="Percentage Increase"
                         />
                     </Tooltip>
@@ -69,7 +76,7 @@ export default function WithdrawalStrategy({
                 </Typography>
                 <TextField
                     value={initialAmount}
-                    onChange={(e) => setInitialAmount(e.target.value)}
+                    onChange={(e) => handleInitialAmountChange(e.target.value)}
                     type="number"
                     size="small"
                     InputProps={{
@@ -87,7 +94,7 @@ export default function WithdrawalStrategy({
                     </Typography>
                     <TextField
                         value={increaseRate}
-                        onChange={(e) => setIncreaseRate(e.target.value)}
+                        onChange={(e) => handleIncreaseRateChange(e.target.value)}
                         type="number"
                         size="small"
                         InputProps={{

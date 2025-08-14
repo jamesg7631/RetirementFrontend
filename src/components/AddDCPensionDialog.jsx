@@ -20,7 +20,7 @@ import {
 import {amendNewDcPension, createNewDcPension, createNewPortfolio, getAllPortfolios} from '../api/apiService';
 import { initialAllocations} from "../utils/config.js";
 
-export default function AddDCPensionDialog({ open, onClose, selectedPension, mode}) {
+export default function AddDCPensionDialog({ open, onClose, selectedPension, mode, currentTab}) {
     const getInitialPensionData = () => {
         if (selectedPension == null) {
             return {
@@ -194,10 +194,12 @@ export default function AddDCPensionDialog({ open, onClose, selectedPension, mod
                 portfolioId = selectedPortfolio;
             }
             const postPensionData = {...pensionData, portfolioId};
+            console.log("Current tab: " + currentTab);
+            const explored = currentTab === 1 ? "explored" : "current";
             if (mode == "add") {
-                const createNewDCPension = await createNewDcPension(postPensionData);
+                const createNewDCPension = await createNewDcPension(postPensionData, explored);
             } else {
-                const ammendedDcPension = await amendNewDcPension(postPensionData);
+                const ammendedDcPension = await amendNewDcPension(postPensionData, explored);
             }
             console.log("portfolio response");
             window.location.reload();

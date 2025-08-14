@@ -48,10 +48,10 @@ export const registerUser = async (content) => {
     }
 }
 
-export const createNewDcPension = async (content) => {
+export const createNewDcPension = async (content, currentTab) => {
     try {
         console.log("Attempt to create new DCPension" + content);
-        const response = await api.post(`${API_URL}/investments/dc`, content, {
+        const response = await api.post(`${API_URL}/investments/dc/${currentTab}`, content, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -100,6 +100,19 @@ export const getStatePension = async () => {
         console.error("Error: Failed to retrieve State Pension");
         throw error;
     }
+}
+
+export const moveToExploredScenario = async () => {
+  try {
+    console.log("API: Attempt to update from Current Situation to Explored Scenario");
+    const response = await api.get(`${API_URL}/investments/explored-scenario`);
+    if (response.data === "success") {
+     return response.data; 
+    }
+    throw new Error("API: Failed to update DC Pensions when moving from Current Situation to Explore Scenario tab");
+  } catch (error) {
+      console.error(e);
+  }
 }
 
 export const deleteDcPension = async (content) => {
@@ -185,10 +198,10 @@ export const  deleteMyPortfolio = async (portfolioId) => {
     }
 }
 
-export const getMyInvestmentHeaders = async () => {
+export const getMyInvestmentHeaders = async (pathVariable) => {
     try {
         // console.log("Investment Header API is called!")
-        const response = await api.get(`${API_URL}/investments/headers/`)
+        const response = await api.get(`${API_URL}/investments/headers/${pathVariable}`)
         return response.data;
     } catch (error) {
         console.error("Error: Failed to retrieve Investment header data!");
@@ -196,7 +209,7 @@ export const getMyInvestmentHeaders = async () => {
     }
 }
 
-export const getInvestmentChartIncomeData = async (graphType, valueType, spousePercentage, outcomeValue, retirementAge, percentageLumpsum,
+export const getInvestmentChartIncomeData = async (explored, graphType, valueType, spousePercentage, outcomeValue, retirementAge, percentageLumpsum,
                                                    incomeStrategy, strategyParameters) => {
     console.log(`GraphType: ${graphType}\n
                 ValueType: ${valueType}\n
@@ -214,7 +227,7 @@ export const getInvestmentChartIncomeData = async (graphType, valueType, spouseP
             }};
         const jsonRequest = JSON.stringify(investmentCalcParameters, null, 2);
         console.log("Investment Chart parameters ",jsonRequest);
-        const response = await api.post(`${API_URL}/investments/chartIncome`, investmentCalcParameters, {
+        const response = await api.post(`${API_URL}/investments/chartIncome/${explored}`, investmentCalcParameters, {
             headers: {
                 'Content-Type': 'application/json'
             }

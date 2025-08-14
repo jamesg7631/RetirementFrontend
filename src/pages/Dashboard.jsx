@@ -4,109 +4,110 @@ import Sidebar from "../components/Sidebar.jsx";
 import MainContentArea from "../components/MainContentArea.jsx";
 import RightSidebar from "../components/RightSidebar.jsx";
 import { Box } from "@mui/material";
-import Footer from "../components/Footer.jsx";
 import { useState } from "react";
-
+import Footer from "../components/Footer.jsx";
+import {moveToExploredScenario} from "../api/apiService.js";
 
 export default function Dashboard() {
-  console.log("Dashboard page 3");
-  const [outcomeValue, setOutcomeValue] = useState(50);
-  const [retirementAge, setRetirementAge] = useState(57);
-  const [percentageLumpsum, setPercentageLumpsum] = useState(25);
-  const [incomeStrategy, setIncomeStrategy] = useState('Annuity');
+    const [currentTab, setCurrentTab] = useState(0);
 
-  const [withdrawalType, setWithdrawalType] = useState('fixed');
-  const [initialAmount, setInitialAmount] = useState('1000');
-  const [increaseRate, setIncreaseRate] = useState('3');
+    const initialState = {
+        outcomeValue: 50,
+        retirementAge: 57,
+        percentageLumpsum: 25,
+        incomeStrategy: "Annuity",
+        withdrawalType: 'fixed',
+        initialAmount: '1000',
+        increaseRate: '3',
+        annuityType: 'level',
+        annuityIncreaseRate: '2',
+        statePensionAge: '67',
+        statePensionValue: '11973',
+        graphType: 'income',
+        desiredAnnualIncome: 150000
+    };
 
-  const [annuityType, setAnnuityType] = useState('level');
-  const [annuityIncreaseRate, setAnnuityIncreaseRate] = useState('2');
-  const [statePensionAge, setStatePensionAge] = useState('67');
-  const [statePensionValue, setStatePensionValue] = useState('11973');
-  const [graphType, setGraphType] = useState('income');
-  const [desiredAnnualIncome, setDesiredAnnualIncome] = useState(150000);
+    const [currentScenarioState, setCurrentScenarioState] = useState(initialState);
+    const [exploredScenarioState, setExploredScenarioState] = useState(null);
 
+    const handleTabChange = async (newTab) => {
+        if (newTab === 1 && !exploredScenarioState) {
+            setExploredScenarioState({ ...currentScenarioState });
+            try {
+              const response = await moveToExploredScenario();
+            } catch (error) {
+                console.error(`Tab Change error: ${error}`);
+            }
+            await moveToExploredScenario
+        }
+        setCurrentTab(newTab);
+    };
 
+    const getActiveScenario = () => {
+        return currentTab === 1 && exploredScenarioState ? exploredScenarioState : currentScenarioState;
+    };
 
-  const handleOutcomeChange = (event, newValue) => {
-    setOutcomeValue(newValue);
-  };
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-        bgcolor: "background.default",
-      }}
-    >
-      <Header />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          flexGrow: 1,
-          p: 1.5,
-        }}
-      >
-        <NavigationTabs />
-        <Box
-          sx={{
+    const updateActiveScenario = (updates) => {
+        if (currentTab === 0) {
+            console.log(`Before current situation update: ${currentScenarioState}`);
+            setCurrentScenarioState(prev => ({ ...prev, ...updates }));
+            console.log(`After current situation update: ${currentScenarioState}`);
+        } else {
+            // Ensure explored state is initialised before trying to update it
+            console.log(`Before Explored Scenario Update: ${exploredScenarioState}`);
+            setExploredScenarioState(prev => (prev ? { ...prev, ...updates } : { ...initialState, ...updates }));
+        }
+    };
+
+    return (
+        <Box sx={{
             display: "flex",
-            flexGrow: 1,
-            gap: 1.5, // Space between columns
-            mt: 1.5, // Margin top from tabs
-          }}
-        >
-          <Sidebar
-              sx={{ width: 280, flexShrink: 0 }}
-              retirementAge={retirementAge}
-            setRetirementAge={setRetirementAge}
-            percentageLumpsum={percentageLumpsum}
-            setPercentageLumpsum={setPercentageLumpsum}
-            incomeStrategy={incomeStrategy}
-            setIncomeStrategy={setIncomeStrategy}
-            withdrawalType={withdrawalType}
-            setWithdrawalType={setWithdrawalType}
-            initialAmount={initialAmount}
-            setInitialAmount={setInitialAmount}
-            increaseRate={increaseRate}
-            setIncreaseRate={setIncreaseRate}
-            annuityType={annuityType}
-            setAnnuityType={setAnnuityType}
-            annuityIncreaseRate={annuityIncreaseRate}
-            setAnnuityIncreaseRate={setAnnuityIncreaseRate}
-            statePensionAge={statePensionAge}
-            statePensionValue={statePensionValue}
-            graphType={graphType}/>
-
-          <MainContentArea
-              sx={{ flexGrow: 4, minWidth: 800 }}
-              outcomeValue={outcomeValue} retirementAge={retirementAge}
-            percentageLumpsum={percentageLumpsum}
-            incomeStrategy={incomeStrategy}
-            withdrawalType={withdrawalType}
-            initialAmount={initialAmount}
-            increaseRate={increaseRate}
-            annuityType={annuityType}
-            annuityIncreaseRate={annuityIncreaseRate}
-            statePensionAge={statePensionAge}
-            statePensionValue={statePensionValue}
-            setStatePensionAge={setStatePensionAge}
-            setStatePensionValue={setStatePensionValue}
-            graphType={graphType}
-            setGraphType={setGraphType}
-            desiredIncome={desiredAnnualIncome}/>
-          <RightSidebar
-              sx={{ width: 250, flexShrink: 0 }}
-              outcomeValue={outcomeValue}
-            setOutcomeValue={setOutcomeValue}
-            handleOutcomeChange={handleOutcomeChange}
-            incomeStrategy={incomeStrategy}
-          />
+            flexDirection: "column",
+            minHeight: "100vh",
+            bgcolor: "background.default",
+        }}>
+            <Header />
+            <Box sx={{
+                display: "flex",
+                flexDirection: "column",
+                flexGrow: 1,
+                p: 1.5,
+            }}>
+                <NavigationTabs
+                    currentTab={currentTab}
+                    onTabChange={handleTabChange}
+                />
+                <Box sx={{
+                    display: "flex",
+                    flexGrow: 1,
+                    gap: 1.5,
+                    mt: 1.5,
+                }}>
+                    <Sidebar
+                        sx={{ width: 280, flexShrink: 0 }}
+                        {...getActiveScenario()}
+                        onUpdate={updateActiveScenario}
+                        exploredTab={currentTab}
+                        currentNavigationTab={currentTab}
+                    />
+                    <MainContentArea
+                        sx={{ flexGrow: 4, minWidth: 800 }}
+                        {...getActiveScenario()}
+                        currentScenario={currentTab === 1 ? currentScenarioState : null}
+                        isExploredView={currentTab === 1}
+                        setGraphType={(value) => updateActiveScenario({ graphType: value })}
+                        setStatePensionAge={(value) => updateActiveScenario({ statePensionAge: value })}
+                        setStatePensionValue={(value) => updateActiveScenario({ statePensionValue: value })}
+                    />
+                    <RightSidebar
+                        sx={{ width: 250, flexShrink: 0 }}
+                        outcomeValue={getActiveScenario().outcomeValue}
+                        setOutcomeValue={(value) => updateActiveScenario({ outcomeValue: value })}
+                        incomeStrategy={getActiveScenario().incomeStrategy}
+                    />
+                </Box>
+            </Box>
+            <Footer />
         </Box>
-      </Box>
-      <Footer />
-    </Box>
-  );
+    );
 }
