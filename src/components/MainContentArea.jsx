@@ -62,7 +62,7 @@ const CustomLegend = ({ payload, isExploredView }) => {
         {payload.map((entry, index) => (
           <Box key={`item-${index}`} sx={{ display: 'flex', alignItems: 'center' }}>
             <Box component="span" sx={{ width: 12, height: 12, bgcolor: entry.color, mr: 1 }} />
-            <Typography variant="body2">{entry.value}</Typography>
+            <Typography variant="body2">{entry.dataKey}</Typography>
           </Box>
         ))}
       </Box>
