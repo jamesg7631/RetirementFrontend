@@ -7,6 +7,7 @@ import { Box } from "@mui/material";
 import { useState } from "react";
 import Footer from "../components/Footer.jsx";
 import { moveToExploredScenario } from "../api/apiService.js";
+import LearnMoreModal from "../components/LearnMoreModal.jsx";
 
 export default function Dashboard() {
   const [currentTab, setCurrentTab] = useState(0);
@@ -29,6 +30,7 @@ export default function Dashboard() {
 
   const [currentScenarioState, setCurrentScenarioState] = useState(initialState);
   const [exploredScenarioState, setExploredScenarioState] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(true);
 
   const handleTabChange = async (newTab) => {
     if (newTab === 1) {
@@ -58,55 +60,68 @@ export default function Dashboard() {
     }
   };
 
+  const handleOpenLearnModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseLearnModal = () => {
+    setIsModalOpen(false);
+  };
+
+
+
   return (
-    <Box sx={{
-      display: "flex",
-      flexDirection: "column",
-      minHeight: "100vh",
-      bgcolor: "background.default",
-    }}>
-      <Header />
+    <>
       <Box sx={{
         display: "flex",
         flexDirection: "column",
-        flexGrow: 1,
-        p: 1.5,
+        minHeight: "100vh",
+        bgcolor: "background.default",
       }}>
-        <NavigationTabs
-          currentTab={currentTab}
-          onTabChange={handleTabChange}
-        />
+        <Header />
         <Box sx={{
           display: "flex",
+          flexDirection: "column",
           flexGrow: 1,
-          gap: 1.5,
-          mt: 1.5,
+          p: 1.5,
         }}>
-          <Sidebar
-            sx={{ width: 280, flexShrink: 0 }}
-            {...getActiveScenario()}
-            onUpdate={updateActiveScenario}
-            exploredTab={currentTab}
-            currentNavigationTab={currentTab}
+          <NavigationTabs
+            currentTab={currentTab}
+            onTabChange={handleTabChange}
           />
-          <MainContentArea
-            sx={{ flexGrow: 4, minWidth: 800 }}
-            {...getActiveScenario()}
-            currentScenario={currentTab === 1 ? currentScenarioState : null}
-            isExploredView={currentTab === 1}
-            setGraphType={(value) => updateActiveScenario({ graphType: value })}
-            setStatePensionAge={(value) => updateActiveScenario({ statePensionAge: value })}
-            setStatePensionValue={(value) => updateActiveScenario({ statePensionValue: value })}
-          />
-          <RightSidebar
-            sx={{ width: 250, flexShrink: 0 }}
-            outcomeValue={getActiveScenario().outcomeValue}
-            setOutcomeValue={(value) => updateActiveScenario({ outcomeValue: value })}
-            incomeStrategy={getActiveScenario().incomeStrategy}
-          />
+          <Box sx={{
+            display: "flex",
+            flexGrow: 1,
+            gap: 1.5,
+            mt: 1.5,
+          }}>
+            <Sidebar
+              sx={{ width: 280, flexShrink: 0 }}
+              {...getActiveScenario()}
+              onUpdate={updateActiveScenario}
+              exploredTab={currentTab}
+              currentNavigationTab={currentTab}
+            />
+            <MainContentArea
+              sx={{ flexGrow: 4, minWidth: 800 }}
+              {...getActiveScenario()}
+              currentScenario={currentTab === 1 ? currentScenarioState : null}
+              isExploredView={currentTab === 1}
+              setGraphType={(value) => updateActiveScenario({ graphType: value })}
+              setStatePensionAge={(value) => updateActiveScenario({ statePensionAge: value })}
+              setStatePensionValue={(value) => updateActiveScenario({ statePensionValue: value })}
+            />
+            <RightSidebar
+              sx={{ width: 250, flexShrink: 0 }}
+              outcomeValue={getActiveScenario().outcomeValue}
+              setOutcomeValue={(value) => updateActiveScenario({ outcomeValue: value })}
+              incomeStrategy={getActiveScenario().incomeStrategy}
+            />
+          </Box>
         </Box>
+        <Footer />
       </Box>
-      <Footer />
-    </Box>
+      <LearnMoreModal open={isModalOpen} onClose={handleCloseLearnModal}></LearnMoreModal>
+    </>
   );
 }
