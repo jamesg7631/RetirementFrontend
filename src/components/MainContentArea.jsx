@@ -31,13 +31,14 @@ const CustomLegend = ({ payload, isExploredView }) => {
     const currentItems = payload.filter(entry => entry.value.startsWith('Current'));
     const exploredItems = payload.filter(entry => entry.value.startsWith('Explored'));
 
+
     const renderLegendList = (title, items) => (
       <Box>
         <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1, textAlign: 'center' }}>{title}</Typography>
         {items.map((entry, index) => (
           <Box key={`item-${index}`} sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
             <Box component="span" sx={{ width: 12, height: 12, bgcolor: entry.color, mr: 1.5, display: 'inline-block', flexShrink: 0 }} />
-            <Typography variant="body2">{entry.value.replace(/^(Current - |Explored - )/, '')}</Typography>
+            <Typography variant="body2">{entry.dataKey.replace(/^(current_|explored_)/, '')}</Typography>
           </Box>
         ))}
       </Box>
