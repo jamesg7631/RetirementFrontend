@@ -25,6 +25,7 @@ export default function DCPensions() {
     const [mode, setMode] = useState("add");
 
     const handleEditOpen = (pension) => {
+        console.log(`DC Pensions page: edit button pension: ${pension}`);
         setSelectedPension(pension);
         setOpenAddDialog(true);
         setMode("edit");
@@ -32,7 +33,9 @@ export default function DCPensions() {
 
     const onClose = () => {
         setOpenAddDialog(false);
-        window.location.reload();
+        setSelectedPension(null);
+        setDeletePortfolio({});
+        setMode(add);
     }
 
     const handleAddOpen = () => {
@@ -44,7 +47,7 @@ export default function DCPensions() {
     useEffect(() => {
         const data = async () => {
             try {
-                const responseAllDcPensions = await getAllDcPensions();
+                const responseAllDcPensions = await getAllDcPensions("current");
                 setUserDCPensions(responseAllDcPensions);
             } catch (error) {
                 console.error("Failed to get DC Pensions");
