@@ -170,15 +170,24 @@ export default function MainContentArea({
   ]);
 
   const combinedChartData = useMemo(() => {
-    if (!isExploredView || !currentScenarioChartData.length || !activeChartData.length) {
+    //    if (!isExploredView || !currentScenarioChartData.length || !activeChartData.length) {
+    //      return activeChartData;
+    //    }
+
+    if (!isExploredView) {
       return activeChartData;
     }
+
+
+    const graphKeys = new Set();
     const mergedDataMap = new Map();
     currentScenarioChartData.forEach(item => {
       const entry = { age: item.age };
       Object.keys(item).forEach(key => {
         if (key !== 'age') {
-          entry[`current_${key}`] = item[key];
+          const graphKey = `current_${key}`;
+          entry[graphKey] = item[key];
+          graphKeys.add(graphKey);
         }
       });
       mergedDataMap.set(item.age, entry);
@@ -187,11 +196,22 @@ export default function MainContentArea({
       const entry = mergedDataMap.get(item.age) || { age: item.age };
       Object.keys(item).forEach(key => {
         if (key !== 'age') {
-          entry[`explored_${key}`] = item[key];
+          const graphKey = `explored_${key}`;
+          entry[graphKey] = item[key];
+          graphKeys.add(graphKey);
         }
       });
       mergedDataMap.set(item.age, entry);
     });
+
+    for (const [key, value] of mergedDataMap) {
+      const chartEntry = value;
+      for (const gKey of graphKeys) {
+        if (!chartEntry.hasOwnProperty(gKey)) {
+          chartEntry[gKey] = 0;
+        }
+      }
+    }
     let array = Array.from(mergedDataMap.values()).sort((a, b) => a.age - b.age);
     return array;
   }, [isExploredView, activeChartData, currentScenarioChartData]);
