@@ -35,7 +35,7 @@ export default function DCPensions() {
         setOpenAddDialog(false);
         setSelectedPension(null);
         setDeletePortfolio({});
-        setMode(add);
+        setMode("add");
     }
 
     const handleAddOpen = () => {
