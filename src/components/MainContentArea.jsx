@@ -170,9 +170,6 @@ export default function MainContentArea({
   ]);
 
   const combinedChartData = useMemo(() => {
-    //    if (!isExploredView || !currentScenarioChartData.length || !activeChartData.length) {
-    //      return activeChartData;
-    //    }
 
     if (!isExploredView) {
       return activeChartData;
@@ -209,6 +206,8 @@ export default function MainContentArea({
       for (const gKey of graphKeys) {
         if (!chartEntry.hasOwnProperty(gKey)) {
           chartEntry[gKey] = 0;
+        } else {
+          console.log(`Chart value: ${value}`)
         }
       }
     }
@@ -216,7 +215,6 @@ export default function MainContentArea({
     return array;
   }, [isExploredView, activeChartData, currentScenarioChartData]);
 
-  // FIXED: This entire block was corrupted in the previous response. It is now clean.
   const { cashflowKeys, currentKeys, exploredKeys } = useMemo(() => {
     const data = isExploredView ? combinedChartData : activeChartData;
     if (!data || data.length === 0) {
