@@ -1,408 +1,410 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    Button,
-    TextField,
-    Box,
-    Tab,
-    Tabs,
-    Typography,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    Grid,
-    Paper
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  Box,
+  Tab,
+  Tabs,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Grid,
+  Paper
 } from '@mui/material';
-import {amendNewDcPension, createNewDcPension, createNewPortfolio, getAllPortfolios} from '../api/apiService';
-import { initialAllocations} from "../utils/config.js";
+import { amendNewDcPension, createNewDcPension, createNewPortfolio, getAllPortfolios } from '../api/apiService';
+import { initialAllocations } from "../utils/config.js";
 
-export default function AddDCPensionDialog({ open, onClose, selectedPension, mode, currentTab}) {
+export default function AddDCPensionDialog({ open, onClose, selectedPension, mode, currentTab }) {
   // Helper functions for State initialisation
-    const getInitialPensionData = () => {
-        if (selectedPension == null) {
-            return {
-                name: '',
-                currentValue: '',
-                contributionRate: '',
-                employerContributionRate: '',
-                ocf: ''
-            };
-        } else {
-            return {...selectedPension};
-        }
-    };
+  const getInitialPensionData = () => {
+    if (selectedPension == null) {
+      return {
+        name: '',
+        currentValue: '',
+        contributionRate: '',
+        employerContributionRate: '',
+        ocf: ''
+      };
+    } else {
+      return { ...selectedPension };
+    }
+  };
 
-      const getInitialAllocations = () => {
-        const serialised = JSON.stringify(initialAllocations);
-        const deepCopy = JSON.parse(serialised);
-        return deepCopy;
+  const getInitialAllocations = () => {
+    const serialised = JSON.stringify(initialAllocations);
+    const deepCopy = JSON.parse(serialised);
+    return deepCopy;
+  }
+
+  const handleChange = (field) => (event) => {
+    setPensionData({
+      ...pensionData,
+      [field]: event.target.value
+    });
+  };
+
+  const handlePortfolioChange = (event) => {
+    setSelectedPortfolio(event.target.value);
+  };
+
+  const handleNewPortfolioChange = (key, value, e) => {
+    if (e == null) {
+      return;
+    }
+    console.log("Change new portfolio!");
+    const replacementPortfolio = { ...newPortfolio };
+    const valueN = (parseFloat(e.target.value) / 100) || 0;
+    value.holdings = valueN;
+    setNewPortfolio(replacementPortfolio);
+  };
+
+  const handlePortfolioNameChange = (e) => {
+    setPortfolioName(e.target.value)
+  }
+
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+  };
+
+  const getTotalAllocation = () => {
+    let sum = 0;
+    for (const [key, value] of Object.entries(newPortfolio)) {
+      const holdingsPercentage = value.holdings * 100;
+      sum += holdingsPercentage;
+    }
+    return sum;
+  };
+
+  const allocationsProcessing = () => {
+    const results = (
+      Object.entries(newPortfolio).map(([key, value]) => {
+        const assetClass = { [key]: value };
+        const displayValue = (value.holdings * 100).toFixed(2);
+
+        return getAllocationsPaper(key, value, displayValue);
+      }));
+    console.log("Results")
+    return results;
+  }
+
+  const handleSubmit = async () => {
+    console.log("Breakpoint")
+    try {
+      let portfolioId;
+      if (activeTab === 1) {
+        const createPortfolio = { ...newPortfolio, portfolioName }
+        const portfolioCreationResponse = await createNewPortfolio(createPortfolio);
+        if (portfolioCreationResponse.status !== "success") {
+          throw new Error("Failed to create portfolio");
+        }
+        portfolioId = parseInt(portfolioCreationResponse.portfolioId);
+      } else {
+        portfolioId = selectedPortfolio;
+      }
+      const postPensionData = { ...pensionData, portfolioId };
+      console.log("Current tab: " + currentTab);
+      const explored = currentTab === 1 ? "explored" : "current";
+      if (mode == "add") {
+        const createNewDCPension = await createNewDcPension(postPensionData, explored);
+
+      } else {
+        const ammendedDcPension = await amendNewDcPension(postPensionData, explored);
+      }
+      handleCancel();
+      console.log("portfolio response");
+    } catch (error) {
+      console.error("Error Creating portfolio");
+    }
+  }
+
+
+  const addPensionIsDisabled = () => {
+    if (pensionData.name === "" || pensionData.name == null) {
+      return true;
+    }
+    if (pensionData.currentValue === "") {
+      return true;
     }
 
-    const handleChange = (field) => (event) => {
-        setPensionData({
-            ...pensionData,
-            [field]: event.target.value
-        });
-    };
-
-    const handlePortfolioChange = (event) => {
-        setSelectedPortfolio(event.target.value);
-    };
-
-    const handleNewPortfolioChange = (key, value, e)=> {
-        if (e == null) {
-            return;
-        }
-        console.log("Change new portfolio!");
-        const replacementPortfolio = {...newPortfolio};
-        const valueN = (parseFloat(e.target.value) / 100) || 0;
-        value.holdings = valueN;
-        setNewPortfolio(replacementPortfolio);
-    };
-
-    const handlePortfolioNameChange = (e) => {
-        setPortfolioName(e.target.value)
+    if (pensionData.contributionRate === "") {
+      return true;
     }
 
-    const handleTabChange = (event, newValue) => {
-        setActiveTab(newValue);
+    if (pensionData.employerContributionRate === "") {
+      return true;
+    }
+    if (pensionData.ocf === "") {
+      return true;
+    }
+
+    if (activeTab === 0) {
+      if (selectedPortfolio === "" || portfolioName == null) {
+        return true;
+      }
+    }
+
+    if (activeTab === 1) {
+      if (getTotalAllocation() !== 100) {
+        return true;
+      }
+
+      if (portfolioName === "") {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  const handleCancel = () => {
+    setActiveTab(0);
+    setExistingPortfolios([]);
+    setSelectedPortfolio('');
+    setPensionData(getInitialAllocations());
+    setPortfolioName("");
+    setNewPortfolio(getInitialAllocations());
+    onClose();
+  }
+
+  // State initialisation
+  const [activeTab, setActiveTab] = useState(0);
+  const [existingPortfolios, setExistingPortfolios] = useState([]);
+  const [selectedPortfolio, setSelectedPortfolio] = useState('');
+  const [pensionData, setPensionData] = useState(getInitialPensionData());
+  const [portfolioName, setPortfolioName] = useState("");
+  const [newPortfolio, setNewPortfolio] = useState(getInitialAllocations());
+
+  // Use effect
+  useEffect(() => {
+    const fetchPortfolios = async () => {
+      try {
+        const portfolios = await getAllPortfolios();
+        setExistingPortfolios(portfolios);
+      } catch (error) {
+        console.error('Error fetching portfolios:', error);
+      }
     };
-
-    const getTotalAllocation = () => {
-        let sum = 0;
-        for (const [key, value] of Object.entries(newPortfolio)) {
-            const holdingsPercentage = value.holdings * 100;
-            sum += holdingsPercentage;
-        }
-        return sum;
-    };
-
-    const allocationsProcessing = () => {
-        const results = (
-            Object.entries(newPortfolio).map(([key, value]) => {
-            const assetClass = {[key]: value};
-            const displayValue = (value.holdings * 100).toFixed(2);
-
-            return getAllocationsPaper(key, value, displayValue);
-        }));
-        console.log("Results")
-        return results;
+    if (open) {
+      fetchPortfolios();
+      const initAllocations = getInitialAllocations();
+      setNewPortfolio((initAllocations));
     }
+  }, [open, selectedPortfolio]);
 
-    const handleSubmit = async () => {
-        console.log("Breakpoint")
-        try {
-            let portfolioId;
-            if (activeTab === 1) {
-                const createPortfolio = {...newPortfolio, portfolioName}
-                const portfolioCreationResponse = await createNewPortfolio(createPortfolio);
-                if (portfolioCreationResponse.status !== "success") {
-                    throw new Error("Failed to create portfolio");
-                }
-                portfolioId = parseInt(portfolioCreationResponse.portfolioId);
-            } else {
-                portfolioId = selectedPortfolio;
-            }
-            const postPensionData = {...pensionData, portfolioId};
-            console.log("Current tab: " + currentTab);
-            const explored = currentTab === 1 ? "explored" : "current";
-            if (mode == "add") {
-                const createNewDCPension = await createNewDcPension(postPensionData, explored);
-            } else {
-                const ammendedDcPension = await amendNewDcPension(postPensionData, explored);
-            }
-            console.log("portfolio response");
-        } catch (error) {
-            console.error("Error Creating portfolio");
+  useEffect(() => {
+    if (mode === "edit") {
+      setPensionData({ ...selectedPension });
+      for (let i = 0; existingPortfolios.length; i++) {
+        let sPortfolio = existingPortfolios[i];
+        if (sPortfolio.id === pensionData.portfolioId) {
+          setSelectedPortfolio(sPortfolio.id);
+          break;
         }
+      }
+    } else {
+      setPensionData({
+        name: '',
+        currentValue: '',
+        contributionRate: '',
+        employerContributionRate: '',
+        ocf: ''
+      });
     }
+  }, [selectedPension, existingPortfolios, pensionData.portfolioId, mode]);
 
 
-    const addPensionIsDisabled = () => {
-        if (pensionData.name === "" || pensionData.name == null) {
-            return true;
-        }
-        if (pensionData.currentValue === "") {
-            return true;
-        }
+  function getAllocationsPaper(key, value, displayValue) {
+    return <Paper
+      key={key}
+      elevation={0}
+      sx={{
+        p: 1,
+        backgroundColor: 'background.paper',
+        border: '1px solid',
+        borderColor: 'divider',
+      }}
+    >
+      <TextField
+        label={value.name}
+        type="number"
+        value={displayValue || 0}
+        onChange={(e) => handleNewPortfolioChange(key, value, e)}
+        fullWidth
+        size="small"
+        InputProps={{
+          endAdornment: <Typography sx={{ ml: 1 }}>%</Typography>,
+          inputProps: {
+            min: 0,
+            max: 100,
+            step: 0.01
+          }
+        }}
+      />
+    </Paper>;
+  }
 
-        if (pensionData.contributionRate === "") {
-            return true;
-        }
+  const renderNewPortfolioSection = () => (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <TextField
+        label="Portfolio Name"
+        value={portfolioName}
+        onChange={(e) => handlePortfolioNameChange(e)}
+        fullWidth
+        required
+      />
 
-        if (pensionData.employerContributionRate === "") {
-            return true;
-        }
-        if (pensionData.ocf === "") {
-            return true;
-        }
+      <Box sx={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+        gap: 2,
+        maxHeight: '400px',
+        overflowY: 'auto',
+        padding: 2,
+        border: '1px solid',
+        borderColor: 'divider',
+        borderRadius: 1,
+      }}>
+        {allocationsProcessing()}
+      </Box>
 
-        if (activeTab === 0) {
-            if (selectedPortfolio === "" || portfolioName == null) {
-                return true;
-            }
-        }
-
-        if (activeTab === 1) {
-            if (getTotalAllocation() !== 100) {
-                return true;
-            }
-
-            if (portfolioName === "") {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    const handleCancel = () => {
-      setActiveTab(0);
-      setExistingPortfolios([]);
-      setSelectedPortfolio('');
-      setPensionData(getInitialAllocations());
-      setPortfolioName("");
-      setNewPortfolio(getInitialAllocations());
-      onClose();
-    }
- 
-    // State initialisation
-    const [activeTab, setActiveTab] = useState(0);
-    const [existingPortfolios, setExistingPortfolios] = useState([]);
-    const [selectedPortfolio, setSelectedPortfolio] = useState('');
-    const [pensionData, setPensionData] = useState(getInitialPensionData());
-    const [portfolioName, setPortfolioName] = useState("");
-    const [newPortfolio, setNewPortfolio] = useState(getInitialAllocations());
-
-    // Use effect
-    useEffect(() => {
-        const fetchPortfolios = async () => {
-            try {
-                const portfolios = await getAllPortfolios();
-                setExistingPortfolios(portfolios);
-            } catch (error) {
-                console.error('Error fetching portfolios:', error);
-            }
-        };
-        if (open) {
-            fetchPortfolios();
-            const initAllocations = getInitialAllocations();
-            setNewPortfolio((initAllocations));
-        }
-    }, [open, selectedPortfolio]);
-
-    useEffect(() => {
-        if (mode === "edit") {
-            setPensionData({...selectedPension});
-            for (let i = 0; existingPortfolios.length; i++) {
-                let sPortfolio = existingPortfolios[i];
-                if (sPortfolio.id === pensionData.portfolioId) {
-                    setSelectedPortfolio(sPortfolio.id);
-                    break;
-                }
-            }
-        } else {
-            setPensionData({
-                name: '',
-                currentValue: '',
-                contributionRate: '',
-                employerContributionRate: '',
-                ocf: ''
-            });
-        }
-    }, [selectedPension, existingPortfolios, pensionData.portfolioId, mode]);
-
-
-    function getAllocationsPaper(key, value, displayValue) {
-        return <Paper
-            key={key}
-            elevation={0}
-            sx={{
-                p: 1,
-                backgroundColor: 'background.paper',
-                border: '1px solid',
-                borderColor: 'divider',
-            }}
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        mt: 1,
+        p: 2,
+        backgroundColor: getTotalAllocation() === 100 ? 'success.light' : 'warning.light',
+        borderRadius: 1,
+      }}>
+        <Typography variant="subtitle1" fontWeight="medium">
+          Total Allocation
+        </Typography>
+        <Typography
+          variant="h6"
+          color={getTotalAllocation() === 100 ? 'success.dark' : 'warning.dark'}
         >
-            <TextField
-                label={value.name}
-                type="number"
-                value={displayValue || 0}
-                onChange={(e) => handleNewPortfolioChange(key, value, e)}
-                fullWidth
-                size="small"
-                InputProps={{
-                    endAdornment: <Typography sx={{ml: 1}}>%</Typography>,
-                    inputProps: {
-                        min: 0,
-                        max: 100,
-                        step: 0.01
-                    }
-                }}
-            />
-        </Paper>;
-    }
-
-    const renderNewPortfolioSection = () => (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <TextField
-                label="Portfolio Name"
-                value={portfolioName}
-                onChange={(e) => handlePortfolioNameChange(e)}
-                fullWidth
-                required
-            />
-
-            <Box sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-                gap: 2,
-                maxHeight: '400px',
-                overflowY: 'auto',
-                padding: 2,
-                border: '1px solid',
-                borderColor: 'divider',
-                borderRadius: 1,
-            }}>
-                {allocationsProcessing()}
-            </Box>
-
-            <Box sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                mt: 1,
-                p: 2,
-                backgroundColor: getTotalAllocation() === 100 ? 'success.light' : 'warning.light',
-                borderRadius: 1,
-            }}>
-                <Typography variant="subtitle1" fontWeight="medium">
-                    Total Allocation
-                </Typography>
-                <Typography
-                    variant="h6"
-                    color={getTotalAllocation() === 100 ? 'success.dark' : 'warning.dark'}
-                >
-                    {getTotalAllocation()}%
-                </Typography>
-            </Box>
-        </Box>
-    );
+          {getTotalAllocation()}%
+        </Typography>
+      </Box>
+    </Box>
+  );
 
 
-    const renderBasicDetails = () => (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2 }}>Basic Details</Typography>
-            <TextField
-                label="Pension Name"
-                value={pensionData.name}
-                onChange={handleChange('name')}
-                fullWidth
-                required
-            />
-            <TextField
-                label="Current Value"
-                type="number"
-                value={pensionData.currentValue}
-                onChange={handleChange('currentValue')}
-                fullWidth
-                required
-                InputProps={{
-                    startAdornment: <Typography sx={{ mr: 1 }}>£</Typography>,
-                }}
-            />
-            <Grid container spacing={2}>
-                <Grid item xs={6}>
-                    <TextField
-                        label="Your Contribution Rate (%)"
-                        type="number"
-                        value={pensionData.contributionRate}
-                        onChange={handleChange('contributionRate')}
-                        fullWidth
-                        required
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        label="Employer Rate (%)"
-                        type="number"
-                        value={pensionData.employerContributionRate}
-                        onChange={handleChange('employerContributionRate')}
-                        fullWidth
-                        required
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        label="Ongoing Charges Figure OCF (%)"
-                        type="number"
-                        value={pensionData.ocf}
-                        onChange={handleChange('ocf')}
-                        fullWidth
-                        required
-                    />
-                </Grid>
-            </Grid>
-        </Box>
-    );
-
-    return (
-        <Dialog
-            open={open}
-            onClose={onClose}
-            maxWidth="md"
+  const renderBasicDetails = () => (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 3 }}>
+      <Typography variant="h6" sx={{ mb: 2 }}>Basic Details</Typography>
+      <TextField
+        label="Pension Name"
+        value={pensionData.name}
+        onChange={handleChange('name')}
+        fullWidth
+        required
+      />
+      <TextField
+        label="Current Value"
+        type="number"
+        value={pensionData.currentValue}
+        onChange={handleChange('currentValue')}
+        fullWidth
+        required
+        InputProps={{
+          startAdornment: <Typography sx={{ mr: 1 }}>£</Typography>,
+        }}
+      />
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <TextField
+            label="Your Contribution Rate (%)"
+            type="number"
+            value={pensionData.contributionRate}
+            onChange={handleChange('contributionRate')}
             fullWidth
-        >
-            <DialogTitle>Add DC Pension</DialogTitle>
-            <DialogContent>
-                {renderBasicDetails()}
+            required
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            label="Employer Rate (%)"
+            type="number"
+            value={pensionData.employerContributionRate}
+            onChange={handleChange('employerContributionRate')}
+            fullWidth
+            required
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            label="Ongoing Charges Figure OCF (%)"
+            type="number"
+            value={pensionData.ocf}
+            onChange={handleChange('ocf')}
+            fullWidth
+            required
+          />
+        </Grid>
+      </Grid>
+    </Box>
+  );
 
-                <Paper sx={{ mt: 3 }}>
-                    <Tabs
-                        value={activeTab}
-                        onChange={handleTabChange}
-                        sx={{ borderBottom: 1, borderColor: 'divider' }}
-                    >
-                        <Tab label="Select Existing Portfolio" />
-                        <Tab label="Create New Portfolio" />
-                    </Tabs>
+  return (
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
+      fullWidth
+    >
+      <DialogTitle>Add DC Pension</DialogTitle>
+      <DialogContent>
+        {renderBasicDetails()}
 
-                    <Box sx={{ p: 2 }}>
-                        {activeTab === 0 ? (
-                            <FormControl fullWidth>
-                                <InputLabel>Select Portfolio</InputLabel>
-                                <Select
-                                    value={selectedPortfolio}
-                                    onChange={handlePortfolioChange}
-                                    label="Select Portfolio"
-                                >
-                                    {existingPortfolios.map((portfolio) => (
-                                        <MenuItem key={portfolio.id} value={portfolio.id}>
-                                            {portfolio.portfolioName}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        ) : renderNewPortfolioSection()}
-                    </Box>
-                </Paper>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleCancel}>Cancel</Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    disabled={
-                        addPensionIsDisabled()
-                    }
-                    onClick={handleSubmit}
+        <Paper sx={{ mt: 3 }}>
+          <Tabs
+            value={activeTab}
+            onChange={handleTabChange}
+            sx={{ borderBottom: 1, borderColor: 'divider' }}
+          >
+            <Tab label="Select Existing Portfolio" />
+            <Tab label="Create New Portfolio" />
+          </Tabs>
+
+          <Box sx={{ p: 2 }}>
+            {activeTab === 0 ? (
+              <FormControl fullWidth>
+                <InputLabel>Select Portfolio</InputLabel>
+                <Select
+                  value={selectedPortfolio}
+                  onChange={handlePortfolioChange}
+                  label="Select Portfolio"
                 >
-                    Add Pension
-                </Button>
-            </DialogActions>
-        </Dialog>
-    );
+                  {existingPortfolios.map((portfolio) => (
+                    <MenuItem key={portfolio.id} value={portfolio.id}>
+                      {portfolio.portfolioName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            ) : renderNewPortfolioSection()}
+          </Box>
+        </Paper>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCancel}>Cancel</Button>
+        <Button
+          variant="contained"
+          color="primary"
+          disabled={
+            addPensionIsDisabled()
+          }
+          onClick={handleSubmit}
+        >
+          Add Pension
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 }
