@@ -1,12 +1,13 @@
-import { Box, CssBaseline, ThemeProvider, createTheme} from "@mui/material";
-import {BrowserRouter, Routes, Route} from "react-router-dom";
+import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login.jsx"
 import Dashboard from "./pages/Dashboard.jsx"
-import {ResetPassword} from "./pages/ResetPassword.jsx";
+import { ResetPassword } from "./pages/ResetPassword.jsx";
 import CreateAccount from "./pages/CreateAccount.jsx";
 import RegisterUser from "./pages/RegisterUser.jsx";
 import Portfolio from "./pages/Portfolio.jsx";
 import DCPensions from "./pages/DCPensions.jsx";
+import Settings from "./pages/Settings.jsx";
 
 const theme = createTheme({
   palette: {
@@ -27,23 +28,24 @@ const theme = createTheme({
 });
 
 function App() {
-    console.log('Theme common colors:', theme.palette.common);
+  console.log('Theme common colors:', theme.palette.common);
 
-    return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<Login/>} />
-                    <Route path="/dashboard" element={<Dashboard/>} />
-                    <Route path="/reset-password" element={<ResetPassword/>}/>
-                    <Route path="/create-account" element={<CreateAccount/>}/>
-                    <Route path="/register-user" element={<RegisterUser/>}/>
-                    <Route path="/portfolios" element={<Portfolio/>}/>
-                    <Route path="/dc-pensions" element={<DCPensions/>}/>
-                </Routes>
-            </BrowserRouter>
-        </ThemeProvider>
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/create-account" element={<CreateAccount />} />
+          <Route path="/register-user" element={<RegisterUser mode="register" />} />
+          <Route path="/portfolios" element={<Portfolio />} />
+          <Route path="/dc-pensions" element={<DCPensions />} />
+          <Route path="/settings" element={<RegisterUser mode="edit" />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 
