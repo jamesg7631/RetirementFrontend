@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useNavigate } from "react-router";
 
-const API_URL = "http://localhost:8080";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
   baseURL: API_URL
@@ -47,6 +47,21 @@ export const registerUser = async (content) => {
     throw error;
   }
 }
+export const modifyUserDetails = async (content) => {
+  try {
+    console.log("Register account to springboot " + content);
+    const response = await api.post(`${API_URL}/users/modify`, content, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    console.log("Register user Springboot response" + response.status);
+    return response.data;
+  } catch (error) {
+    console.error('Error registering user: ', error);
+    throw error;
+  }
+}
 
 export const createNewDcPension = async (content, currentTab) => {
   try {
@@ -62,6 +77,10 @@ export const createNewDcPension = async (content, currentTab) => {
     console.error('Error creating DC pension: ', error);
     throw error;
   }
+}
+
+export const logoutUser = () => {
+  localStorage.removeItem("token");
 }
 
 export const amendNewDcPension = async (content, explored) => {
@@ -90,6 +109,18 @@ export const getAllDcPensions = async (explored) => {
     throw error;
   }
 }
+
+export const getRegisteredUser = async (explored) => {
+  try {
+    const response = await api.get(`${API_URL}/users/registered`);
+    return response.data;
+  } catch (error) {
+    console.error("Error: Failed to retrieve all portfolios");
+    throw error;
+  }
+}
+
+
 
 export const getStatePension = async () => {
   try {
@@ -200,7 +231,6 @@ export const deleteMyPortfolio = async (portfolioId) => {
 
 export const getMyInvestmentHeaders = async (pathVariable) => {
   try {
-    // console.log("Investment Header API is called!")
     const response = await api.get(`${API_URL}/investments/headers/${pathVariable}`)
     return response.data;
   } catch (error) {

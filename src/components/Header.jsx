@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -6,34 +6,60 @@ import {
   Button,
   IconButton,
   Box,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import {useNavigate, Link} from "react-router";
+import { useNavigate, Link } from "react-router-dom";
 import LearnMoreModal from "./LearnMoreModal.jsx";
+import { logoutUser } from "../api/apiService.js";
+
 export default function Header() {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const isMenuOpen = Boolean(anchorEl);
 
-    const handleOpenModal = () => {
-        setIsModalOpen(true);
-    };
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-    };
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleSettingsClick = () => {
+    handleMenuClose();
+    navigate("/settings");
+  };
+
+  const handleSignOut = () => {
+    handleMenuClose();
+    console.log("User signed out");
+    logoutUser();
+    navigate("/");
+  };
 
 
-    return (
-        <>
+  return (
+    <>
       <AppBar position="static" sx={{ bgcolor: "primary.main" }}>
         <Toolbar>
           <Typography
-              variant="h6"
-              onClick={() => navigate("/dashboard")}
-              sx={{
-                flexGrow: 1,
-                cursor: 'pointer'
-              }}
+            variant="h6"
+            onClick={() => navigate("/dashboard")}
+            sx={{
+              flexGrow: 1,
+              cursor: "pointer"
+            }}
           >
             Retirement Planner
           </Typography>
@@ -44,13 +70,26 @@ export default function Header() {
             <Button color="inherit">My scenarios</Button>
             <Button color="inherit" onClick={handleOpenModal}>Learn more ?</Button>
           </Box>
-          <IconButton size="large" edge="end" color="inherit" aria-label="account">
+          <IconButton size="large" edge="end" color="inherit" aria-label="account" onClick={handleProfileMenuOpen}>
             <AccountCircleIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
-        <LearnMoreModal open={isModalOpen} onClose={handleCloseModal} />
+      <LearnMoreModal open={isModalOpen} onClose={handleCloseModal} />
+      <Menu
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        keepMounted
+        open={isMenuOpen}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+        <MenuItem onClick={handleSettingsClick}>Settings</MenuItem>
+        <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
+      </Menu>
     </>
   );
 }
-

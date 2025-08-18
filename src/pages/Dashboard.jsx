@@ -8,6 +8,8 @@ import { useState } from "react";
 import Footer from "../components/Footer.jsx";
 import { moveToExploredScenario } from "../api/apiService.js";
 import LearnMoreModal from "../components/LearnMoreModal.jsx";
+import SummaryOfChanges from "../components/SummaryOfChanges.jsx";
+
 
 export default function Dashboard() {
   const [currentTab, setCurrentTab] = useState(0);
@@ -89,35 +91,42 @@ export default function Dashboard() {
             currentTab={currentTab}
             onTabChange={handleTabChange}
           />
-          <Box sx={{
-            display: "flex",
-            flexGrow: 1,
-            gap: 1.5,
-            mt: 1.5,
-          }}>
-            <Sidebar
-              sx={{ width: 280, flexShrink: 0 }}
-              {...getActiveScenario()}
-              onUpdate={updateActiveScenario}
-              exploredTab={currentTab}
-              currentNavigationTab={currentTab}
-            />
-            <MainContentArea
-              sx={{ flexGrow: 4, minWidth: 800 }}
-              {...getActiveScenario()}
-              currentScenario={currentTab === 1 ? currentScenarioState : null}
-              isExploredView={currentTab === 1}
-              setGraphType={(value) => updateActiveScenario({ graphType: value })}
-              setStatePensionAge={(value) => updateActiveScenario({ statePensionAge: value })}
-              setStatePensionValue={(value) => updateActiveScenario({ statePensionValue: value })}
-            />
-            <RightSidebar
-              sx={{ width: 250, flexShrink: 0 }}
-              outcomeValue={getActiveScenario().outcomeValue}
-              setOutcomeValue={(value) => updateActiveScenario({ outcomeValue: value })}
-              incomeStrategy={getActiveScenario().incomeStrategy}
-            />
-          </Box>
+          {currentTab === 2 ? (
+              <SummaryOfChanges
+                  currentScenario={currentScenarioState}
+                  exploredScenario={exploredScenarioState}
+              />
+          ) : (
+              <Box sx={{
+                display: "flex",
+                flexGrow: 1,
+                gap: 1.5,
+                mt: 1.5,
+              }}>
+                <Sidebar
+                    sx={{ width: 280, flexShrink: 0 }}
+                    {...getActiveScenario()}
+                    onUpdate={updateActiveScenario}
+                    exploredTab={currentTab}
+                    currentNavigationTab={currentTab}
+                />
+                <MainContentArea
+                    sx={{ flexGrow: 4, minWidth: 800 }}
+                    {...getActiveScenario()}
+                    currentScenario={currentTab === 1 ? currentScenarioState : null}
+                    isExploredView={currentTab === 1}
+                    setGraphType={(value) => updateActiveScenario({ graphType: value })}
+                    setStatePensionAge={(value) => updateActiveScenario({ statePensionAge: value })}
+                    setStatePensionValue={(value) => updateActiveScenario({ statePensionValue: value })}
+                />
+                <RightSidebar
+                    sx={{ width: 250, flexShrink: 0 }}
+                    outcomeValue={getActiveScenario().outcomeValue}
+                    setOutcomeValue={(value) => updateActiveScenario({ outcomeValue: value })}
+                    incomeStrategy={getActiveScenario().incomeStrategy}
+                />
+              </Box>
+          )}
         </Box>
         <Footer />
       </Box>
