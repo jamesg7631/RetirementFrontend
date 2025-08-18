@@ -2,8 +2,8 @@
   "name": "retirement-frontend",
   "private": true,
   "version": "0.0.0",
-  "homepage": "."
-  "type": "module",
+  "homepage": ".",
+  "type": "module", // <--- Comma added here
   "scripts": {
     "dev": "vite",
     "build": "vite build",
