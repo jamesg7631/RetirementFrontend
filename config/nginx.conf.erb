@@ -1,0 +1,26 @@
+# ~/repos/RetirementPlannerG/RetirementFrontend/config/nginx.conf.erb
+
+# This file tells NGINX how to serve your React app
+
+server {
+  listen <%= ENV["PORT"] %>;
+  server_name localhost;
+
+  # Your React build directory
+  root /app/build;
+
+  # The main entry point for your React app
+  index index.html;
+
+  # Serve static assets directly
+  location ~* ^.+\.(css|cur|js|jpe?g|gif|htc|ico|png|html|xml|otf|ttf|eot|woff|svg)$ {
+    expires 1y;
+    access_log off;
+    add_header Cache-Control "public";
+  }
+
+  # Handle client-side routing (React Router)
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
+}
