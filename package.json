@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "homepage": ".",
-  "type": "module", // <--- This line needs a comma on the line BEFORE it
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
